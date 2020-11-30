@@ -1,0 +1,28 @@
+# --------------------------------------------------------------------------------------
+# Copyright 2020 by Oculy Authors, see git history for more details.
+#
+# Distributed under the terms of the BSD license.
+#
+# The full license is in the file LICENCE, distributed with this software.
+# --------------------------------------------------------------------------------------
+"""Simple workspace manifest.
+
+"""
+from enaml.workbench.api import PluginManifest, Extension
+
+from .workspace import SimpleViewerWorkspace
+from .content import SimpleViewerContent
+
+
+enamldef SimpleViewerManifest(PluginManifest):
+    """
+    """
+
+    Extension:
+        id = "oculy.simple_viewer"
+        point = "enaml.workbench.ui.workspace"
+
+        SimpleViewerWorkspace:
+            window_title = "Simple viewer"
+            content = SimpleViewerContent
+
