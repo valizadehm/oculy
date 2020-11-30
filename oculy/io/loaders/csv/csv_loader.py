@@ -43,7 +43,6 @@ class CSVLoader(BaseLoader):
         self,
         columns: Sequence[str],
         masks: Dict[str, MaskSpecification],
-        apply_mask: Callable[[Dataset, Dataset, Dict[str, MaskSpecification]], Dataset],
     ) -> Dataset:
         """Load data from the CSV file.
 
@@ -100,7 +99,7 @@ class CSVLoader(BaseLoader):
 
         data = self._data[columns]
         if masks:
-            data = apply_mask(data, self._data[list(masks)], masks)
+            data = self.mask_data(data, self._data[list(masks)], masks)
 
         if self._data.nbytes > self.caching_limit * 1e6:
             del self._data

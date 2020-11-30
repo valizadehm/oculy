@@ -9,16 +9,67 @@
 
 """
 from enaml.workbench.api import PluginManifest, Extension, ExtensionPoint
+from .loader import Loader
 
+PLUGIN_ID = "oculy.io"
+
+# =============================================================================
+# --- Factories ---------------------------------------------------------------
+# =============================================================================
+
+if TYPE_CHECKING:
+    from .plugin import IOPlugin
+
+def io_plugin_factory() -> "IOPlugin":
+    """ Factory funcion for the task manager plugin.
+
+    """
+    from .plugin import IOPlugin
+    return IOPlugin()
+
+
+# =============================================================================
+# --- Descriptions ------------------------------------------------------------
+# =============================================================================
+
+LOADERS_DESC =\
+"""
+
+"""
 
 enamldef IOManifest(PluginManifest):
+    """Manifest for the plugin responsible for handling IO
+
+    This plugin is in particular in charge of loading experimental data to be
+    visualized.
+
     """
-    """
-    id = "oculy.io"
+    id = PLUGIN_ID
+    factory = manager_plugin_factory
+
+    # =========================================================================
+    # --- Extension points ----------------------------------------------------
+    # =========================================================================
 
     ExtensionPoint:
-        id = "loader"
+        id = 'loaders'
+        description = LOADERS_DESC
+
+    # =========================================================================
+    # --- Extensions ----------------------------------------------------------
+    # =========================================================================
 
     Extension:
+        id = 'loaders'
+        point = 'oculy.io.loaders'
+        Loader:
+            id = "csv"
+            file_extensions = [".csv"]
 
-
+    Extension:
+        id = 'commands'
+        point = 'enaml.workbench.core.commands'
+        Command:
+            id = 'oculy.io.create_loader'
+            # FIXME add description
+            handler = make_handler(PLUGIN_ID, 'create_loader')

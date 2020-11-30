@@ -8,12 +8,11 @@
 """Interface for data loaders.
 
 """
-from typing import Callable
 from typing import Dict as TypedDict
 from typing import Sequence
 
-from atom.api import Dict, Int, List, Str, Subclass
-from enaml.core.api import Declarative, d_
+from atom.api import Callable, Dict, Int, List, Str
+from enaml.core.api import Declarative, d_, d_func
 from glaze.utils.atom_util import HasPreferencesAtom
 from xarray import Dataset
 
@@ -49,6 +48,12 @@ class BaseLoader(HasPreferencesAtom):
     #: Keeping data in cache will improve performance but degrade memory usage.
     caching_limit = Int(100).tag(pref=True)
 
+    #: Callable taking care of applying any in-memory masking required and taking
+    #: the data to be masked, the data to generate the mask and the mask
+    #: specification for each mask source data.
+    #: Callable[ [Dataset, Dataset, TypedDict[str, MaskSpecification]], Dataset ]
+    mask_data = Callable()
+
     # FIXME formalize the filtering format keeping something compatible with out of
     # memory filtering
     # HDF5 files are also a concern (store more than 1D data)
@@ -56,9 +61,6 @@ class BaseLoader(HasPreferencesAtom):
         self,
         names: Sequence[str],
         masks: TypedDict[str, MaskSpecification],
-        apply_mask: Callable[
-            [Dataset, Dataset, TypedDict[str, MaskSpecification]], Dataset
-        ],
     ) -> Dataset:
         """Load data from the on-disk resource.
 
@@ -69,10 +71,6 @@ class BaseLoader(HasPreferencesAtom):
         masks : TypedDict[str, MaskSpecification]
             Mapping of mapping operation to perform on the specified named data, the
             resulting mask are applied to the requested data (see `names`)
-        apply_mask : Callable[ [Dataset, Dataset, TypedDict[str, MaskSpecification]], Dataset ]
-            Callable taking care of applying any in-memory masking required and taking
-            the data to be masked, the data to generate the mask and the mask
-            specification for each mask source data.
 
         Returns
         -------
@@ -101,10 +99,11 @@ class Loader(Declarative):
     #: Unique ID of the loader
     id = d_(Str())
 
-    #: Class to use to perform the actual loading
-    cls = d_(Subclass(BaseLoader))
-
     #: Supported file extensions for the loader
     #: If multiple loaders support the same extension the user will be allowed
     #: to pick the relevant one.
     file_extensions = d_(List())
+
+    @d_func
+    def get_cls(self) -> BaseLoader:
+        raise NotImplementedError
