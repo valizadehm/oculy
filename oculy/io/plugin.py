@@ -8,9 +8,12 @@
 """Plugin IO for Oculy.
 
 """
+from typing import Dict as TypedDict
+
 from atom.api import Dict, Typed
 from glaze.utils.plugin_tools import ExtensionsCollector, make_extension_validator
 from glaze.utils.atom_util import HasPreferencesAtom
+from xarray import Dataset
 
 from .loader import BaseLoader, Loader
 
@@ -26,7 +29,7 @@ class IOPlugin(HasPreferencesAtom):
     """
 
     #: Custom association between loaders and file extensions.
-    custom_loader_extensions = Dict()
+    custom_loader_extensions = Dict().tag(pref=True)
 
     #: Collect all contributed Loader extensions.
     loaders = Typed(ExtensionsCollector)
@@ -59,18 +62,48 @@ class IOPlugin(HasPreferencesAtom):
         del self.loaders
 
     def create_loader(self, id: str, path: str) -> BaseLoader:
-        """[summary]
+        """Create a loader associated with a path
 
         Parameters
         ----------
         id : str
-            [description]
+            Id of the loader to create.
         path : str
-            [description]
+            Path to the data file from which to load data.
 
         Returns
         -------
         BaseLoader
-            [description]
+            BaseLoader subclass that can be used to access the file content.
+
+        Raises
+        ------
+        KeyError:
+            Raised if an unknown loader is requested.
+
         """
-        pass
+        if id not in self.loaders.contributions:
+            # FIXME
+            raise KeyError()
+
+        # Get the loader declaration
+        decl = self.loaders.contributions[id]
+
+        # Extract the data masking utility function from the transformation plugin
+        # FIXME
+        # The assembly of the mask can be delegated to the transformation plugin
+        # but we should handle the masking manually since I am not sure how far I want
+        # to propagate xarray datastructures
+        def mask_data(
+            to_filter: Dataset,
+            filter_base: Dataset,
+            specifications: TypedDict[str, MaskSpecification],
+        ) -> Dataset:
+            mask = self.workbench.get_plugin("oculy.transformations").create_mask(
+                filter_base, specifications
+            )
+            return to_filter.where(mask)
+
+        loader = decl.get_cls()(path=path, mask_data=mask_data)
+
+        return loader

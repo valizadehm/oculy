@@ -107,3 +107,6 @@ class Loader(Declarative):
     @d_func
     def get_cls(self) -> BaseLoader:
         raise NotImplementedError
+
+    # NOTE may want a get_content_widget to provide a way to customize how to display
+    # the content of a loader.
