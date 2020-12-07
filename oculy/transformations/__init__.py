@@ -8,3 +8,8 @@
 """Data transformation plugin for Oculy.
 
 """
+from typing import Any, Tuple
+
+#: Description of a masking operation. Used in particular for loaders. The first
+#: str should refer to the ids of a Mask contributed to the transformation plugin.
+MaskSpecification = Tuple[str, Tuple[Any, ...]]

@@ -7,43 +7,46 @@
 # --------------------------------------------------------------------------------------
 """Routines for computing masks on data.
 
+Note that those are expected to work on numpy arrays and xarray.DataArray.
+
 """
-from typing import Any, Tuple
-
 import numpy as np
-from numba import njit
+from atom.api import set_default
+
+from .node import Node
 
 
-#: Description of a masking operation. Used in particular for loaders. The first
-#: str should refer to the ids of a Mask contributed to the transformation plugin.
-MaskSpecification = Tuple[str, Tuple[Any, ...]]
+class Mask(Node):
+    """Node subclass used to generate boolean mask."""
+
+    inlineable = set_default(True)
 
 
-@njit
+# --- Conventional filters
+
+# FIXME once numpy 1.21 is out can use numpy.typing for better typing (ArrayLike
+# will cover xarray types)
+
+
 def mask_greater(array: np.ndarray, value: float) -> np.ndarray:
     return np.greater(array, value)
 
 
-@njit
 def mask_greater_equal(array: np.ndarray, value: float) -> np.ndarray:
     return np.greater_equal(array, value)
 
 
-@njit
 def mask_less(array: np.ndarray, value: float) -> np.ndarray:
     return np.less(array, value)
 
 
-@njit
 def mask_less_equal(array: np.ndarray, value: float) -> np.ndarray:
     return np.less_equal(array, value)
 
 
-@njit
 def mask_equal(array: np.ndarray, value: float) -> np.ndarray:
-    return array == value
+    return np.equal(array, value)
 
 
-@njit
 def mask_simequal(array: np.ndarray, value: float, tolerance: float) -> np.ndarray:
     return np.less(np.abs(array - value), tolerance)

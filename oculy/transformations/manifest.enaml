@@ -10,14 +10,89 @@
 """
 from enaml.workbench.api import PluginManifest, Extension, ExtensionPoint
 
+from .masks import(
+    Mask,
+    mask_greater,
+    mask_greater_equal,
+    mask_less,
+    mask_less_equal,
+    mask_equal,
+    mask_simequal
+)
+from.node import Node, index_array
+
+# =============================================================================
+# --- Factories ---------------------------------------------------------------
+# =============================================================================
+
+if TYPE_CHECKING:
+    from .plugin import TransformerPlugin
+
+def io_plugin_factory() -> "TransformerPlugin":
+    """ Factory funcion for the task manager plugin.
+
+    """
+    from .plugin import TransformerPlugin
+    return TransformerPlugin()
+
+# =============================================================================
+# --- Descriptions ------------------------------------------------------------
+# =============================================================================
+
+# FIXME
+MASKS_DESC =\
+"""
+
+"""
+
+# FIXME
+NODES_DESC =\
+"""
+
+"""
+
+
 
 enamldef DataTransformerManifest(PluginManifest):
     """
     """
     id = "oculy.data_transformer"
+    factory = io_plugin_factory
 
     ExtensionPoint:
-        id = "loader"
+        id = "masking"
+        description = MASKS_DESC
+
+    ExtensionPoint:
+        id = "compute_nodes"
+        description = NODES_DESC
 
     Extension:
+        id = "builtin-masks"
+        point = "oculy.data_transformer.masking"
+        Mask:
+            id = ">"
+            func = mask_greater
+        Mask:
+            id = ">="
+            func = mask_greater_equal
+        Mask:
+            id = "<"
+            func = mask_less
+        Mask:
+            id = "<="
+            func = mask_less_equal
+        Mask:
+            id = "=="
+            func = mask_equal
+        Mask:
+            id = "~"
+            func = mask_simequal
 
+    Extension:
+        id = "base-operation"
+        point = "oculy.data_transformer.compute_nodes"
+        Node:
+            id = "a[i]"
+            func = index_array
+            inlineable = True
