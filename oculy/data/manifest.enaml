@@ -8,3 +8,25 @@
 """Central data storage system for Oculy.
 
 """
+from enaml.workbench.api import PluginManifest
+
+
+# =============================================================================
+# --- Factories ---------------------------------------------------------------
+# =============================================================================
+
+if TYPE_CHECKING:
+    from .plugin import DataStoragePlugin
+
+def data_plugin_factory() -> "DataStoragePlugin":
+    """ Factory funcion for the task manager plugin.
+
+    """
+    from .plugin import DataStoragePlugin
+    return DataStoragePlugin()
+
+enamldef DataStorageManifest(PluginManifest):
+    """ """
+
+    id = "oculy.data"
+    factory = data_plugin_factory
