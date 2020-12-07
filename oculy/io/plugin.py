@@ -8,13 +8,14 @@
 """Plugin IO for Oculy.
 
 """
-from typing import Dict as TypedDict
+from typing import Mapping
 
 from atom.api import Dict, Typed
 from glaze.utils.plugin_tools import ExtensionsCollector, make_extension_validator
 from glaze.utils.atom_util import HasPreferencesAtom
 from xarray import Dataset
 
+from oculy.transformations import MaskSpecification
 from .loader import BaseLoader, Loader
 
 LOADER_POINT = "oculy.io.loaders"
@@ -41,6 +42,9 @@ class IOPlugin(HasPreferencesAtom):
         should never be called by user code.
 
         """
+        core = self.workbench.get_plugin("enaml.workbench.core")
+        core.invoke_command("exopy.app.errors.enter_error_gathering")
+
         validator = make_extension_validator(Loader, ("get_cls"), ("file_extensions"))
         self.loaders = ExtensionsCollector(
             workbench=self.workbench,
@@ -50,6 +54,8 @@ class IOPlugin(HasPreferencesAtom):
         )
 
         self.loaders.start()
+
+        core.invoke_command("exopy.app.errors.exit_error_gathering")
 
     def stop(self) -> None:
         """Stop the plugin life-cycle.
@@ -97,8 +103,9 @@ class IOPlugin(HasPreferencesAtom):
         def mask_data(
             to_filter: Dataset,
             filter_base: Dataset,
-            specifications: TypedDict[str, MaskSpecification],
+            specifications: Mapping[str, MaskSpecification],
         ) -> Dataset:
+            # XXX should we be invoking a command here ?
             mask = self.workbench.get_plugin("oculy.transformations").create_mask(
                 filter_base, specifications
             )

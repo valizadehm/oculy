@@ -11,7 +11,7 @@ Requires Pandas for fast IO.
 
 """
 import csv
-from typing import Callable, Dict, Sequence
+from typing import Dict, Sequence
 
 from atom.api import Bool, Str, Typed
 from pandas import read_csv
@@ -50,10 +50,10 @@ class CSVLoader(BaseLoader):
         ----------
         names : Sequence[str]
             Names-like string referring to the content of the file.
-        masks : TypedDict[str, MaskSpecification]
+        masks : Mapping[str, MaskSpecification]
             Mapping of mapping operation to perform on the specified named data, the
             resulting mask are applied to the requested data (see `names`)
-        apply_mask : Callable[ [Dataset, Dataset, TypedDict[str, MaskSpecification]], Dataset ]
+        apply_mask : Callable[ [Dataset, Dataset, Mapping[str, MaskSpecification]], Dataset ]
             Callable taking care of applying any in-memory masking required and taking
             the data to be masked, the data to generate the mask and the mask
             specification for each mask source data.

@@ -8,15 +8,14 @@
 """Interface for data loaders.
 
 """
-from typing import Dict as TypedDict
-from typing import Sequence
+from typing import Mapping, Sequence
 
 from atom.api import Callable, Dict, Int, List, Str
 from enaml.core.api import Declarative, d_, d_func
 from glaze.utils.atom_util import HasPreferencesAtom
 from xarray import Dataset
 
-from oculy.transformations.masks import MaskSpecification
+from oculy.transformations import MaskSpecification
 
 
 class DataKeyError(KeyError):
@@ -51,7 +50,7 @@ class BaseLoader(HasPreferencesAtom):
     #: Callable taking care of applying any in-memory masking required and taking
     #: the data to be masked, the data to generate the mask and the mask
     #: specification for each mask source data.
-    #: Callable[ [Dataset, Dataset, TypedDict[str, MaskSpecification]], Dataset ]
+    #: Callable[ [Dataset, Dataset, Mapping[str, MaskSpecification]], Dataset ]
     mask_data = Callable()
 
     # FIXME formalize the filtering format keeping something compatible with out of
@@ -60,7 +59,7 @@ class BaseLoader(HasPreferencesAtom):
     def load_data(
         self,
         names: Sequence[str],
-        masks: TypedDict[str, MaskSpecification],
+        masks: Mapping[str, MaskSpecification],
     ) -> Dataset:
         """Load data from the on-disk resource.
 
@@ -68,7 +67,7 @@ class BaseLoader(HasPreferencesAtom):
         ----------
         names : Sequence[str]
             Names-like string referring to the content of the file.
-        masks : TypedDict[str, MaskSpecification]
+        masks : Mapping[str, MaskSpecification]
             Mapping of mapping operation to perform on the specified named data, the
             resulting mask are applied to the requested data (see `names`)
 
