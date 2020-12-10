@@ -11,14 +11,14 @@ Requires Pandas for fast IO.
 
 """
 import csv
-from typing import Dict, Sequence
+from typing import Mapping, Sequence
 
 from atom.api import Bool, Str, Typed
 from pandas import read_csv
 from xarray import Dataset
 
-from oculy.transformations.masks import MaskSpecification
-from ..loader import BaseLoader, DataKeyError
+from oculy.transformations import MaskSpecification
+from ...loader import BaseLoader, DataKeyError
 
 
 # TODO add support for adding units
@@ -42,7 +42,7 @@ class CSVLoader(BaseLoader):
     def load_data(
         self,
         columns: Sequence[str],
-        masks: Dict[str, MaskSpecification],
+        masks: Mapping[str, MaskSpecification],
     ) -> Dataset:
         """Load data from the CSV file.
 

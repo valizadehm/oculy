@@ -8,14 +8,18 @@
 """Interface for data loaders.
 
 """
-from typing import Mapping, Sequence
+from typing import Mapping, Sequence, Type
 
+import enaml
 from atom.api import Callable, Dict, Int, List, Str
 from enaml.core.api import Declarative, d_, d_func
 from glaze.utils.atom_util import HasPreferencesAtom
 from xarray import Dataset
 
 from oculy.transformations import MaskSpecification
+
+with enaml.imports():
+    from .loader_config import BaseLoaderView
 
 
 class DataKeyError(KeyError):
@@ -53,9 +57,6 @@ class BaseLoader(HasPreferencesAtom):
     #: Callable[ [Dataset, Dataset, Mapping[str, MaskSpecification]], Dataset ]
     mask_data = Callable()
 
-    # FIXME formalize the filtering format keeping something compatible with out of
-    # memory filtering
-    # HDF5 files are also a concern (store more than 1D data)
     def load_data(
         self,
         names: Sequence[str],
@@ -104,8 +105,9 @@ class Loader(Declarative):
     file_extensions = d_(List())
 
     @d_func
-    def get_cls(self) -> BaseLoader:
+    def get_cls(self) -> Type[BaseLoader]:
         raise NotImplementedError
 
-    # NOTE may want a get_content_widget to provide a way to customize how to display
-    # the content of a loader.
+    @d_func
+    def get_config_view(self, loader: BaseLoader) -> BaseLoaderView:
+        raise NotImplementedError

@@ -5,14 +5,17 @@
 #
 # The full license is in the file LICENCE, distributed with this software.
 # --------------------------------------------------------------------------------------
-"""CSV data loader.
+"""Configuration widget for data loaders.
 
 """
-import enaml
+from enaml.widgets.api import GroupBox
 
-from .csv_loader import CSVLoader
 
-with enaml.imports():
-    from .csv_config import CSVLoaderConfig
+enamldef BaseLoaderView(GroupBox):
+    """"""
 
-__all__ = ("CSVLoader", "CSVLoaderConfig")
+    # Instance of the loader being configured.
+    attr loader
+
+    padding = 1
+

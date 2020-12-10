@@ -1,0 +1,42 @@
+# --------------------------------------------------------------------------------------
+# Copyright 2020 by Oculy Authors, see git history for more details.
+#
+# Distributed under the terms of the BSD license.
+#
+# The full license is in the file LICENCE, distributed with this software.
+# --------------------------------------------------------------------------------------
+"""CSV data loader configuration.
+
+"""
+from enaml.widgets.api import Form, Label, Field, CheckBox
+
+from ...loader_config import BaseLoaderView
+
+
+enamldef CSVLoaderConfig(BaseLoaderView):
+    """"""
+    title = "CSV loader"
+
+    Form:
+        Label:
+            text = "Delimiter"
+        Field:
+            text := loader.delimiter
+            placeholder = "Inferred"
+            tooltip = (
+                "Column delimiter, an empty string means that the separator "
+                "should be inferred."
+            )
+        Label:
+            text = "Comment"
+        Field:
+            text := loader.comment
+            tooltip = "Character marking a comment, fully commented lines are ignored."
+        CheckBox:
+            text = "Eager load"
+            checked := loader.eager_load
+            tooltip = (
+                "Should data file be loaded all at once or "
+                "should only the relevant columns be loaded."
+            )
+

@@ -65,6 +65,12 @@ enamldef IOManifest(PluginManifest):
         Loader:
             id = "csv"
             file_extensions = [".csv"]
+            get_cls => ():
+                from .loaders.csv import CSVLoader
+                return CSVLoader
+            get_config_view => (loader):
+                from .loaders.csv import CSVLoaderConfig
+                return CSVLoaderConfig(loader=loader)
 
     Extension:
         id = 'commands'

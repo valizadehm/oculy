@@ -29,6 +29,9 @@ class IOPlugin(HasPreferencesAtom):
 
     """
 
+    #: Preferred loader for a given extension.
+    preferred_loader = Dict(str, str).tag(pref=True)
+
     #: Custom association between loaders and file extensions.
     custom_loader_extensions = Dict().tag(pref=True)
 
@@ -45,7 +48,9 @@ class IOPlugin(HasPreferencesAtom):
         core = self.workbench.get_plugin("enaml.workbench.core")
         core.invoke_command("exopy.app.errors.enter_error_gathering")
 
-        validator = make_extension_validator(Loader, ("get_cls"), ("file_extensions"))
+        validator = make_extension_validator(
+            Loader, ("get_cls", "get_config_view"), ("file_extensions")
+        )
         self.loaders = ExtensionsCollector(
             workbench=self.workbench,
             point=LOADER_POINT,
@@ -95,11 +100,6 @@ class IOPlugin(HasPreferencesAtom):
         # Get the loader declaration
         decl = self.loaders.contributions[id]
 
-        # Extract the data masking utility function from the transformation plugin
-        # FIXME
-        # The assembly of the mask can be delegated to the transformation plugin
-        # but we should handle the masking manually since I am not sure how far I want
-        # to propagate xarray datastructures
         def mask_data(
             to_filter: Dataset,
             filter_base: Dataset,
@@ -111,6 +111,13 @@ class IOPlugin(HasPreferencesAtom):
             )
             return to_filter.where(mask)
 
-        loader = decl.get_cls()(path=path, mask_data=mask_data)
+        loader = decl.get_cls()(
+            path=path, mask_data=mask_data, **self._loader_preferences.get(id, {})
+        )
 
         return loader
+
+    # --- Private API ---------------------------------------------------------
+
+    #: Store user preferences for loaders.
+    _loader_preferences = Dict().tag(pref=True)
