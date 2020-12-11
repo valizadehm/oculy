@@ -30,3 +30,5 @@ enamldef DataStorageManifest(PluginManifest):
 
     id = "oculy.data"
     factory = data_plugin_factory
+
+    # FIXME add State extension sharing the data

@@ -26,3 +26,5 @@ enamldef SimpleViewerManifest(PluginManifest):
             window_title = "Simple viewer"
             content = SimpleViewerContent
 
+    # Add a command to display a log panel
+

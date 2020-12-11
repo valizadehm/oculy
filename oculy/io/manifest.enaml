@@ -79,3 +79,5 @@ enamldef IOManifest(PluginManifest):
             id = 'oculy.io.create_loader'
             # FIXME add description
             handler = make_handler(PLUGIN_ID, 'create_loader')
+
+        # XXX list_matching_loaders

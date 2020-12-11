@@ -8,6 +8,31 @@
 """Simple workspace content.
 
 """
-from enaml.widgets.api import Container
+from enaml.layout.api import HSplitLayout, TabLayout
+from enaml.widgets.api import Container, DockArea
+
+from .file_selector import FileSelector
+from .plot_1d_panel import Plot1DPanel
+from .plot_2d_panel import Plot2DPanel
+
+enamldef SimpleViewerContent(Container):
+
+    attr workspace
+
+    DockArea:
+
+        # 'meas_0' is included here to avoid some nasty bug.
+        layout = HSplitLayout("file_selector", TabLayout("1d_panel", "2d_panel"))
+
+        style = 'metro'
+
+        FileSelector:
+            name = "file_selector"
+
+        Plot1DPanel:
+            name = "1d_panel"
+
+        Plot2DPanel:
+            name = "2d_panel"
 
 

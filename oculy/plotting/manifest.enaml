@@ -15,6 +15,7 @@ enamldef PlottingManifest(PluginManifest):
     """
     """
     id = "oculy.plotting"
+    factory = None  # FIXME
 
     ExtensionPoint:
         id = "rendering"

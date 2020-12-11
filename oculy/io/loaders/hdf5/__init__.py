@@ -5,11 +5,6 @@
 #
 # The full license is in the file LICENCE, distributed with this software.
 # --------------------------------------------------------------------------------------
-"""Central data storage system for Oculy.
+"""HDF5 file data loader.
 
 """
-
-from .dataarray import DataArray
-from .dataset import Dataset
-
-__all__ = ["DataArray", "Dataset"]

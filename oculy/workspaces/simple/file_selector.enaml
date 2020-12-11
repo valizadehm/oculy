@@ -1,0 +1,99 @@
+# --------------------------------------------------------------------------------------
+# Copyright 2020 by Oculy Authors, see git history for more details.
+#
+# Distributed under the terms of the BSD license.
+#
+# The full license is in the file LICENCE, distributed with this software.
+# --------------------------------------------------------------------------------------
+"""File selector widget.
+
+"""
+from enaml.layout.api import hbox, vbox
+from enaml.widget.api import (
+    CheckBox,
+    Container,
+    DockItem,
+    Field,
+    FileDialogEx,
+    GroupBox,
+    Label,
+    ObjectCombo,
+    PushButton,
+    ToolButton,
+)
+from glaze.plugins.icons import get_icons
+
+
+# workbench and workspace are accessible through the dynamic namespacing
+enamldef FileSelector(DockItem):
+    """Select a folder, file, and appropriate loader to explore.
+
+    """
+
+    Container:
+        GroupBox:
+            title = "Selected folder"
+            flat = True
+            padding = 1
+            constraints = [hbox(folder, folder_tool)]
+
+            Field: folder:
+                read_only = True
+                text << workspace.selected_folder
+            ToolButton: folder_tool:
+                icon = get_icons(workbench, "open-folder")
+                clicked ::
+                    path = FileDialogEx.get_existing_directory(self)
+                    if path:
+                        workspace.selected_folder
+
+        GroupBox:
+            title = "Select file"
+            flat = True
+            padding = 1
+            constraints = [
+                vbox(
+                    *([file_combo, hbox(loader_combo, load_button)] +
+                      loader.objects +
+                      [hbox(loader_parameters, auto_load)]
+                    )
+                )
+            ]
+
+            # NOTE Hide if we decide to use a different view
+            ObjectCombo: file_combo:
+                items << workspace.available_files
+                selected_item := workspace.selected_file
+            ObjectCombo: loader_combo:
+                items << workspace.matching_loaders
+                enabled << len(items) > 1
+                selected_item := workspace.selected_loader
+            PushButton: load_button:
+                text = "Load"
+                clicked ::
+                    workspace.load_file()
+            CheckBox: filter_files:
+                text = "Filter files"
+                checked := workspace.should_filter_files
+            CheckBox: filter_loaders:
+                text = "Filter loaders"
+                checked := workspace.should_filter_loader
+            Include: loader:
+                objects << (
+                    [workspace.get_loader_view()]
+                    if workspace.selected_loader and loader_parameters.checked
+                    else []
+                )
+            CheckBox: loader_parameters:
+                text = "Loader parameters"
+            CheckBox: auto_load:
+                text = "Auto load"
+                checked := workspace.auto_load
+
+
+
+
+
+
+
+

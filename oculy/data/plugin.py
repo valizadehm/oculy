@@ -8,7 +8,7 @@
 """Central data storage system for Oculy.
 
 """
-from atom.api import Dict, Event, Tuple
+from atom.api import Dict, Typed
 from enaml.workbench.api import Plugin
 
 # store_data(id, data, metadata) relies on typing, . separated str
@@ -20,13 +20,7 @@ from .dataset import Dataset
 class DataStoragePlugin(Plugin):
     """ """
 
+    # FIXME Needs to also store loaders
+
     # Can be observed in a reliable manner
-    entries = Tuple(str)
-
-    #:
-    entry_changed = Event()
-
-    # --- Private API ---------------------------------------------------------
-
-    #:
-    _data = Dict(str, Dataset)
+    data = Typed(Dataset)

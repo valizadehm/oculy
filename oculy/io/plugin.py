@@ -36,7 +36,7 @@ class IOPlugin(HasPreferencesAtom):
     custom_loader_extensions = Dict().tag(pref=True)
 
     #: Collect all contributed Loader extensions.
-    loaders = Typed(ExtensionsCollector)
+    loaders = Typed(ExtensionsCollector)  # XXX make private
 
     def start(self) -> None:
         """Start the plugin life-cycle.
@@ -71,6 +71,8 @@ class IOPlugin(HasPreferencesAtom):
         """
         self.loaders.stop()
         del self.loaders
+
+    # list_matching_loaders
 
     def create_loader(self, id: str, path: str) -> BaseLoader:
         """Create a loader associated with a path
