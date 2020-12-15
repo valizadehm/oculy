@@ -8,7 +8,7 @@
 """Central data storage system for Oculy.
 
 """
-from atom.api import Dict, Typed
+from atom.api import Typed
 from enaml.workbench.api import Plugin
 
 # store_data(id, data, metadata) relies on typing, . separated str

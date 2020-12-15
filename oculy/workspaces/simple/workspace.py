@@ -10,7 +10,7 @@
 """
 import os
 
-from atom.api import Bool, List, Str, Typed
+from atom.api import Bool, Dict, List, Str, Typed
 from enaml.workbench.ui.api import Workspace
 from glaze.utils import invoke_command
 from watchdog.events import (
@@ -23,7 +23,7 @@ from watchdog.observers import Observer
 from watchdog.observers.api import ObservedWatch
 
 from oculy.data import Dataset
-from oculy.io.loader import BaseLoader
+from oculy.io.loader import BaseLoader, BaseLoaderView
 
 
 class FileListUpdater(FileSystemEventHandler):
@@ -75,6 +75,10 @@ class SimpleViewerWorkspace(Workspace):
     #: Should data be loaded automatically.
     auto_load = Bool().tag(pref=True)
 
+    #: Content of the loaded file. This dict is never updated in place and
+    #: can hence be safely observed.
+    file_content = Dict()
+
     def start(self):
         """ """
         data = invoke_command(self.workbench, "glaze.state.get_state", "oculy.data")
@@ -89,13 +93,20 @@ class SimpleViewerWorkspace(Workspace):
 
         # XXX Delete 1D and 2D plots
 
-    def get_loader_view(self):
-        """ """
-        pass
+    def get_loader_view(self) -> BaseLoaderView:
+        """Get a config view for teh current loader."""
+        if self._loader is None:
+            self._create_loader()
+        return invoke_command(
+            "oculy.io.create_loader_config", self.selected_loader, self._loader
+        )
 
     def load_file(self):
-        """ """
-        pass
+        """Create loader for selected file and determine the entries."""
+        if self._loader is None:
+            self._create_loader()
+        self._loader.determine_content()
+        self.content = self._loader.content
 
     # --- Private API
 
@@ -114,8 +125,12 @@ class SimpleViewerWorkspace(Workspace):
     #: Watch of teh watchdog.
     _watchdog_watch = Typed(ObservedWatch)
 
-    #:
+    #: Reference to the state of the IO plugin
     _io_state = Typed()  # XXX
+
+    #: Cache of loader paarmeters used by the user in this session.
+    #: Cross-session persistence should be handled through the io plugin.
+    _loader_state_cache = Dict(str)
 
     def _update_available_files(self):
         """Update the list of available files."""
@@ -130,7 +145,7 @@ class SimpleViewerWorkspace(Workspace):
                         # selected dir
                         os.path.join(dirpath, f)[trim:]
                         for f in filenames
-                        # skip next branch if filtering is not required
+                        # Skip next branch if filtering is not required
                         if (not self.should_filter_files)
                         or any(f.endswith(ext) for ext in exts)
                     ]
@@ -141,7 +156,7 @@ class SimpleViewerWorkspace(Workspace):
             self.selected_file = files[0] if files else ""
 
     def _update_matching_loaders(self):
-        """"""
+        """Update the list of loaders matching the selected file."""
         matching, preferred = invoke_command(
             "oculy.io.list_matching_loaders", {"filename": self.selected_file}
         )
@@ -149,7 +164,17 @@ class SimpleViewerWorkspace(Workspace):
         if self.selected_loader not in matching:
             self.selected_loader = preferred
 
-    def _post_set_selected_folder(self, old, new):
+    def _create_loader(self):
+        """Create a loader matching selection."""
+        self._loader = invoke_command(
+            "oculy.io.create_loader",
+            {
+                "id": self.selected_loader,
+                "path": os.path.join(self.selected_folder, self.selected_file),
+            },
+        )
+
+    def _post_setattr_selected_folder(self, old, new):
         """Ensure the available file list is up to date and remains so."""
         if self._watchdog_watch:
             self._watchdog.unschedule(self._watchdog_watch)
@@ -160,21 +185,29 @@ class SimpleViewerWorkspace(Workspace):
         if not self._watchdog.isAlive():
             self._watchdog.start()
 
-    def _post_set_should_filter_files(self, old, new):
+    def _post_setattr_should_filter_files(self, old, new):
         """Ensure the available file list respect filtering."""
         self._update_available_files()
 
-    def _post_set_selected_file(self, old, new):
+    def _post_setattr_selected_file(self, old, new):
         """Ensure the loader list matches the selected file."""
         self._update_matching_loaders()
+        if self._loader is not None:
+            self._loader.path = os.path.join(self.selected_folder, self.selected_file)
         if self.auto_load:
             self.load_file()
 
-    def _post_set_should_filter_loaders(self, old, new):
+    def _post_setattr_should_filter_loaders(self, old, new):
         """Ensure the matching loader list respect filtering."""
         self._update_matching_loaders()
 
+    def _post_setattr_selected_loader(self, old, new):
+        """Discard the previously created loader."""
+        if self._loader:
+            self._loader_state_cache[old] = self.loader.preferences_from_members()
+        self._loader = None
+
     def _post_set_auto_load(self, old, new):
-        """ """
-        if new:
+        """Ensure we auto-load the rele"""
+        if new and self.selected_folder and self.selected_file and self.selected_loader:
             self.load_file()

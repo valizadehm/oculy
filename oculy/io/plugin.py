@@ -8,7 +8,8 @@
 """Plugin IO for Oculy.
 
 """
-from typing import Mapping
+import os
+from typing import Mapping, List
 
 from atom.api import Dict, Typed
 from glaze.utils.plugin_tools import ExtensionsCollector, make_extension_validator
@@ -33,7 +34,7 @@ class IOPlugin(HasPreferencesAtom):
     preferred_loader = Dict(str, str).tag(pref=True)
 
     #: Custom association between loaders and file extensions.
-    custom_loader_extensions = Dict().tag(pref=True)
+    custom_loader_extensions = Dict(str, list).tag(pref=True)
 
     #: Collect all contributed Loader extensions.
     loaders = Typed(ExtensionsCollector)  # XXX make private
@@ -72,7 +73,23 @@ class IOPlugin(HasPreferencesAtom):
         self.loaders.stop()
         del self.loaders
 
-    # list_matching_loaders
+    def list_matching_loaders(self, filename) -> List[str]:
+        """List loaders compatible with this file.
+
+        The analysis is solely based on file extension.
+
+        """
+        _, ext = os.path.splitext(filename)
+        matching_loaders = []
+        for id, loader in self.loaders.contributions.items():
+            if ext in loader.file_extensions:
+                matching_loaders.append(id)
+
+        for id, exts in self.custom_loader_extensions:
+            if ext in exts:
+                matching_loaders.append(id)
+
+        return matching_loaders
 
     def create_loader(self, id: str, path: str) -> BaseLoader:
         """Create a loader associated with a path
@@ -118,6 +135,10 @@ class IOPlugin(HasPreferencesAtom):
         )
 
         return loader
+
+    def create_loader_config(self, id, loader):
+        """Create a loader config view."""
+        return self.loaders.contributions[id].get_config_view(loader)
 
     # --- Private API ---------------------------------------------------------
 

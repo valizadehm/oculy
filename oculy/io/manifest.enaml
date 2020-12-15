@@ -76,8 +76,14 @@ enamldef IOManifest(PluginManifest):
         id = 'commands'
         point = 'enaml.workbench.core.commands'
         Command:
+            id = 'oculy.io.list_matching_loaders'
+            # FIXME add description
+            handler = make_handler(PLUGIN_ID, 'list_matching_loaders')
+        Command:
             id = 'oculy.io.create_loader'
             # FIXME add description
             handler = make_handler(PLUGIN_ID, 'create_loader')
-
-        # XXX list_matching_loaders
+        Command:
+            id = 'oculy.io.create_loader_config'
+            # FIXME add description
+            handler = make_handler(PLUGIN_ID, 'create_loader_config')
