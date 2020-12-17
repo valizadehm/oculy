@@ -11,7 +11,7 @@
 from typing import Mapping
 
 import numpy as np
-from atopm.api import Typed
+from atom.api import List, Typed
 from glaze.utils.plugin_tools import ExtensionsCollector, make_extension_validator
 from glaze.utils.atom_util import HasPreferencesAtom
 
@@ -28,8 +28,8 @@ NODES_POINT = "oculy.transformers.compute_nodes"
 class TransformerPlugin(HasPreferencesAtom):
     """Plugin responsible for handling data transformation including masking."""
 
-    #: Collect all contributed Mask extensions.
-    masks = Typed(ExtensionsCollector)
+    #: Ids of the contributed masks
+    masks = List(str)
 
     #: Collect all contributed Node extensions.
     nodes = Typed(ExtensionsCollector)
@@ -45,17 +45,18 @@ class TransformerPlugin(HasPreferencesAtom):
         core.invoke_command("exopy.app.errors.enter_error_gathering")
 
         validator = make_extension_validator(Mask, (), ("func"))
-        self.masks = ExtensionsCollector(
+        self._masks = ExtensionsCollector(
             workbench=self.workbench,
             point=MASKING_POINT,
             ext_class=Mask,
             validate_ext=validator,
         )
+        self._masks.observe("contributions", self._update_masks)
 
-        self.masks.start()
+        self._masks.start()
 
         validator = make_extension_validator(Node, (), ("func"))
-        self.masks = ExtensionsCollector(
+        self._masks = ExtensionsCollector(
             workbench=self.workbench,
             point=NODES_POINT,
             ext_class=Node,
@@ -73,8 +74,8 @@ class TransformerPlugin(HasPreferencesAtom):
         It should never be called by user code.
 
         """
-        self.masks.stop()
-        del self.masks
+        self._masks.stop()
+        del self._masks
 
         self.nodes.stop()
         del self.nodes
@@ -102,6 +103,15 @@ class TransformerPlugin(HasPreferencesAtom):
         """
         mask = None
         for k, v in specifications.items():
-            temp = self.masks[k].func(filter_base[k], *v)
+            temp = self._masks[k].func(filter_base[k], *v)
             mask = mask & temp if mask is not None else temp
         return mask
+
+    # --- Private API ---------------------------------------------------------
+
+    #: Collect all contributed Mask extensions.
+    _masks = Typed(ExtensionsCollector)
+
+    def _update_masks(self, change):
+        """Update the list of contributed masks ids."""
+        self.masks = list(self._masks.contributions)

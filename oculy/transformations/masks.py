@@ -17,7 +17,11 @@ from .node import Node
 
 
 class Mask(Node):
-    """Node subclass used to generate boolean mask."""
+    """Node subclass used to generate boolean mask.
+
+    The first argument is expected to be the array to use to generate the mask.
+
+    """
 
     inlineable = set_default(True)
 

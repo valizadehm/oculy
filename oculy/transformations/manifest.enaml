@@ -9,6 +9,7 @@
 
 """
 from enaml.workbench.api import PluginManifest, Extension, ExtensionPoint
+from glaze.plugins.states import State
 
 from .masks import(
     Mask,
@@ -59,6 +60,8 @@ enamldef DataTransformerManifest(PluginManifest):
     id = "oculy.data_transformer"
     factory = io_plugin_factory
 
+    # --- Extension points ----------------------------------------------------
+
     ExtensionPoint:
         id = "masking"
         description = MASKS_DESC
@@ -66,6 +69,8 @@ enamldef DataTransformerManifest(PluginManifest):
     ExtensionPoint:
         id = "compute_nodes"
         description = NODES_DESC
+
+    # --- Extensions ----------------------------------------------------------
 
     Extension:
         id = "builtin-masks"
@@ -96,3 +101,14 @@ enamldef DataTransformerManifest(PluginManifest):
             id = "a[i]"
             func = index_array
             inlineable = True
+
+    Extension:
+        id = "state"
+        point = "glaze.states.state"
+        State:
+            id = "oculy.transformations"
+            description = (
+                "State of the transformations plugin allowing to access ids of "
+                "contributions."
+            )
+            sync_members = ["masks"]
