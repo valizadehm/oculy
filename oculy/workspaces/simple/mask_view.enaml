@@ -1,0 +1,34 @@
+# --------------------------------------------------------------------------------------
+# Copyright 2020 by Oculy Authors, see git history for more details.
+#
+# Distributed under the terms of the BSD license.
+#
+# The full license is in the file LICENCE, distributed with this software.
+# --------------------------------------------------------------------------------------
+"""View for editing mask parameters.
+
+"""
+from
+
+
+# workspace, plot_model available on parent
+enamldef MaskView(Container):
+    """"""
+    attr model
+
+    ObjectCombo:
+        items << [e for e in workspace.file_content
+                if e not in [plot_model.selected_x_axis] +
+                plot_model.selected_y_axes]
+        selected := model.content_id
+        selected ::
+            if not selected:
+                allowed_value.items = []
+            # XXX grab the data and figure out the meaningful value
+            pass
+    ObjectCombo:
+        # FIXME would be nice to find a way to access all the masks
+        items << ["==", ">", ">=", "<", "<="]
+        selected := model.mask_id
+    ObjectCombo: allowed_value:
+        selected := model.value

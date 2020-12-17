@@ -1,0 +1,131 @@
+# --------------------------------------------------------------------------------------
+# Copyright 2020 by Oculy Authors, see git history for more details.
+#
+# Distributed under the terms of the BSD license.
+#
+# The full license is in the file LICENCE, distributed with this software.
+# --------------------------------------------------------------------------------------
+"""Panel displaying 1D plots.
+
+"""
+from enaml.core.api import Looper
+from enaml.widgets.api import Notebook, DockArea, DockItem, Container, Groupbox, Page, CheckBox, PushButton, ObjectCombo, Label, ToolButton
+
+from glaze.utils.widget.list_editor import ListEditor
+from glaze.utils.widgets.qt_list_str_widget import QtListStrWidget
+
+from .mask_view import MaskView
+
+enamldef DataSelection1DPlot(Page):  # XXX rename !
+    """"""
+    attr plot_model
+    title << f"{loop_item}"
+
+    Container:
+        GroupBox:
+            title = "X axis"
+            flat = True
+            visible << multi_xaxis.checked
+            QtListStrWidget:
+                items << list(workspace.file_content)
+                sort = False
+                selected_item := plot_model.selected_x_axis
+
+        GroupBox:
+            title = "Y axes"
+            flat = True
+            QtListStrWidget:
+                multiselect = True
+                sort = False
+                items << list(workspace.file_content)
+                selected_items := plot_model.selected_x_axes
+
+        GroupBox:
+            title = "Filtering"
+            flat = True
+            ListEditor(MaskView):
+                model = plot_model
+                iterable_name = "filters"
+                operations = {
+                    "add": plot_model._add_filter,
+                    "remove": plot_model._remove_filter,
+                }
+        GroupBox:
+            title = "Transformations"
+            # XXX Deal with transformation later
+
+
+enamldef DataSelection1DPanel(DockItem):
+    """"""
+
+    #: Number of plots to display
+    alias displayed_plots_nb: plt_nb.selected
+
+    closable = False
+
+    Container:
+        Label:
+            text = "# plots"
+        ObjectCombo: plt_nb:
+            items = [1, 2, 3, 4]
+            # FIXME Provide ways to specify the layout in addition to the number
+            # of plots
+        CheckBox: multi_xaxis:
+            text = "Common x-axis"
+
+        GroupBox:
+            title = "X axis"
+            flat = True
+            QtListStrWidget:
+                visible << not multi_xaxis.checked
+                sort = False
+                items << list(workspace.file_content)
+                selected_item << model.selected_x_axes.get(loop_item)
+                selected_item ::
+                    c = model.selected_x_axes.copy()
+                    for i in range(1, plt_nb.selected_item+1):
+                        c[i] = change["value"]
+                    model.selected_x_axes = c
+
+        Notebook:
+            tabs_closable = False
+            tabs_movable = False
+            Looper:
+                items << range(1, plt_nb.selected_item+1)
+                DataSelection1DPlot:
+                    plot_model << model.models[loop_item]
+
+        CheckBox:
+            text = "Auto-refresh"
+        PushButton:
+            text = "Refresh"
+            clicked::
+                pass # XXX call into the model
+
+
+# workspace is accessible in the parent scope
+enamldef Plot1DPanel(DockItem):
+    """ """
+
+    #:
+    attr panel_model
+
+    Container:
+        DockArea:
+            DataSelection1DPanel: d_sel:
+                name = "selection"
+            Plot1DDockItem:
+                name = "plot_1"
+                model = panel_model.models[0]
+            Plot1DDockItem:
+                name = "plot_2"
+                visible << d_sel.displayed_plots_nb > 1
+                model = panel_model.models[1]
+            Plot1DDockItem:
+                name = "plot_3"
+                visible << d_sel.displayed_plots_nb > 2
+                model = panel_model.models[2]
+            Plot1DDockItem:
+                name = "plot_4"
+                visible << d_sel.displayed_plots_nb > 3
+                model = panel_model.models[3]
