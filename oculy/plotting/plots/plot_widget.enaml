@@ -1,0 +1,29 @@
+# --------------------------------------------------------------------------------------
+# Copyright 2020 by Oculy Authors, see git history for more details.
+#
+# Distributed under the terms of the BSD license.
+#
+# The full license is in the file LICENCE, distributed with this software.
+# --------------------------------------------------------------------------------------
+"""
+"""
+from enaml.widgets.api import RawWidget, Container
+
+
+class BasePlotWidget(RawWidget):
+    """"""
+
+    def create_widget(self):
+        """"""
+        pass
+
+
+class PlotWidgetModel(Atom):
+    """"""
+    # Add all tools switches required, created with a backend by the plugin and
+    # a fixed number of axes, axes are created internally to be properly connected
+    # to their backend part
+
+    # The actual widget
+    pass
+

@@ -7,23 +7,3 @@
 # --------------------------------------------------------------------------------------
 """
 """
-from atom.api import Atom, Str, Subclass
-from enaml.core.api import Declarative, d_, dfunc
-
-
-class BasePlot(Atom):
-    """"""
-
-    pass
-
-
-# declarative part for a plot
-class Plot:
-
-    #:
-    id = d_(Str())
-
-    #:
-    @dfunc
-    def get_cls(self) -> BasePlot:
-        pass

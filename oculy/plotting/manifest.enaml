@@ -10,6 +10,7 @@
 """
 from enaml.workbench.api import PluginManifest, Extension, ExtensionPoint
 
+from .plots import Plot
 
 enamldef PlottingManifest(PluginManifest):
     """
@@ -18,7 +19,40 @@ enamldef PlottingManifest(PluginManifest):
     factory = None  # FIXME
 
     ExtensionPoint:
-        id = "rendering"
+        id = "plots"
+
+    ExtensionPoint:
+        id = "rendering-backend"
 
     Extension:
+        id = "builtin-plots"
+        point = "oculy.plotting.plots"
+        Plot:
+            id = "line-plot"
+            get_cls => ():
+                from .plots.plot_1d import Plot1DLine
+                return Plot1DLine
+         Plot:
+            id = "histogram"
+            get_cls => ():
+                from .plots.plot_1d import Plot1DHistogram
+                return Plot1DHistogram
+        Plot:
+            id = "mesh"
+            get_cls => ():
+                from .plots.plot_2d import Plot2DMesh
+                return Plot2DMesh
+        Plot:
+            id = "contour"
+            get_cls => ():
+                from .plots.plot_2d import Plot2DContour
+                return Plot2DContour
 
+    Extension:
+        id = "matplotlib-backend"
+        point = "oculy.plotting.rendering-backend"
+        Backend:
+            id = "matplotlib"
+            # Need a way to declare capabilities (could be done by simply scanning the proxies)
+            # need a mapping to function for each kind of plots
+            plots = ["line-plot", "histogram", "mesh", "contour"]
