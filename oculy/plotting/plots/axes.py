@@ -10,7 +10,6 @@
 from typing import Any, Optional, Sequence, Tuple, Mapping, NamedTuple
 
 from atom.api import (
-    Atom,
     Str,
     Typed,
     Bool,
@@ -18,7 +17,6 @@ from atom.api import (
     Dict,
     Float,
     Tuple as ATuple,
-    Callable,
 )
 
 from .base import PlotElementProxy, PlotElement, mark_backend_unsupported
@@ -48,6 +46,10 @@ class ProxyAxis(PlotElementProxy):
 
     @mark_backend_unsupported
     def set_limits_with_breaks(self, limits):
+        pass
+
+    @mark_backend_unsupported
+    def invert_axis(self, state: bool):
         pass
 
     @mark_backend_unsupported
@@ -183,6 +185,9 @@ class Axis(PlotElement):
     #: List of 2 tuple representing a possibly discountinuous axis.
     limits = List(tuple)
 
+    #: Is the axis direction inverted.
+    inverted = Bool()
+
     #: Label of the axis
     label = Str()
 
@@ -241,12 +246,6 @@ class Axes(PlotElement):
     #:
     # SHOULD NOT be edited in place.
     legends = Dict(str, str)
-
-    def add_axis(self, position: str):
-        pass
-
-    def remove_axis(self, position: str):
-        pass
 
     def add_cursor(self, axes: Tuple[str, str]):  # What axis are we linked to
         pass

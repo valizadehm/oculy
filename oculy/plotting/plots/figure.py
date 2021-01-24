@@ -7,3 +7,20 @@
 # --------------------------------------------------------------------------------------
 """
 """
+from .base import PlotElement, PlotElementProxy
+
+
+class Cell(PlotElement):
+    def add_axes(self, new_position: str, shared_position: str):
+        pass
+
+    def remove_axis(self, position: str):
+        pass
+
+
+class Grid(PlotElement):
+    pass
+
+
+class Figure(PlotElement):
+    pass

@@ -8,7 +8,8 @@
 """Base classes for plotting element using a proxy.
 
 """
-from atom.api import Atom, ForwardTyped, Typed
+from atom.api import Atom, ForwardTyped, Typed, Str, Subclass
+from enaml.core.api import Declarative, d_, dfunc
 
 
 def mark_backend_unsupported(func):
@@ -29,3 +30,27 @@ class PlotElement(Atom):
 
     #: Backend specific proxy
     proxy = Typed(PlotElementProxy)
+
+
+class BasePlotProxy(PlotElementProxy):
+    """"""
+
+    pass
+
+
+class BasePlot(PlotElement):
+    """"""
+
+    pass
+
+
+# declarative part for a plot
+class Plot:
+
+    #:
+    id = d_(Str())
+
+    #:
+    @dfunc
+    def get_cls(self) -> BasePlot:
+        pass
