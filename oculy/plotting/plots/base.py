@@ -8,7 +8,7 @@
 """Base classes for plotting element using a proxy.
 
 """
-from atom.api import Atom, ForwardTyped, Typed, Str, Subclass
+from atom.api import Atom, ForwardTyped, Typed, Str
 from enaml.core.api import Declarative, d_, dfunc
 
 
@@ -45,7 +45,7 @@ class BasePlot(PlotElement):
 
 
 # declarative part for a plot
-class Plot:
+class Plot(Declarative):
 
     #:
     id = d_(Str())
