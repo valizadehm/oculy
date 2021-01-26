@@ -163,23 +163,6 @@ class ProxyAxes(PlotElementProxy):
     def set_legend(self, legend: Mapping[str, str]):
         pass
 
-    def add_plot(self, id, plot, axes: Optional[Mapping[str, str]]) -> None:
-        """Pass the plot definition to the resolver to be inserted in the axis.
-
-        It is the resolver responsibility to populate the proxy field of the
-        definition.
-
-        """
-        if axes is None:
-            x_axis = self.element.axes["bottom"]
-            y_axis = self.element.axes["left"]
-        self.resolver.add_plot(self, plot, x_axis=x_axis, y_axis=y_axis)
-        if plot.proxy is None:
-            raise RuntimeError(
-                f"Resolver {self.resolver} failed to populate the proxy of"
-                f" the plot {plot} on axis {self.element}."
-            )
-
     @mark_backend_unsupported
     def remove_plot(self, id):
         pass
@@ -304,7 +287,7 @@ class Axes(PlotElement):
         pass
 
     def add_plot(self, id, plot, axes: Optional[Mapping[str, str]]) -> None:
-        """Pass the plot definition to the resolver to be inserted in the axis.
+        """Pass the plot definition to the resolver to be inserted in the axes.
 
         It is the resolver responsibility to populate the proxy field of the
         definition.
@@ -351,5 +334,3 @@ class Axes(PlotElement):
 
     # TODO Add the ability to link axes (accross different figures ie beyond
     # matplotlib default)
-
-    _proxy = Typed(ProxyAxes)

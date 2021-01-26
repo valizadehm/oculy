@@ -50,6 +50,9 @@ class Proxy1DHistogramPlot(Proxy1DPlot):
     pass
 
 
+# XXX All plots should have a way to retrieve data from the data plugin and set up
+# obsevers. Fields should be names (that should exist in the plugin), need to ensure
+# that we wait to get the data vault and proxy before doing anything
 class Plot1D(BasePlot):
     """"""
 
