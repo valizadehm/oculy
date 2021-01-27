@@ -10,7 +10,7 @@
 """
 from typing import TypeVar, Mapping
 
-from atom.api import Atom, Callable, Dict, Typed
+from atom.api import Atom, Callable, Dict, Typed, Str
 from enaml.workbench.api import Workbench
 
 from ..plots import BasePlot, Axes
@@ -24,6 +24,9 @@ class PlotResolver(Atom):
     #: Instance of the application workbench.
     workbench = Typed(Workbench)
 
+    #: Name of the backend for this resolver instance is used with
+    backend_name = Str()
+
     #: Backend specific handlers that can be used to add a plot to a set of axes.
     plot_handlers = Dict(BasePlot, Callable)
 
@@ -33,7 +36,7 @@ class PlotResolver(Atom):
         Parameters
         ----------
         axes: Axes
-            Axes in which to add teh plot.
+            Axes in which to add the plot.
 
         plot: BasePlot
             Description class of the plot to add. The proxy will be populated by
@@ -51,5 +54,37 @@ class PlotResolver(Atom):
             fields have been populated.
 
         """
-        # Write the logic dispatching to the backend
-        pass
+        plot_type = type(plot)
+
+        if plot_type not in self.plot_handlers:
+            raise RuntimeError(
+                f"Plot type {plot_type} is not supported by {self.backend_name}"
+            )
+
+        # Validate the axes supposed to be used.
+        if plot_axes and any(
+            (pa not in axes.axes or axes.axes[pa] is None) for pa in plot_axes.values()
+        ):
+            unknown = []
+            missing = []
+            for lab, pa in plot_axes.items():
+                if pa not in axes.axes:
+                    unknown.append((lab, pa))
+                elif axes.axes[pa] is None:
+                    missing.append((lab, pa))
+            if missing:
+                raise RuntimeError(
+                    f"The axes used for {[lab for lab, _ in unknown]} do not "
+                    "correspond to any valid axes (valid axes are "
+                    "'left', 'right', 'top', 'bottom', provided axes are "
+                    f"{[pa for _, pa in unknown]})."
+                )
+            else:
+                raise RuntimeError(
+                    f"The axes used for {[lab for lab, _ in missing]} do not "
+                    "exist. Existing axes are "
+                    f"{[ax for ax in axes.axes._fields if axes.axes[ax] is not None]}, "
+                    f"specified axes are {[pa for _, pa in missing]}."
+                )
+
+        return self.plot_handlers[plot_type](axes, plot, plot_axes)

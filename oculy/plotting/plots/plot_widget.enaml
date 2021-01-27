@@ -7,23 +7,30 @@
 # --------------------------------------------------------------------------------------
 """
 """
+from atom.api import Typed
+from enaml.core.api import d_
 from enaml.widgets.api import RawWidget, Container
 
+from .figure import Figure
 
-class BasePlotWidget(RawWidget):
-    """"""
+# XXX assume we have access to the plotting plugin
+class FigureWidget(RawWidget):
+    """Widget dedicated to displaying a figure.
 
-    def create_widget(self):
-        """"""
-        pass
+    This widget is assumed to have a root object with access to the workbench.
 
+    """
 
-class PlotWidgetModel(Atom):
-    """"""
-    # Add all tools switches required, created with a backend by the plugin and
-    # a fixed number of axes, axes are created internally to be properly connected
-    # to their backend part
+    __slots__ = '__weakref__'
 
-    # The actual widget
-    pass
+    #: Reference to the figure displayed by the widget.
+    figure = d_(Typed(Figure))
 
+    def create_widget(self, parent):
+        """Create the native widget linked to the figure."""
+        if not self.figure.proxy:
+            root = parent.root_object()
+            self.figure.initialize(root.workbench.get_plugin("oculy.plotting"))
+        if not self.figure.proxy.is_active:
+            self.figure.proxy.activate()
+        return self.figure.proxy.get_native_widget(parent)

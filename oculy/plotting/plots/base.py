@@ -8,7 +8,7 @@
 """Base classes for plotting element using a proxy.
 
 """
-from atom.api import Atom, ForwardTyped, Typed, Str
+from atom.api import Atom, Bool, ForwardTyped, Typed, Str, Value
 from enaml.core.api import Declarative, d_, dfunc
 
 
@@ -24,12 +24,39 @@ class PlotElementProxy(Atom):
     #: Reference to the element holding this proxy
     element = ForwardTyped(lambda: PlotElement)
 
+    #: Is the proxy active.
+    is_active = Bool()
+
+    def activate(self) -> None:
+        """Activate the proxy."""
+        self.is_active = True
+
+    def deactivate(self) -> None:
+        """Deactivate the proxy."""
+        self.is_active = False
+
 
 class PlotElement(Atom):
     """Element of plot interacting with the backend through a proxy."""
 
+    #: Name of the backend to use
+    backend_name = Str()
+
     #: Backend specific proxy
     proxy = Typed(PlotElementProxy)
+
+    def initialize(self, plugin):
+        """Initialize the element by creating the proxy."""
+        proxy = plugin.resolve(self, self.backend_name)
+        self.proxy = proxy
+        proxy.element = self
+        proxy.activate()
+
+    def finalize(self):
+        """Finalize the element by destroying the proxy."""
+        self.proxy.deactivate()
+        del self.proxy.element
+        del self.proxy
 
 
 class BasePlotProxy(PlotElementProxy):
@@ -39,9 +66,10 @@ class BasePlotProxy(PlotElementProxy):
 
 
 class BasePlot(PlotElement):
-    """"""
+    """Base class for plot description."""
 
-    pass
+    #: Reference to the data vault holding all the data.
+    data_vault = Value()  # XXX add better typing later
 
 
 # declarative part for a plot

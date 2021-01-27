@@ -16,7 +16,9 @@ from .axes import Axes
 class FigureProxy(PlotElementProxy):
     """Proxy for a figure."""
 
-    pass
+    def get_native_widget(self, parent):
+        """"""
+        raise NotImplementedError()
 
 
 class GridPosition(Atom):
@@ -48,6 +50,20 @@ class Figure(PlotElement):
 
     #: Position of the axes on the grid
     grid = Dict(str, GridPosition)
+
+    def initialize(self, plugin):
+        """Initialize the proxy of the figure and the axes."""
+        super().initialize(plugin)
+        for axes in self.axes_set.values():
+            axes.figure = self
+            axes.initialize(plugin)
+
+    def finalize(self):
+        """Finalize the proxy of the figure."""
+        for axes in self.axes_set.values():
+            axes.figure = self
+            axes.finalize()
+        super().finalize()
 
     def add_axes(self, id: str, position: GridPosition) -> Axes:
         """"""

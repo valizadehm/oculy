@@ -1,5 +1,5 @@
 # --------------------------------------------------------------------------------------
-# Copyright 2020 by Oculy Authors, see git history for more details.
+# Copyright 2020-2021 by Oculy Authors, see git history for more details.
 #
 # Distributed under the terms of the BSD license.
 #
@@ -12,6 +12,7 @@ from typing import Any, Optional, Sequence, Tuple, Mapping, NamedTuple
 
 from atom.api import (
     Str,
+    ForwardTyped,
     Typed,
     Bool,
     List,
@@ -24,7 +25,7 @@ from .base import BasePlot, PlotElementProxy, PlotElement, mark_backend_unsuppor
 from ..backends.resolver import PlotResolver
 
 
-class ProxyAxis(PlotElementProxy):
+class AxisProxy(PlotElementProxy):
     """Proxy for a single axis.
 
     Handle:
@@ -61,8 +62,12 @@ class ProxyAxis(PlotElementProxy):
     def set_tick_labels(self, labels: Sequence[str], font: Mapping[str, Any]):
         pass
 
+    @mark_backend_unsupported
+    def set_tick_position(self, position: str):
+        pass
 
-class ProxyColorbar(PlotElementProxy):
+
+class ColorbarProxy(PlotElementProxy):
     """Proxy for the colorbar attached to a colorplot."""
 
     @mark_backend_unsupported
@@ -90,13 +95,13 @@ class ProxyColorbar(PlotElementProxy):
         pass
 
 
-class ProxyCursor(PlotElementProxy):
+class CursorProxy(PlotElementProxy):
     """Proxy for a cursor."""
 
     pass
 
 
-class ProxyAxes(PlotElementProxy):
+class AxesProxy(PlotElementProxy):
     """Proxy for axes.
 
     As in matplotlib an axis is expected to provide way to draw into the axis
@@ -131,6 +136,10 @@ class ProxyAxes(PlotElementProxy):
 
     @mark_backend_unsupported
     def remove_axis(self):
+        pass
+
+    @mark_backend_unsupported
+    def set_projections(self):
         pass
 
     @mark_backend_unsupported
@@ -185,6 +194,9 @@ class ProxyAxes(PlotElementProxy):
 class Axis(PlotElement):
     """Axis of a plot."""
 
+    #: Reference to the parent axes.
+    axes = ForwardTyped(lambda: Axes)
+
     #: Should that axis be autoscaled
     auto_scaling = Bool()
 
@@ -235,10 +247,10 @@ class Colorbar(PlotElement):
 
 class AxesSet(NamedTuple):
 
-    bottom: Optional[Axis]
-    left: Optional[Axis]
-    right: Optional[Axis]
-    top: Optional[Axis]
+    bottom: Optional[Axis] = None
+    left: Optional[Axis] = None
+    right: Optional[Axis] = None
+    top: Optional[Axis] = None
 
 
 class Cursor(PlotElement):
@@ -256,8 +268,17 @@ class Cursor(PlotElement):
     # XXX need to sync to the proxy
 
 
+def _resolve_figure():
+    from .figure import Figure
+
+    return Figure
+
+
 class Axes(PlotElement):
     """Axes of a plot"""
+
+    #: Reference to the figure holding the axes.
+    figure = ForwardTyped(_resolve_figure)
 
     #: Set of axes composing this element
     axes = Typed(AxesSet)
@@ -278,7 +299,35 @@ class Axes(PlotElement):
     # SHOULD NOT be edited in place.
     legends = Dict(str, str)
 
-    # XXX add support for a colorbar !
+    #: Instance of the colorbar attached to these axes.
+    colorbar = Typed(Colorbar)
+
+    #: Projection to use on the axes.
+    projection = Str()
+
+    def initialize(self, plugin):
+        """Initialize the proxy of the object and the axes."""
+        super().initialize(plugin)
+        for axis in self.axes:
+            axis.initialize(plugin)
+        if self.colorbar:
+            self.colorbar.initialize(plugin)
+        for c in self.cursors:
+            c.initialize(plugin)
+        for p in self.plots:
+            p.initialize(plugin)
+
+    def finalize(self):
+        """Finalize the proxy of the figure."""
+        for p in self.plots:
+            p.finalize()
+        for c in self.cursors:
+            c.finalize()
+        if self.colorbar:
+            self.colorbar.finalize()
+        for axis in self.axes:
+            axis.finalize()
+        super().finalize()
 
     def add_cursor(self, axes: Tuple[str, str]):  # What axis are we linked to
         pass
@@ -317,6 +366,20 @@ class Axes(PlotElement):
         if not self.proxy:
             raise RuntimeError(f"Axes {self} does not have an active proxy.")
         self.proxy.remove_plot(id, self.plots[id])
+
+    def add_axis(self, position):
+        pass
+
+    def remove_axis(self, position):
+        pass
+
+    def add_colorbar(self):
+        """"""
+        pass
+
+    def remove_colorbar(self):
+        """"""
+        pass
 
     def add_line(
         self,

@@ -1,5 +1,5 @@
 # --------------------------------------------------------------------------------------
-# Copyright 2020 by Oculy Authors, see git history for more details.
+# Copyright 2020-2021 by Oculy Authors, see git history for more details.
 #
 # Distributed under the terms of the BSD license.
 #
@@ -8,10 +8,7 @@
 """Base classes for 1D plots.
 
 """
-from typing import Any, Optional, Sequence, Tuple, Mapping
-
-import numpy as np
-from atom.api import Atom, Bool, Float, Typed
+from atom.api import Atom, Bool, Float, Str
 from enaml.colors import ColorMember
 
 from .base import BasePlot, mark_backend_unsupported
@@ -20,7 +17,7 @@ from .base import BasePlot, mark_backend_unsupported
 
 
 # XXX Use subclass for each type (may require different option)
-class Proxy1DPlot(Atom):
+class Plot1DProxy(Atom):
     """"""
 
     @mark_backend_unsupported
@@ -32,7 +29,7 @@ class Proxy1DPlot(Atom):
         pass
 
 
-class Proxy1DLinePlot(Proxy1DPlot):
+class Plot1DLineProxy(Plot1DProxy):
     @mark_backend_unsupported
     def set_line_weigth(self, weight: int):
         pass
@@ -46,21 +43,25 @@ class Proxy1DLinePlot(Proxy1DPlot):
         pass
 
 
-class Proxy1DHistogramPlot(Proxy1DPlot):
+class Plot1DHistogramProxy(Plot1DProxy):
     pass
 
 
 # XXX All plots should have a way to retrieve data from the data plugin and set up
 # obsevers. Fields should be names (that should exist in the plugin), need to ensure
 # that we wait to get the data vault and proxy before doing anything
+
+# XXX having an extra indirection would make sense for reusability of the tooling
+
+
 class Plot1D(BasePlot):
     """"""
 
     #: X data for the plot
-    x_data = Typed(np.ndarray)
+    x_data = Str()
 
     #: Y data for the plot
-    y_data = Typed(np.ndarray)
+    y_data = Str()
 
     # XXX add connection to proxy
 
