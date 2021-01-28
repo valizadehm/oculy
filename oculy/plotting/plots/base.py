@@ -35,6 +35,10 @@ class PlotElementProxy(Atom):
         """Deactivate the proxy."""
         self.is_active = False
 
+    @mark_backend_unsupported
+    def set_visibility(self, visibility: bool):
+        pass
+
 
 class PlotElement(Atom):
     """Element of plot interacting with the backend through a proxy."""
@@ -44,6 +48,9 @@ class PlotElement(Atom):
 
     #: Backend specific proxy
     proxy = Typed(PlotElementProxy)
+
+    # XXX
+    visibility = Bool(True)
 
     def initialize(self, plugin):
         """Initialize the element by creating the proxy."""
@@ -62,7 +69,9 @@ class PlotElement(Atom):
 class BasePlotProxy(PlotElementProxy):
     """"""
 
-    pass
+    def refresh(self):
+        """Request a backend redraw."""
+        raise NotImplementedError
 
 
 class BasePlot(PlotElement):

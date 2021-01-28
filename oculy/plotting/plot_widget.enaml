@@ -11,9 +11,9 @@ from atom.api import Typed
 from enaml.core.api import d_
 from enaml.widgets.api import RawWidget, Container
 
-from .figure import Figure
+from .plots import Figure
 
-# XXX assume we have access to the plotting plugin
+# XXX assume we have access to the workbench
 class FigureWidget(RawWidget):
     """Widget dedicated to displaying a figure.
 
@@ -25,6 +25,8 @@ class FigureWidget(RawWidget):
 
     #: Reference to the figure displayed by the widget.
     figure = d_(Typed(Figure))
+
+    # XXX need to handle figure destruction, by observation of the proxy member
 
     def create_widget(self, parent):
         """Create the native widget linked to the figure."""

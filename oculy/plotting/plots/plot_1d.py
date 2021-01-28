@@ -8,10 +8,12 @@
 """Base classes for 1D plots.
 
 """
-from atom.api import Atom, Bool, Float, Str
+import numpy as np
+from atom.api import Atom, Bool, Float, Typed
 from enaml.colors import ColorMember
 
 from .base import BasePlot, mark_backend_unsupported
+from ..sync_manager import ShapeMatchingMarker
 
 # WIP on API
 
@@ -58,10 +60,14 @@ class Plot1D(BasePlot):
     """"""
 
     #: X data for the plot
-    x_data = Str()
+    x_data = Typed(np.ndarray).tag(
+        sync=ShapeMatchingMarker(matching_attributes=("y_data",))
+    )
 
     #: Y data for the plot
-    y_data = Str()
+    y_data = Typed(np.ndarray).tag(
+        sync=ShapeMatchingMarker(matching_attributes=("y_data",))
+    )
 
     # XXX add connection to proxy
 

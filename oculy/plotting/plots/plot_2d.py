@@ -8,9 +8,11 @@
 """Base classes for 2D plots.
 
 """
-from atom.api import Atom, Str
+import numpy as np
+from atom.api import Atom, Typed
 
 from .base import BasePlot, mark_backend_unsupported
+from ..sync_manager import ShapeMatchingMarker
 
 
 # XXX Use subclass for each type (may require different option)
@@ -41,13 +43,19 @@ class Plot2D(BasePlot):
     """"""
 
     #: Name of the X data for the plot in the data vault
-    x_data = Str()
+    x_data = Typed(np.ndarray).tag(
+        sync=ShapeMatchingMarker(matching_attributes=("y_data", "c_data"))
+    )
 
     #: Name of the Y data for the plot in the data vault
-    y_data = Str()
+    y_data = Typed(np.ndarray).tag(
+        sync=ShapeMatchingMarker(matching_attributes=("x_data", "c_data"))
+    )
 
     #: Name of the C data for the plot in the data vault
-    c_data = Str()
+    c_data = Typed(np.ndarray).tag(
+        sync=ShapeMatchingMarker(matching_attributes=("x_data", "y_data"))
+    )
 
     # XXX add connection to proxy
 
@@ -62,5 +70,5 @@ class Plot2DContour(Plot2D):
     """"""
 
     #: Data vault name referring to the values for which to display the contour values.
-    contour_values = Str()
+    contour_values = Typed(np.ndarray).tag(sync=True)
     # XXX add connection to proxy

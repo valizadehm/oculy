@@ -19,9 +19,6 @@ class DataArray(Atom):
     """"""
 
     #:
-    values_changed = Event()
-
-    #:
     metadata = Dict(str)
 
     @contextmanager

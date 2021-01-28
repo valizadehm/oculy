@@ -19,7 +19,7 @@ from .axes import (
     CursorProxy,
 )
 from .base import BasePlot, BasePlotProxy, Plot
-from .figure import Figure, FigureProxy
+from .figure import Figure, FigureProxy, GridPosition
 from .plot_1d import Plot1DLine, Plot1DHistogram, Plot1DLineProxy, Plot1DHistogramProxy
 from .plot_2d import (
     Plot2DMesh,
@@ -42,6 +42,7 @@ __all__ = (
     "Plot",
     "Figure",
     "FigureProxy",
+    "GridPosition",
     "Plot1DLine",
     "Plot1DHistogram",
     "Plot1DLineProxy",

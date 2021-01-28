@@ -7,6 +7,7 @@
 # --------------------------------------------------------------------------------------
 """
 """
+from typing import Optional
 from atom.api import Atom, Int, Dict
 
 from .base import PlotElement, PlotElementProxy
@@ -65,7 +66,9 @@ class Figure(PlotElement):
             axes.finalize()
         super().finalize()
 
-    def add_axes(self, id: str, position: GridPosition) -> Axes:
+    def add_axes(
+        self, id: str, position: GridPosition, axes: Optional[Axes] = None
+    ) -> Axes:
         """"""
         pass
 
