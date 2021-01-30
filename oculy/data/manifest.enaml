@@ -26,9 +26,7 @@ def data_plugin_factory() -> "DataStoragePlugin":
     return DataStoragePlugin()
 
 enamldef DataStorageManifest(PluginManifest):
-    """ """
+    """Manifest of the data storage plugin."""
 
     id = "oculy.data"
     factory = data_plugin_factory
-
-    # FIXME add State extension sharing the data

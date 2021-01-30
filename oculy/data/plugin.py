@@ -1,5 +1,5 @@
 # --------------------------------------------------------------------------------------
-# Copyright 2020 by Oculy Authors, see git history for more details.
+# Copyright 2020-2021 by Oculy Authors, see git history for more details.
 #
 # Distributed under the terms of the BSD license.
 #
@@ -18,8 +18,7 @@ from .datastore import DataStore
 
 
 class DataStoragePlugin(Plugin):
-    """ """
+    """Plugin handling storing for the whole application."""
 
-    # FIXME Needs to also store loaders
-
+    #: Data store object handling the book keeping.
     data = Typed(DataStore)
