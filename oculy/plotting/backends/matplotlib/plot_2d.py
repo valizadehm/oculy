@@ -87,7 +87,8 @@ class Matplotlib2DMeshProxy(Plot2DMeshProxy):
                 zorder=self.element.zorder,
             )
 
-        # XXX set up the colormap !
+        if self.element.axes.colorbar:
+            self.element.axes.colorbar.proxy.connect_mappable(self._mesh)
 
 
 class Matplotlib2DContourProxy(Plot2DContourProxy):

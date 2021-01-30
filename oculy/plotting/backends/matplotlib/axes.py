@@ -102,6 +102,11 @@ class MatplotlibColorbarProxy(ColorbarProxy):
         self._caxes.clear()
         del self._caxes
 
+    def connect_mappable(self, mappable):
+        """Create a new colorbar for a mappable."""
+        self._caxes.clear()
+        self.element.axes.figure.proxy._figure.colorbar(mappable, self._caxes)
+
     # @mark_backend_unsupported
     # def set_axis_scale(self, scale):  # lin, log
     #     raise NotImplementedError()

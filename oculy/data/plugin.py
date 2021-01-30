@@ -22,5 +22,4 @@ class DataStoragePlugin(Plugin):
 
     # FIXME Needs to also store loaders
 
-    # Can be observed in a reliable manner
     data = Typed(DataStore)
