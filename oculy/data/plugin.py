@@ -14,7 +14,7 @@ from enaml.workbench.api import Plugin
 # store_data(id, data, metadata) relies on typing, . separated str
 # store_loader_as_dataset
 
-from .dataset import Dataset
+from .datastore import DataStore
 
 
 class DataStoragePlugin(Plugin):
@@ -23,4 +23,4 @@ class DataStoragePlugin(Plugin):
     # FIXME Needs to also store loaders
 
     # Can be observed in a reliable manner
-    data = Typed(Dataset)
+    data = Typed(DataStore)

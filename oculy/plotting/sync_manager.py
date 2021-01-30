@@ -8,16 +8,12 @@
 """Plotting plugin logic.
 
 """
-import logging
-from functools import partialmethod
-from typing import Any, Mapping, Optional, Tuple
+from typing import Any, Mapping
 
-import numpy as np
-from atom.api import Atom, Bool, Dict, Str, Typed, Tuple as ATuple
-from enaml.application import deferred_call
+from atom.api import Atom, Dict, Typed
 from glaze.utils.atom_utils import tagged_members
 
-from oculy.data.plugin import DataStoragePlugin
+from oculy.data import DataStore
 from .plots import BasePlot
 
 # XXX work on datastore and update logic for the new central architecture.
@@ -26,85 +22,15 @@ from .plots import BasePlot
 class SyncMarker(Atom):
     """Class used to enforce some conditions are met before performing an update."""
 
-    def check_matching(
-        self,
-        object: Atom,
-        tagged_values: Any
-    ) -> Tuple[bool, str]:
-        """Check a value against the values store on an object.
-
-        Parameters
-        ----------
-        object : Atom
-            Object on which the tagged and matching attributes exist
-        tagged_value : Any
-            Value of the tagged member to check for conformity.
-
-        Returns
-        -------
-        bool
-            Was the check successful
-        str
-            Error message to be emitted if the check fails.
-
-        """
-        return True, ""
+    # XXX use is unclear and as a consequence the API is to be designed
 
 
-class ShapeMatchingMarker(SyncMarker):
-    """Enforce matching between the shape of the tagged attribute and other attributes."""
-
-    #: Name of the other attributes
-    matching_attributes = ATuple(str)
-
-    def check_matching(
-        self,
-        object: Atom,
-        tagged_value: np.ndarray, # XXX update
-    ) -> Tuple[bool, str]:
-        """Check a value against the values store on an object.
-
-        Parameters
-        ----------
-        object : Atom
-            Object on which the tagged and matching attributes exist
-        tagged_value : np.ndarray
-            Value of the tagged member to check for conformity.
-        pending_values : Mapping[str, np.ndarray]
-            Previous updates that did not go through.
-
-        Returns
-        -------
-        bool
-            Was the check successful
-        str
-            Error message to be emitted if the check fails.
-
-        """
-        mismatching = [
-            (
-                m,
-                getattr(object, m).shape
-                if m not in pending_values
-                else pending_values[m],
-            )
-            for m in self.matching_attributes
-            if tagged_value.shape != getattr(object, m).shape
-        ]
-        if mismatching:
-            return (
-                False,
-                f"Shape {tagged_value.shape} does not match shape of {mismatching}",
-            )
-
-        return True, ""
-
-
+# XXX handle data.x syntax
 class SyncManager(Atom):
     """Manager handling updating the plot any time data change in the data store."""
 
-    #: Reference to the data plugin
-    data_plugin = Typed(DataStoragePlugin)
+    #: Reference to the data store
+    data_store = Typed(DataStore)
 
     #: Plot for which some attribute need to be in sync with the data store.
     plot = Typed(BasePlot)
@@ -114,7 +40,7 @@ class SyncManager(Atom):
 
     def __init__(
         self,
-        data_plugin: DataStoragePlugin,
+        data_plugin: DataStore,
         plot: BasePlot,
         synced_members: Mapping[str, str],
     ):
@@ -130,61 +56,41 @@ class SyncManager(Atom):
                 f"{list(plt_sync_tag)}"
             )
 
-        for m, data_store_path in synced_members.items():
-            # NOTE this should probably be abstracted away in the data store
-            data = data_plugin.data
-            for part in data_store_path.split("/"):
-                if hasattr(data, "entry_updated"):
-                    # We are dealing with a dataset
-                    data.observe(
-                        "entry_updated", partialmethod(self.handle_store_change, m)
-                    )
-                else:
-                    # We are dealing with a data array
-                    data.observe("values_changed", partialmethod(self.update_plot, m))
+        self._sync_markers = {
+            k: plt_sync_tag[k].metadata["sync"]
+            for k in synced_members
+            if isinstance(plt_sync_tag[k], SyncMarker)
+        }
 
-        # XXX set up all the required observers (on the dataarrays and on the datasets)
-        # Enforce shape matching based on member annotation and silence updates
-        # leading to shape mismatch
+        # XXX connect to the data store unique event
 
-    def update_plot(self, member_name, change: Mapping[str, Any]):
+    def update_plot(self, change: Mapping[str, Any]):
         """Update the plot if the sync marker invariants are upheld.
 
         Otherwise we set up a future warning logging. That will be discarded if
         a new valid update comes before the time.
 
         """
-        sync = getattr(self.plot, member_name).metadata["sync"]
-        if isinstance(sync, SyncMarker):
-            state, msg = sync.check_matching(
-                self.plot, change["value"], self._pending_values
-            )
-        else:
-            state, msg = True, ""
+        if any(v in change["value"]["removed"] for v in self.synced_members.values()):
+            self.plot.axes.remove_plot(self.plot.id)
 
-        if state:
-            # In the presence of pending values we update those while suppressing
-            # notifications and then update the new value, assuming that this will
-            # be sufficient to propagate the update.
-            if self._pending_values:
-                with self.plot.suppress_notifications():
-                    for k, v in self._pending_values.items():
-                        setattr(self.plot, k, v)
-                    setattr(self.plot, member_name, change["value"])
-                self.plot.
-            else:
-                pass
-        else:
+        # Build mapping of updated values
+        all_updates = change["value"]["updated"]
+        updates = {
+            k: all_updates[v]
+            for k, v in self.synced_members.items()
+            if v in all_updates
+        }
+        if not updates:
+            return
 
-            timed_call(
-                1000,
-            )
+        for k, v in updates.items():
+            if k in self._sync_markers:
+                raise RuntimeError("Custom sync marker are not supported.")
+
+        self.plot.update_many(updates)
 
     # --- Private API
 
-    #: Updates that could not go through due to a mismatch.
-    _pending_values = Dict(str, np.ndarray)
-
-    #: Future warning that can be emitted if unmatching updates are not cancelled
-    #: by following updates.
-    _future = Typed(DelayedWarning)
+    #: Cache of the markers for synced members
+    _sync_markers = Dict(str, SyncMarker)

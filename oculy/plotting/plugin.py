@@ -10,7 +10,7 @@
 """
 from typing import Mapping, Optional, Tuple
 
-from atom.api import Atom, Dict, Typed
+from atom.api import Dict, Str
 from enaml.workbench.api import Plugin
 
 from .plots import Axes, BasePlot, Figure, GridPosition
@@ -19,6 +19,9 @@ from .sync_manager import SyncManager
 
 class PlottingPlugin(Plugin):
     """Plugin handling plotting of data."""
+
+    #: Default backend to use.
+    default_backend = Str()
 
     #: Mapping of figures managed by the plugin. Should not be edited in place.
     figures = Dict(str, Figure)
@@ -29,6 +32,7 @@ class PlottingPlugin(Plugin):
     def create_figure(
         self,
         id: str,
+        backend: Optional[str] = None,
         axes_positions: Optional[Mapping[str, GridPosition]] = None,
         axes_specifications: Optional[Mapping[str, Optional[Axes]]] = None,
     ) -> None:
@@ -38,6 +42,8 @@ class PlottingPlugin(Plugin):
         ----------
         id : str
             Id of the figure which will be used to refer to it.
+        backend: Optional[str], optional
+            Id of teh backend to use. Use the plugin global value by default.
         axes_positions : Optional[Mapping[str, GridPosition]]
             Id of each axis and its specific position, default to None which
             will create a single axes for the figure with `default` as id.
@@ -49,6 +55,9 @@ class PlottingPlugin(Plugin):
         if id in self.figures:
             raise KeyError(f"Figure id {id} already exists.")
 
+        # XXX validate backend exists
+        backend = backend or self.default_backend
+
         if axes_positions is None:
             axes_positions = {"default": GridPosition(0, 0)}
 
@@ -57,7 +66,7 @@ class PlottingPlugin(Plugin):
 
         # XXX Validate specifications and  positions
 
-        figure = Figure()
+        figure = Figure(backend=backend)
         for axes_id in axes_specifications:
             figure.add_axes(
                 axes_id, axes_positions[axes_id], axes_specifications.get(axes_id)
@@ -75,7 +84,6 @@ class PlottingPlugin(Plugin):
     def add_plot(
         self,
         fig_id: str,
-        plot_id: str,
         plot: BasePlot,
         axes_id: Optional[str] = None,
         axes: Optional[Tuple[str, str]] = None,
@@ -87,8 +95,6 @@ class PlottingPlugin(Plugin):
         ----------
         fig_id : str
             Id of the figure in which to add the plot.
-        plot_id : str
-            Id of the plot to add.
         plot : BasePlot
             Plot to be added to the figure.
         axes_id : Optional[str], optional
@@ -113,12 +119,12 @@ class PlottingPlugin(Plugin):
             )
 
         ax = figure.axes_set[axes_id]
-        if plot_id in ax.plots:
+        if plot.id in ax.plots:
             raise KeyError(
-                f"Plot id {plot_id} already exist for axes {axes_id} of figure {fig_id}"
+                f"Plot id {plot.id} already exist for axes {axes_id} of figure {fig_id}"
             )
 
         if sync_data:
             pass  # XXX
 
-        ax.add_plot(plot_id, plot, axes)
+        ax.add_plot(plot.id, plot, axes)

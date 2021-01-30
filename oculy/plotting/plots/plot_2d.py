@@ -8,11 +8,12 @@
 """Base classes for 2D plots.
 
 """
-import numpy as np
-from atom.api import Atom, Typed
+from typing import Mapping
 
-from .base import BasePlot, mark_backend_unsupported
-from ..sync_manager import ShapeMatchingMarker
+import numpy as np
+from atom.api import Atom, Typed, Str
+
+from .base import BasePlot, InvalidPlotData, mark_backend_unsupported
 
 
 # XXX Use subclass for each type (may require different option)
@@ -20,7 +21,11 @@ class Plot2DProxy(Atom):
     """"""
 
     @mark_backend_unsupported
-    def update_data(self, x=None, y=None, c=None):
+    def set_axes_mapping(self, mapping: Mapping[str, str]):
+        pass
+
+    @mark_backend_unsupported
+    def set_data(self, data):
         pass
 
 
@@ -39,23 +44,37 @@ class Plot2DContourProxy(Plot2DProxy):
         pass
 
 
+class Plot2DData(Atom):
+
+    #: X data for the plot.
+    x = Typed(np.ndarray)
+
+    #: Y data for the plot.
+    y = Typed(np.ndarray)
+
+    #: C data for the plot.
+    c = Typed(np.ndarray)
+
+    def __init__(self, x, y, c):
+        super().__init__(x=x, y=y, c=c)
+        if not x.shape == y.shape and y.shape == c.shape:
+            raise InvalidPlotData(
+                "x, y and c data of a 2D plot must have the same shape. "
+                f"Got x: {x.shape}, y: {y.shape}, c: {c.shape}."
+            )
+
+        # Make the object unmutable.
+        self.freeze()
+
+
 class Plot2D(BasePlot):
     """"""
 
-    #: Name of the X data for the plot in the data vault
-    x_data = Typed(np.ndarray).tag(
-        sync=ShapeMatchingMarker(matching_attributes=("y_data", "c_data"))
-    )
+    #: Data for the plot.
+    data = Typed(Plot2DData).tag(sync=True)
 
-    #: Name of the Y data for the plot in the data vault
-    y_data = Typed(np.ndarray).tag(
-        sync=ShapeMatchingMarker(matching_attributes=("x_data", "c_data"))
-    )
-
-    #: Name of the C data for the plot in the data vault
-    c_data = Typed(np.ndarray).tag(
-        sync=ShapeMatchingMarker(matching_attributes=("x_data", "y_data"))
-    )
+    #: Colormap to use.
+    colormap = Str("viridis")
 
     # XXX add connection to proxy
 

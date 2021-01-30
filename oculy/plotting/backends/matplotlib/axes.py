@@ -8,10 +8,10 @@
 """Matplotlib proxy for axis, axes, colorbar and cursor.
 
 """
-from atom.api import Typed
+from atom.api import Dict, Typed
 from matplotlib.axes import Axes
 from matplotlib.axis import Axis
-from matplotlib.cm import ScalarMappable
+from matplotlib.colorbar import make_axes
 
 from oculy.plotting.plots import AxisProxy, AxesProxy, ColorbarProxy, CursorProxy
 
@@ -21,7 +21,33 @@ class MatplotlibAxisProxy(AxisProxy):
 
     def activate(self):
         """Activate the proxy axis."""
-        pass
+        el = self.element
+        axes = self.element.axes
+
+        if axes is None:
+            raise RuntimeError("Cannot activate the proxy for an Axis with no axes")
+
+        # Identify direction
+        ax_dir = ""
+        for direction in ("left", "bottom", "right", "top"):
+            if getattr(axes, f"{direction}_axis") is el:
+                ax_dir = direction
+                break
+
+        if not ax_dir:
+            raise RuntimeError("Axis does not exist on parent Axes object")
+
+        if ax_dir in ("bottom", "top"):
+            for c in ("left", "right"):
+                if (c, ax_dir) in axes.proxy._axes:
+                    self._axis = axes.proxy._axes.xaxis
+        else:
+            for c in ("bottom", "top"):
+                if (ax_dir, c) in axes.proxy._axes:
+                    self._axis = axes.proxy._axes.yaxis
+
+        if not self._axis:
+            raise RuntimeError("Failed to find backend axis.")
 
     def deactivate(self):
         """Deactivate the proxy figure."""
@@ -65,12 +91,16 @@ class MatplotlibColorbarProxy(ColorbarProxy):
 
     def activate(self):
         """Activate the proxy colorbar."""
-        # XXX Apply attributes states
+        # Create matplotlib axes which will hold the colorbar.
+        axes = tuple(self.element.axes.proxy._axes)[0]
+        self._caxes = make_axes(
+            axes, location=self.element.location, aspect=self.element.aspect_ratio
+        )
 
     def deactivate(self):
         """Deactivate the proxy colorbar."""
-        self._axes.clear()
-        del self._axes
+        self._caxes.clear()
+        del self._caxes
 
     # @mark_backend_unsupported
     # def set_axis_scale(self, scale):  # lin, log
@@ -98,7 +128,7 @@ class MatplotlibColorbarProxy(ColorbarProxy):
 
     # --- Private API
 
-    _colorbar = Typed()
+    _caxis = Typed(Axes)
 
 
 # XXX implement later
@@ -118,8 +148,28 @@ class MatplotlibAxesProxy(AxesProxy):
         if len(fig.axes_set) > 1:
             raise RuntimeError()  # Add support for more than one axis.
         else:
-            self._axes = fig.proxy._figure.gca()
-        # XXX Apply attributes states
+            first_axes = fig.proxy._figure.gca(
+                projection=el.projection if el.projection != "cartesian" else None
+            )
+
+        active_axes = {
+            direction: getattr(el, f"{direction}_axis")
+            for direction in ("left", "bottom", "right", "top")
+            if getattr(el, f"{direction}_axis")
+        }
+        if len(active_axes) == 2:
+            if "right" in active_axes:
+                first_axes.yaxis.set_tick_position("right")
+            if "top" in active_axes:
+                first_axes.xaxis.set_tick_position("top")
+            self._axes = {
+                (
+                    "bottom" if "bottom" in active_axes else "top",
+                    "left" if "left" in active_axes else "right",
+                ): first_axes
+            }
+        else:
+            raise RuntimeError("Support is currently limited to 2 axes")
 
     def deactivate(self):
         """Deactivate the proxy axes."""
@@ -204,4 +254,4 @@ class MatplotlibAxesProxy(AxesProxy):
 
     #: --- Private API
 
-    _axes = Typed(Axes)
+    _axes = Dict(tuple, Axes)

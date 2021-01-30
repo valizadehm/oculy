@@ -8,3 +8,7 @@
 """Plotting backends used to display plots.
 
 """
+from .backend import Backend
+from .resolver import BackendResolver
+
+__all__ = ("Backend", "BackendResolver")

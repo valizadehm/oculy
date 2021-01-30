@@ -8,30 +8,38 @@
 """Base classes for 1D plots.
 
 """
+from typing import Mapping
+
 import numpy as np
-from atom.api import Atom, Bool, Float, Typed
-from enaml.colors import ColorMember
+from atom.api import Atom, Bool, Enum, Float, Typed
+from enaml.colors import ColorMember, Color
 
-from .base import BasePlot, mark_backend_unsupported
-from ..sync_manager import ShapeMatchingMarker
-
-# WIP on API
+from .base import BasePlot, InvalidPlotData, mark_backend_unsupported
 
 
-# XXX Use subclass for each type (may require different option)
 class Plot1DProxy(Atom):
-    """"""
+    """Base proxy for a 1D plot, ie based on 2 inputs: x, y"""
 
     @mark_backend_unsupported
-    def update_data(self, x=None, y=None):
+    def set_data(self, data: "Plot1DData"):
         pass
 
     @mark_backend_unsupported
-    def set_color(self, color):
+    def set_axes_mapping(self, mapping: Mapping[str, str]):
+        pass
+
+    @mark_backend_unsupported
+    def set_color(self, color: Color):
         pass
 
 
 class Plot1DLineProxy(Plot1DProxy):
+    """Base proxy for a 1D line plot.
+
+    The same element is expected to also handle markers.
+
+    """
+
     @mark_backend_unsupported
     def set_line_weigth(self, weight: int):
         pass
@@ -41,35 +49,73 @@ class Plot1DLineProxy(Plot1DProxy):
         pass
 
     @mark_backend_unsupported
+    def set_marker_shape(self, shape: str):
+        pass
+
+    @mark_backend_unsupported
     def set_marker_state(self, state: bool):
         pass
 
 
-class Plot1DHistogramProxy(Plot1DProxy):
+class Plot1DBarProxy(Plot1DProxy):
+    """Base proxy for a 1D histogram."""
+
     pass
 
 
-# XXX All plots should have a way to retrieve data from the data plugin and set up
-# obsevers. Fields should be names (that should exist in the plugin), need to ensure
-# that we wait to get the data vault and proxy before doing anything
+class Plot1DData(Atom):
 
-# XXX having an extra indirection would make sense for reusability of the tooling
+    #: X data for the plot.
+    x = Typed(np.ndarray)
+
+    #: Y data for the plot.
+    y = Typed(np.ndarray)
+
+    #: Error bars for X data
+    dx = Typed(np.ndarray)
+
+    #: Error bars for Y data
+    dy = Typed(np.ndarray)
+
+    def __init__(self, x, y, dx=None, dy=None):
+        super().__init__(x=x, y=y, dx=dx, dy=dy)
+        if not x.shape == y.shape:
+            raise InvalidPlotData(
+                "Both x and y data of a 1D plot must have the same shape. "
+                f"Got x: {x.shape}, y: {y.shape}."
+            )
+
+        # XXX this assumes len(x.shape) == 1
+
+        if dx and not dx.shape[0] == x.shape[0]:
+            raise InvalidPlotData(
+                "Both x and dx data of a 1D plot must have the same number of "
+                "points (ie first dimension). "
+                f"Got x: {x.shape}, dx: {dx.shape}."
+            )
+
+        if dy and not dy.shape[0] == y.shape[0]:
+            raise InvalidPlotData(
+                "Both y and dy data of a 1D plotmust have the same number of "
+                "points (ie first dimension). "
+                f"Got y: {y.shape}, dx: {dy.shape}."
+            )
+
+        # Make the object unmutable.
+        self.freeze()
 
 
 class Plot1D(BasePlot):
     """"""
 
-    #: X data for the plot
-    x_data = Typed(np.ndarray).tag(
-        sync=ShapeMatchingMarker(matching_attributes=("y_data",))
-    )
+    #: Data for the plot
+    data = Typed(Plot1DData).tag(sync=True)
 
-    #: Y data for the plot
-    y_data = Typed(np.ndarray).tag(
-        sync=ShapeMatchingMarker(matching_attributes=("y_data",))
-    )
+    # --- Proxy connection
 
-    # XXX add connection to proxy
+    def _post_setattr_data(self, old, new):
+        if self.proxy:
+            self.proxy.set_data(new)
 
 
 class Plot1DLine(Plot1D):
@@ -81,16 +127,28 @@ class Plot1DLine(Plot1D):
     #: Weight of the line
     line_weight = Float()
 
+    #: Style of the line
+    line_style = Float()
+
     #: Should markers be displayed
     markers_enabled = Bool()
 
     #: Size of the markers
     markers_size = Float()
 
+    #: Shape of the marker
+    # XXX complete
+    marker_shape = Enum(
+        (
+            "*",
+            "+",
+        )
+    )
+
     # XXX add connection to proxy
 
 
-class Plot1DHistogram(Plot1D):
+class Plot1DBar(Plot1D):
     """"""
 
     pass

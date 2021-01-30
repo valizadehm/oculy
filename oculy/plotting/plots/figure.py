@@ -8,10 +8,11 @@
 """
 """
 from typing import Optional
-from atom.api import Atom, Int, Dict
+from atom.api import Atom, Int, Dict, Typed
 
 from .base import PlotElement, PlotElementProxy
 from .axes import Axes
+from ..backends.resolver import BackendResolver
 
 
 class FigureProxy(PlotElementProxy):
@@ -52,12 +53,14 @@ class Figure(PlotElement):
     #: Position of the axes on the grid
     grid = Dict(str, GridPosition)
 
-    def initialize(self, plugin):
+    def initialize(self, resolver):
         """Initialize the proxy of the figure and the axes."""
-        super().initialize(plugin)
+        self._resolver = resolver
+        super().initialize(resolver)
         for axes in self.axes_set.values():
             axes.figure = self
-            axes.initialize(plugin)
+            axes.backend_name = self.backend_name
+            axes.initialize(resolver)
 
     def finalize(self):
         """Finalize the proxy of the figure."""
@@ -69,9 +72,14 @@ class Figure(PlotElement):
     def add_axes(
         self, id: str, position: GridPosition, axes: Optional[Axes] = None
     ) -> Axes:
-        """"""
-        pass
+        """Add an axes to the figure"""
+        pass  # XXX not needed as long as we have a single axes per figure
 
     def remove_axes(self, id: str):
         """"""
-        pass
+        pass  # XXX not needed as long as we have a single axes per figure
+
+    # --- Private API
+
+    #: Reference to the backend resolver needed to dynamically add axes
+    _resolver = Typed(BackendResolver)

@@ -53,6 +53,9 @@ enamldef PlottingManifest(PluginManifest):
         point = "oculy.plotting.rendering-backend"
         Backend:
             id = "matplotlib"
-            # Need a way to declare capabilities (could be done by simply scanning the proxies)
-            # need a mapping to function for each kind of plots
-            plots = ["line-plot", "histogram", "mesh", "contour"]
+            proxies => ():
+                pass  # XXX provide all proxies
+            plot_proxies => ():
+                pass  # XXX provide all plot proxies
+            colormaps => ():
+                pass

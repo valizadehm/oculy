@@ -42,15 +42,15 @@ class MatplotlibFigureProxy(FigureProxy):
     """Proxy figure for the matplotlib backend"""
 
     #: Should we use the cairo backend rather than agg
-    use_cairo = Bool()
+    use_cairo = Bool(True)
 
     def activate(self):
         """Activate the proxy figure."""
         self._figure = Figure(constrained_layout=True)
 
-        grid_elements = self.element.grid
-        if grid_elements:
-            raise RuntimeError("Unsupported")
+        grid = self.element.grid
+        if grid:
+            raise RuntimeError("Multi-axes per figure are not supported yet")
 
     def deactivate(self):
         """Deactivate the proxy figure."""

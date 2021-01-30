@@ -7,21 +7,95 @@
 # --------------------------------------------------------------------------------------
 """
 """
+from atom.api import Bool, Typed
+from matplotlib.axes import Axes
+from matplotlib.lines import Lines2D
+from matplotlib.container import BarContainer
+
+from ..plots import Plot1DLineProxy, Plot1DBarProxy
 
 
-class Plot1DLineProxy(Plot1DProxy):
-    @mark_backend_unsupported
-    def set_line_weigth(self, weight: int):
-        pass
+class Matplotlib1DLineProxy(Plot1DLineProxy):
+    """Matplotlib proxy handling line plot."""
 
-    @mark_backend_unsupported
-    def set_marker_size(self, size: int):
-        pass
+    def initialize(self, resolver):
+        super().initialize(resolver)
+        axes_mapping = self.element.axes_mapping
+        axes = (axes_mapping["x"], axes_mapping["y"])
+        data = (self.element.data.x, self.element.data.y)
+        ddata = (self.element.data.dx, self.element.data.dy)
+        if axes_mapping["x"] in ("left", "right"):
+            self._invert = True
+            axes = axes[::-1]
+            data = data[::-1]
+            ddata = ddata[::-1]
 
-    @mark_backend_unsupported
-    def set_marker_state(self, state: bool):
-        pass
+        mpl_axes = self.element.axes._proxy._axes[axes]
+        if self.element.data.dx or self.element.data.dy:
+            raise RuntimeError("Errorbars are not currently supported.")
+        else:
+            # XXX handle extra states
+            self._line = mpl_axes.plot(*data, zorder=self.element.zorder)[0]
+
+    def finalize(self):
+        self._line.remove()
+
+    def set_data(self, data):
+        data = (self.element.data.x, self.element.data.y)
+        ddata = (self.element.data.dx, self.element.data.dy)
+        if self._invert:
+            data = data[::-1]
+            ddata = ddata[::-1]
+
+        # XXX handle error bars
+        self._line.set_data(*data)
+
+    # --- Private API
+
+    #: Do we need to invert and y due to the axes mapping
+    _invert = Bool()
+
+    #: Line created by the backend.
+    _line = Typed(Lines2D)
 
 
-class Plot1DHistogramProxy(Plot1DProxy):
-    pass
+class Matplotlib1DBarProxy(Plot1DBarProxy):
+    """Matplotlib proxy for a 1D histogram."""
+
+    def initialize(self, resolver):
+        super().initialize(resolver)
+        axes_mapping = self.element.axes_mapping
+        axes = (axes_mapping["x"], axes_mapping["y"])
+        if axes_mapping["x"] in ("left", "right"):
+            self._invert = True
+            axes = axes[::-1]
+
+        self._mpl_axes = self.element.axes._proxy._axes[axes]
+        self._draw_bars()
+
+    def finalize(self):
+        self._bar.remove()
+
+    def set_data(self, data):
+        self._bar.remove()
+        self._draw_bars()
+
+    # --- Private API
+
+    #: Do we need to invert and y due to the axes mapping
+    _invert = Bool()
+
+    #: Line created by the backend.
+    _bar = Typed(BarContainer)
+
+    #: Matplotlib axes in which to draw the bars
+    _mpl_axes = Typed(Axes)
+
+    def _draw_bars(self):
+        data = (self.element.data.x, self.element.data.y)
+        if self._invert:
+            data = data[::-1]
+
+        self._bar = self._mpl_axes.bar(
+            *data, width=data[0][1] - data[0][0], zorder=self.element.zorder
+        )
