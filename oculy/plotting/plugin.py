@@ -125,6 +125,7 @@ class PlottingPlugin(Plugin):
             )
 
         if sync_data:
-            pass  # XXX
+            data_store = self.workbench.get_plugin("oculy.data").data_store
+            self.sync_managers[plot] = SyncManager(data_store, plot, sync_data)
 
         ax.add_plot(plot.id, plot, axes)
