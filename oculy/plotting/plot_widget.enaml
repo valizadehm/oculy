@@ -21,7 +21,7 @@ class FigureWidget(RawWidget):
 
     """
 
-    __slots__ = '__weakref__'
+    __slots__ = ('__weakref__',)
 
     #: Reference to the figure displayed by the widget.
     figure = d_(Typed(Figure))
@@ -31,8 +31,8 @@ class FigureWidget(RawWidget):
     def create_widget(self, parent):
         """Create the native widget linked to the figure."""
         if not self.figure.proxy:
-            root = parent.root_object()
-            self.figure.initialize(root.workbench.get_plugin("oculy.plotting"))
+            plugin = parent.root_object().workbench.get_plugin("oculy.plotting")
+            self.figure.initialize(plugin.get_resolver(self.figure.backend_name))
         if not self.figure.proxy.is_active:
             self.figure.proxy.activate()
         return self.figure.proxy.get_native_widget(parent)

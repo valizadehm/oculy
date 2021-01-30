@@ -14,7 +14,7 @@ from matplotlib.axes import Axes
 from ..plots import Plot2DMeshProxy, Plot2DContourProxy
 
 
-class Matplotlib2DMeshProxy(Plot2DMeshProxy):
+class Matplotlib2DRectangularMeshProxy(Plot2DMeshProxy):
     """Matplotlib proxy for a mesh plot.
 
     If the grid can be identified as regular we use imshow, otherwise we use pcolormesh.

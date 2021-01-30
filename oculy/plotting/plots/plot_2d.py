@@ -29,7 +29,7 @@ class Plot2DProxy(Atom):
         pass
 
 
-class Plot2DMeshProxy(Plot2DProxy):
+class Plot2DRectangularMeshProxy(Plot2DProxy):
     """"""
 
     pass
@@ -79,7 +79,7 @@ class Plot2D(BasePlot):
     # XXX add connection to proxy
 
 
-class Plot2DMesh(Plot2D):
+class Plot2DRectangularMesh(Plot2D):
     """"""
 
     pass

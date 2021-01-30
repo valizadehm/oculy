@@ -8,8 +8,12 @@
 """Class to declare a backend.
 
 """
-from atom.api import Str
+from typing import Dict, List, Type
+
+from atom.api import Str, Int
 from enaml.core.api import Declarative, d_, d_func
+
+from ..plots.base import PlotElement, PlotElementProxy, BasePlot, BasePlotProxy
 
 
 class Backend(Declarative):
@@ -18,17 +22,30 @@ class Backend(Declarative):
     #: Name of the backend
     name = d_(Str())
 
+    #: Priority of the backend contributions.
+    #: Used if multiple declaration refer to the same backend, higher number have
+    #: higher priority.
+    priority = Int(50)
+
     @d_func
-    def proxies(self):
+    def proxies(self) -> Dict[Type[PlotElement], Type[PlotElementProxy]]:
         """Overwrite to provide proxies implementation for generic elements."""
         raise NotImplementedError
 
     @d_func
-    def plot_proxies(self):
+    def plot_proxies(self) -> Dict[Type[BasePlot], Type[BasePlotProxy]]:
         """Overwrite to provide proxies implementation for plots."""
         raise NotImplementedError
 
     @d_func
-    def colormaps(self):
-        """Overwrite to provide the list of colormap supported by the backend."""
+    def colormaps(self) -> Dict[str, List[str]]:
+        """Overwrite to provide the colormaps supported by the backend.
+
+        The expected keys of the dictionary are:
+
+        - "Perceptually uniform"
+        - "Sequential"
+        - "Diverging"
+
+        """
         raise NotImplementedError

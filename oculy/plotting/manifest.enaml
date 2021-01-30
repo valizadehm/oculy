@@ -8,12 +8,37 @@
 """Plotting plugin manifest.
 
 """
+from matplotlib.
 from enaml.workbench.api import PluginManifest, Extension, ExtensionPoint
 
-from .plots import Plot
+from .plots import (
+    Axes,
+    Axis,
+    Colorbar,
+    Cursor,
+    Plot,
+    Figure,
+    Plot1DLine,
+    Plot1DBar,
+    Plot2DRectangularMesh,
+    Plot2DContour
+)
+
+
+if TYPE_CHECKING:
+    from .plugin import Plo
+
+def plotting_plugin_factory() -> "PlottingPlugin":
+    """ Factory funcion for the plotting plugin.
+
+    """
+    from .plugin import PlottingPlugin
+    return PlottingPlugin()
+
 
 enamldef PlottingManifest(PluginManifest):
-    """
+    """Manifest of the plotting plugin.
+
     """
     id = "oculy.plotting"
     factory = None  # FIXME
@@ -30,22 +55,18 @@ enamldef PlottingManifest(PluginManifest):
         Plot:
             id = "line-plot"
             get_cls => ():
-                from .plots.plot_1d import Plot1DLine
                 return Plot1DLine
          Plot:
             id = "histogram"
             get_cls => ():
-                from .plots.plot_1d import Plot1DHistogram
                 return Plot1DHistogram
         Plot:
-            id = "mesh"
+            id = "rectangular-mesh"
             get_cls => ():
-                from .plots.plot_2d import Plot2DMesh
-                return Plot2DMesh
+                return Plot2DRectangularMesh
         Plot:
             id = "contour"
             get_cls => ():
-                from .plots.plot_2d import Plot2DContour
                 return Plot2DContour
 
     Extension:
@@ -54,8 +75,46 @@ enamldef PlottingManifest(PluginManifest):
         Backend:
             id = "matplotlib"
             proxies => ():
-                pass  # XXX provide all proxies
+                from .backends.matplotlib import (
+                    MatplotlibAxesProxy,
+                    MatplotlibAxisProxy,
+                    MatplotlibColorbarProxy,
+                    MatplotlibCursorProxy,
+                    MatplotlibFigureProxy,
+                )
+                return {Axes: MatplotlibAxesProxy,
+                        Axis: MatplotlibAxisProxy,
+                        Colorbar: MatplotlibColorbarProxy,
+                        Cursor: MatplotlibCursorProxy,
+                        Figure, MatplotlibFigureProxy}
             plot_proxies => ():
-                pass  # XXX provide all plot proxies
+                from .backend.matplotlib import (
+                    Matplotlib1DLineProxy,
+                    Matplotlib1DBarProxy,
+                    Matplotlib2DRectangularMeshProxy,
+                    Matplotlib2DContourProxy
+                )
+                return {Plot1DLine: Matplotlib1DLineProxy,
+                        Plot1DBar: Matplotlib1DBarProxy,
+                        Plot2DRectangularMesh: Matplotlib2DRectangularMeshProxy,
+                        Plot2DContour: Matplotlib2DContourProxy}
             colormaps => ():
-                pass
+                return {
+                    'Perceptually Uniform ': [
+                        'viridis', 'plasma', 'inferno', 'magma', 'cividis'
+                    ],
+                    'Sequential': [
+                        'Greys', 'Purples', 'Blues', 'Greens', 'Oranges', 'Reds',
+                        'YlOrBr', 'YlOrRd', 'OrRd', 'PuRd', 'RdPu', 'BuPu',
+                        'GnBu', 'PuBu', 'YlGnBu', 'PuBuGn', 'BuGn', 'YlGn',
+                        'binary', 'gist_yarg', 'gist_gray', 'gray', 'bone', 'pink',
+                        'spring', 'summer', 'autumn', 'winter', 'cool', 'Wistia',
+                        'hot', 'afmhot', 'gist_heat', 'copper'
+                    ],
+                    'Diverging': [
+                        'PiYG', 'PRGn', 'BrBG', 'PuOr', 'RdGy', 'RdBu',
+                        'RdYlBu', 'RdYlGn', 'Spectral', 'coolwarm', 'bwr', 'seismic'
+                    ]
+                }
+
+    # XXX should have commands I guess

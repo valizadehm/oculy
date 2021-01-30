@@ -64,6 +64,7 @@ class SyncManager(Atom):
 
         # XXX connect to the data store unique event
 
+    # XXX rework
     def update_plot(self, change: Mapping[str, Any]):
         """Update the plot if the sync marker invariants are upheld.
 

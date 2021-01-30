@@ -22,9 +22,9 @@ from .base import BasePlot, BasePlotProxy, Plot
 from .figure import Figure, FigureProxy, GridPosition
 from .plot_1d import Plot1DLine, Plot1DBar, Plot1DLineProxy, Plot1DBarProxy
 from .plot_2d import (
-    Plot2DMesh,
+    Plot2DRectangularMesh,
     Plot2DContour,
-    Plot2DMeshProxy,
+    Plot2DRectangularMeshProxy,
     Plot2DContourProxy,
 )
 
@@ -47,9 +47,8 @@ __all__ = (
     "Plot1DBar",
     "Plot1DLineProxy",
     "Plot1DBarProxy",
-    "Plot2DMesh",
+    "Plot2DRectangularMesh",
     "Plot2DContour",
-    "Plot2DMesh",
-    "Plot2DMeshProxy",
+    "Plot2DRectangularMeshProxy",
     "Plot2DContourProxy",
 )

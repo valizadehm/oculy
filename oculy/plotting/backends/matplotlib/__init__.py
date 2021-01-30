@@ -8,3 +8,24 @@
 """Plotting backend based on Matplotlib.
 
 """
+from .axes import (
+    MatplotlibAxesProxy,
+    MatplotlibAxisProxy,
+    MatplotlibColorbarProxy,
+    MatplotlibCursorProxy,
+)
+from .figure import MatplotlibFigureProxy
+from .plot_1d import Matplotlib1DLineProxy, Matplotlib1DBarProxy
+from .plot_2d import Matplotlib2DRectangularMeshProxy, Matplotlib2DContourProxy
+
+__all__ = (
+    "MatplotlibAxesProxy",
+    "MatplotlibAxisProxy",
+    "MatplotlibColorbarProxy",
+    "MatplotlibCursorProxy",
+    "MatplotlibFigureProxy",
+    "Matplotlib1DLineProxy",
+    "Matplotlib1DBarProxy",
+    "Matplotlib2DRectangularMeshProxy",
+    "Matplotlib2DContourProxy",
+)

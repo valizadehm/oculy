@@ -19,7 +19,7 @@ if TYPE_CHECKING:
     from .plugin import DataStoragePlugin
 
 def data_plugin_factory() -> "DataStoragePlugin":
-    """ Factory funcion for the task manager plugin.
+    """ Factory funcion for the data storage plugin.
 
     """
     from .plugin import DataStoragePlugin
