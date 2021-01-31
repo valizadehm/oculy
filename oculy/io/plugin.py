@@ -37,7 +37,7 @@ class IOPlugin(HasPreferencesAtom):
     custom_loader_extensions = Dict(str, list).tag(pref=True)
 
     #: Collect all contributed Loader extensions.
-    loaders = Typed(ExtensionsCollector)  # XXX make private
+    loaders = Typed(ExtensionsCollector)  # FIXME make private
 
     def start(self) -> None:
         """Start the plugin life-cycle.
@@ -124,7 +124,7 @@ class IOPlugin(HasPreferencesAtom):
             filter_base: Dataset,
             specifications: Mapping[str, MaskSpecification],
         ) -> Dataset:
-            # XXX should we be invoking a command here ?
+            # FIXME should we be invoking a command here ?
             mask = self.workbench.get_plugin("oculy.transformations").create_mask(
                 filter_base, specifications
             )

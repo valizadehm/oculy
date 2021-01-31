@@ -22,3 +22,6 @@ class DataStoragePlugin(Plugin):
 
     #: Data store object handling the book keeping.
     data = Typed(DataStore)
+
+    #: Converters used to turn input data into valid data for the datastore.
+    converters = None

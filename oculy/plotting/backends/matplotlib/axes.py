@@ -136,7 +136,7 @@ class MatplotlibColorbarProxy(ColorbarProxy):
     _caxis = Typed(Axes)
 
 
-# XXX implement later
+# FIXME implement later
 class MatplotlibCursorProxy(CursorProxy):
     """"""
 

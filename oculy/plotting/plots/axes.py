@@ -220,9 +220,9 @@ class Axis(PlotElement):
     #: axes in the axes_set.
     intercept = Float()
 
-    # XXX Add connections to the proxy and a way to prevent self recursion
+    # FIXME Add connections to the proxy and a way to prevent self recursion
 
-    # XXX Add convenience to connect axes between them
+    # FIXME Add convenience to connect axes between them
 
 
 class Colorbar(PlotElement):
@@ -268,7 +268,7 @@ class Cursor(PlotElement):
     #:
     c_value = Float(float("nan"))
 
-    # XXX need to sync to the proxy
+    # FIXME need to sync to the proxy
 
 
 def _resolve_figure():
@@ -432,7 +432,7 @@ class Axes(PlotElement):
     def remove_line(self, id: str) -> None:
         pass
 
-    # XXX Need to define the proper API to enable zooming/panning and modifiers
+    # FIXME Need to define the proper API to enable zooming/panning and modifiers
 
     # TODO Add the ability to link axes (accross different figures ie beyond
     # matplotlib default)

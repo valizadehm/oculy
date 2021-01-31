@@ -13,7 +13,7 @@ from enaml.qt.QtWidgets import QWidget, QVBoxLayout
 from matpltolib.figure import Figure, Gridspec
 from matplotlib.backends.backend_qt5agg import (
     FigureCanvas,
-    NavigationToolbar2QT as NavigationToolbar,  # XXX used temporarily till we implement a nice tool bar
+    NavigationToolbar2QT as NavigationToolbar,  # FIXME used temporarily till we implement a nice tool bar
 )
 
 try:
@@ -24,7 +24,7 @@ except ImportError:
 from oculy.plotting.plots import FigureProxy
 
 
-# XXX will disappear when we get proper toolbar support
+# FIXME will disappear when we get proper toolbar support
 class _TempWidgetPlot(QWidget):
     def __init__(self, parent, proxy):
         QWidget.__init__(self, parent)

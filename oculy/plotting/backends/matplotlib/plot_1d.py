@@ -34,7 +34,7 @@ class Matplotlib1DLineProxy(Plot1DLineProxy):
         if self.element.data.dx or self.element.data.dy:
             raise RuntimeError("Errorbars are not currently supported.")
         else:
-            # XXX handle extra states
+            # FIXME handle extra states
             self._line = mpl_axes.plot(*data, zorder=self.element.zorder)[0]
 
     def finalize(self):
@@ -47,7 +47,7 @@ class Matplotlib1DLineProxy(Plot1DLineProxy):
             data = data[::-1]
             ddata = ddata[::-1]
 
-        # XXX handle error bars
+        # FIXME handle error bars
         self._line.set_data(*data)
 
     # --- Private API

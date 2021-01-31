@@ -34,8 +34,8 @@ class Node(Declarative):
     operate_in_place = d_(Bool())
 
     #:
-    # XXX when converting diagram to script can the function call be avoided
-    # XXX inlineable node are assumed trivial and are not made available to
+    # FIXME when converting diagram to script can the function call be avoided
+    # FIXME inlineable node are assumed trivial and are not made available to
     # scripting
     inlineable = d_(Bool())
 

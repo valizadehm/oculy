@@ -21,7 +21,8 @@ from .plots import BasePlot
 class SyncMarker(Atom):
     """Class used to enforce some conditions are met before performing an update."""
 
-    # XXX use is unclear and as a consequence the API is to be designed
+    # FIXME use is unclear and as a consequence the API is to be designed
+    pass
 
 
 class SyncManager(Atom):
@@ -74,7 +75,10 @@ class SyncManager(Atom):
 
     def update_plot(self, change: Mapping[str, Any]):
         """Update the plot based on the modification to the data store."""
-        if any(v in change["value"]["removed"] for v in self.synced_members.values()):
+        if any(
+            v in change["value"]["removed"] or v in change["value"]["moved"]
+            for v in self.synced_members.values()
+        ):
             self.plot.axes.remove_plot(self.plot.id)
 
         # Build mapping of updated values

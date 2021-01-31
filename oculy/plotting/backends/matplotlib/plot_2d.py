@@ -58,20 +58,20 @@ class Matplotlib2DRectangularMeshProxy(Plot2DMeshProxy):
             x, y = y, x
         if len(x.shape) == 2:
             if len(np.unique(data.x[0])) == 1 and len(np.unique(data.y[:, 0])) == 1:
-                # XXX use imshow
+                # FIXME use imshow
                 pass
             elif len(np.unique(data.x[:, 0])) == 1 and len(np.unique(data.y[0])) == 1:
-                # XXX use imshow
+                # FIXME use imshow
                 pass
 
         else:
             # Ravel to avoid weird issue with N-D array
             x, y, c = np.ravel(data.x), np.ravel(data.y), np.ravel(data.c)
             if x[0] == x[1]:
-                # XXX Keep going to find the redundance and check for possibility to use imshow
+                # FIXME Keep going to find the redundance and check for possibility to use imshow
                 pass
             elif y[0] == y[1]:
-                # XXX Keep going to find the redundance and check for possibility to use imshow
+                # FIXME Keep going to find the redundance and check for possibility to use imshow
                 pass
 
         if use_imshow:
@@ -94,4 +94,4 @@ class Matplotlib2DRectangularMeshProxy(Plot2DMeshProxy):
 class Matplotlib2DContourProxy(Plot2DContourProxy):
     """"""
 
-    pass  # XXX implement
+    pass  # FIXME implement

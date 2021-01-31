@@ -16,7 +16,6 @@ from atom.api import Atom, Typed, Str
 from .base import BasePlot, InvalidPlotData, mark_backend_unsupported
 
 
-# XXX Use subclass for each type (may require different option)
 class Plot2DProxy(Atom):
     """"""
 
@@ -76,7 +75,7 @@ class Plot2D(BasePlot):
     #: Colormap to use.
     colormap = Str("viridis")
 
-    # XXX add connection to proxy
+    # FIXME add connection to proxy
 
 
 class Plot2DRectangularMesh(Plot2D):
@@ -90,4 +89,4 @@ class Plot2DContour(Plot2D):
 
     #: Data vault name referring to the values for which to display the contour values.
     contour_values = Typed(np.ndarray).tag(sync=True)
-    # XXX add connection to proxy
+    # FIXME add connection to proxy

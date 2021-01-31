@@ -9,11 +9,12 @@
 """
 from atom.api import Typed
 from enaml.core.api import d_
+from enaml.workbench.api import Workbench
 from enaml.widgets.api import RawWidget, Container
 
 from .plots import Figure
 
-# XXX assume we have access to the workbench
+
 class FigureWidget(RawWidget):
     """Widget dedicated to displaying a figure.
 
@@ -26,12 +27,13 @@ class FigureWidget(RawWidget):
     #: Reference to the figure displayed by the widget.
     figure = d_(Typed(Figure))
 
-    # XXX need to handle figure destruction, by observation of the proxy member
+    #: Reference to the application workbench.
+    workbench = Typed(Workbench)
 
     def create_widget(self, parent):
         """Create the native widget linked to the figure."""
         if not self.figure.proxy:
-            plugin = parent.root_object().workbench.get_plugin("oculy.plotting")
+            plugin = self.workbench.get_plugin("oculy.plotting")
             self.figure.initialize(plugin.get_resolver(self.figure.backend_name))
         if not self.figure.proxy.is_active:
             self.figure.proxy.activate()

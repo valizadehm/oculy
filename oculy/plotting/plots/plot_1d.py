@@ -85,7 +85,7 @@ class Plot1DData(Atom):
                 f"Got x: {x.shape}, y: {y.shape}."
             )
 
-        # XXX this assumes len(x.shape) == 1
+        # FIXME this assumes len(x.shape) == 1
 
         if dx and not dx.shape[0] == x.shape[0]:
             raise InvalidPlotData(
@@ -137,7 +137,7 @@ class Plot1DLine(Plot1D):
     markers_size = Float()
 
     #: Shape of the marker
-    # XXX complete
+    # FIXME complete
     marker_shape = Enum(
         (
             "*",
@@ -145,7 +145,7 @@ class Plot1DLine(Plot1D):
         )
     )
 
-    # XXX add connection to proxy
+    # FIXME add connection to proxy
 
 
 class Plot1DBar(Plot1D):

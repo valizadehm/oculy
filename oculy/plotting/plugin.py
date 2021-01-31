@@ -29,6 +29,8 @@ class PlottingPlugin(Plugin):
     #: Manager responsible to handle refreshing the plots linked to the data plugin.
     sync_managers = Dict(BasePlot, SyncManager)
 
+    # XXX need start and stop to handle extensions !
+
     def create_figure(
         self,
         id: str,
@@ -55,7 +57,7 @@ class PlottingPlugin(Plugin):
         if id in self.figures:
             raise KeyError(f"Figure id {id} already exists.")
 
-        # XXX validate backend exists
+        # FIXME validate backend exists
         backend = backend or self.default_backend
 
         if axes_positions is None:
@@ -64,7 +66,7 @@ class PlottingPlugin(Plugin):
         if axes_specifications is None:
             axes_specifications = {}
 
-        # XXX Validate specifications and  positions
+        # FIXME Validate specifications and  positions
 
         figure = Figure(backend=backend)
         for axes_id in axes_specifications:

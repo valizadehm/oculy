@@ -117,4 +117,4 @@ enamldef PlottingManifest(PluginManifest):
                     ]
                 }
 
-    # XXX should have commands I guess
+    # FIXME should have commands I guess
