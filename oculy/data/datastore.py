@@ -8,7 +8,17 @@
 """Central data storage system for Oculy.
 
 """
-from typing import Union, Mapping, Any, Optional, Iterator, Tuple, Sequence
+from collections import deque
+from typing import (
+    Union,
+    Mapping,
+    Any,
+    Optional,
+    Iterator,
+    Tuple,
+    Sequence,
+    Dict as TDict,
+)
 
 import numpy as np
 from atom.api import (
@@ -64,15 +74,25 @@ class Dataset(Atom):
     def __contains__(self, key: str) -> bool:
         return key in self._data
 
+    def __iter__(self) -> Iterator[str]:
+        return iter(self._data)
+
+    def values(self) -> Iterator[Union[DataArray, "Dataset"]]:
+        """Iterable on the values stored."""
+        return iter(self._data.values())
+
+    def items(self) -> Iterator[Tuple[str, Union[DataArray, "Dataset"]]]:
+        """Iterable on the keys and values stored."""
+        return iter(self._data.items())
+
     _data = Dict(str, ForwardInstance(lambda: (DataArray, Dataset)))
 
 
-# XXX TODO
-# Centralizing manipulations at the datastore level will help performing
-# batch updates which will prevent getting inconsistent states in plots
-# All manipulations should occurs through the datastore
-# Array stored in the datastored should be marked as readonly (writable=False)
-# Also keep data loaders in there
+def _lookup_in_store(node: Dataset, split_path: Sequence[str]):
+    """Look up a node based on a list of names."""
+    for k in split_path:
+        node = node[k]
+    return node
 
 
 class DataStore(Atom):
@@ -94,35 +114,129 @@ class DataStore(Atom):
     #: - "metadata_updated": list of entries whose metadata values were updated.
     update = Event()
 
-    def get_data(self, paths: Sequence[str], include_metadata: bool = False):
-        """"""
-        pass
+    def get_data(self, paths: Sequence[str]) -> TDict[str, Union[Dataset, DataArray]]:
+        """Retrieve data as Dataset and DataArray."""
+        split_paths = [path.split("/") for path in paths]
+        s1 = min(split_paths)
+        s2 = max(split_paths)
+        common = s1
+        for i, c in enumerate(s1):
+            if c != s2[i]:
+                common = s1[:i]
+                break
+
+        data = {}
+        root = _lookup_in_store(self._data, common)
+        for p, sp in zip(paths, split_paths):
+            data["/".join(p)] = _lookup_in_store(root, sp[len(common) :])
+
+        return data
 
     def store_data(
-        self, datas: Mapping[str, Any], metadata: Optional[Mapping[str, Any]]
-    ):
-        """"""
-        pass
+        self, data: Mapping[str, Tuple[Optional[Any], Optional[Mapping[str, Any]]]]
+    ) -> None:
+        """Store data in the store.
+
+        All intermediate node are create automatically, and metadata are updated based
+        on the provided values. Metadat with None as value are deleted.
+
+        The converters declared in the plugin are used to turn the provided values into
+        admissible values for teh data member of a DataArray.
+
+        Parameters
+        ----------
+        data : Mapping[str, Tuple[Optional[Any], Optional[Mapping[str, Any]]]]
+            Mapping between path and pairs of value, metadata to store.
+
+        """
+        added = []
+        updated = []
+        meta_updated = []
+        # Sort the path to ensure we always create a parent node before its children
+        for path in sorted(data):
+            val, mval = data[path]
+            current = self
+            current_path = ""
+            split_path = path.split("/")
+            for p in split_path[:-1]:
+                if p not in current._data:
+                    n_path = current_path + "/" + p
+                    current._data[n_path] = Dataset()
+                    added.append(n_path)
+
+                current = current[p]
+                current_path += "/" + p
+
+            d_key = split_path[-1]
+            current_path += "/" + d_key
+            if d_key not in current:
+                added.append(current_path)
+            else:
+                if val is not None:
+                    updated.append(current_path)
+                if mval is not None:
+                    meta_updated.append(current_path)
+
+            if val is not None:
+                if isinstance(val, (Dataset, DataArray)):
+                    current[d_key] = val
+                else:
+                    # Call the plugin to run custom converter on the data
+                    current[d_key] = self._plugin.run_converter(val)
+
+            if mval is not None:
+                current[d_key].metadata.update(mval)
+                current[d_key].metadata = {
+                    k: v for k, v in current[d_key].metadata.items() if v
+                }
+
+            update = {}
+            for k, v in zip(
+                ("added", "updated", "metadata_updated"),
+                (added, updated, meta_updated),
+            ):
+                if v:
+                    update[k] = v
+            self.update = update
 
     def move_data(self, move: Mapping[str, str]):
-        """"""
-        pass
+        """Move data from one place to another."""
+        raise NotImplementedError  # FIXME
 
     def copy_data(self, datas: Mapping[str, str]):
-        """"""
-        pass
+        """Copy data from one place to another."""
+        raise NotImplementedError  # FIXME
 
     def create_live_data(self, pipeline, inputs, output_ids):
         """"""
         raise NotImplementedError
 
-    def walk(self) -> Iterator[Tuple[str, Tuple[str, ...], Tuple[str, ...]]]:
+    def walk(
+        self,
+    ) -> Iterator[
+        Tuple[
+            Union["DataStore", Dataset, DataArray],
+            Tuple[Tuple[str, Dataset], ...],
+            Tuple[Tuple[str, DataArray], ...],
+        ]
+    ]:
         """Walk the content of the data store.
 
         Similar to os.walk yield: root, datasets, dataarrays
 
         """
-        pass
+        sets = deque([(k, v) for k, v in self._data.items() if isinstance(v, Dataset)])
+        arrays = tuple(
+            (k, v) for k, v in self._data._values() if isinstance(v, DataArray)
+        )
+        yield self, tuple(sets), arrays
+
+        while sets:
+            for _, s in tuple(sets):
+                sets.popleft()
+                sets.extend([(k, v) for k, v in s.items() if isinstance(v, Dataset)])
+                arrays = tuple((k, v) for k, v in s.items() if isinstance(v, DataArray))
+                yield s, sets[-1], arrays
 
     # --- Private API
 

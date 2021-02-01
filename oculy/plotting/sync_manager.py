@@ -40,6 +40,7 @@ class SyncManager(Atom):
     #: assumed it has a constructor able of handling member names as keyword argument.
     #: This is mostly useful for things that need to be updated in a single shot
     #: such as data driving a plot.
+    # TODO allowing sync on metadata may be valuable for things such as units
     synced_members = Dict(str, str)
 
     def __init__(
