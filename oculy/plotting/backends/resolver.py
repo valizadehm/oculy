@@ -26,6 +26,9 @@ class BackendResolver(Atom):
     #: Backend specific proxies.
     proxies = Dict(PlotElement, PlotElementProxy)
 
+    #: Valid colormaps for the backend by category.
+    colormaps = Dict(str, str)
+
     def resolve_proxy(self, element: PlotElement) -> PlotElementProxy:
         """Resolve and create the proxy for an element."""
         el_type = type(element)
@@ -39,3 +42,9 @@ class BackendResolver(Atom):
         proxy = self.proxies[el_type](element=element)
         element.proxy = proxy
         return proxy
+
+    # --- Private API
+
+    def _default_colormaps(self):
+        """Provide the standard colormap categories."""
+        return {"Perceptually uniform": set(), "Sequential": set(), "Diverging": set()}

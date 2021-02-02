@@ -8,20 +8,27 @@
 """Plotting plugin logic.
 
 """
+from collections import defaultdict
+from operator import attrgetter
 from typing import Mapping, Optional, Tuple
 
-from atom.api import Dict, Str
-from enaml.workbench.api import Plugin
+from atom.api import Dict, Str, Typed
+from glaze.utils.plugin_tools import (
+    HasPreferencesPlugin,
+    ExtensionsCollector,
+    make_extension_validator,
+)
 
-from .plots import Axes, BasePlot, Figure, GridPosition
+from .backends import Backend, BackendResolver
+from .plots import Axes, BasePlot, Figure, GridPosition, Plot
 from .sync_manager import SyncManager
 
 
-class PlottingPlugin(Plugin):
+class PlottingPlugin(HasPreferencesPlugin):
     """Plugin handling plotting of data."""
 
     #: Default backend to use.
-    default_backend = Str()
+    default_backend = Str().tag(pref=True)
 
     #: Mapping of figures managed by the plugin. Should not be edited in place.
     figures = Dict(str, Figure)
@@ -29,7 +36,38 @@ class PlottingPlugin(Plugin):
     #: Manager responsible to handle refreshing the plots linked to the data plugin.
     sync_managers = Dict(BasePlot, SyncManager)
 
-    # XXX need start and stop to handle extensions !
+    def start(self):
+        """Collect all extensions and generate resolver for each backend."""
+        self._plots = ExtensionsCollector(
+            workbench=self.workbench,
+            extension_point="oculy.plotting.plots",
+            ext_class=Plot,
+            validate_ext=make_extension_validator(base_cls=Plot, fn_names=("get_cls",)),
+        )
+        self._plots.start()
+
+        self._backends = ExtensionsCollector(
+            workbench=self.workbench,
+            extension_point="oculy.plotting.rendering_backends",
+            ext_class=Backend,
+            validate_ext=make_extension_validator(
+                base=Backend,
+                attributes=("name", "priority"),
+                fn_names=("proxies", "plot_proxies", "colormaps"),
+            ),
+        )
+
+        self._backends.start()
+
+        self._populate_resolvers()
+        self._backends.observe("contributions", self._populate_resolvers)
+
+    def stop(self):
+        """Stop plugin."""
+        self._backends.unobserve("contributions")
+        self._resolvers.clear()
+        self._backends.stop()
+        self._plots.stop()
 
     def create_figure(
         self,
@@ -131,3 +169,30 @@ class PlottingPlugin(Plugin):
             self.sync_managers[plot] = SyncManager(data_store, plot, sync_data)
 
         ax.add_plot(plot.id, plot, axes)
+
+    # --- Private API
+
+    #: Contributed backends
+    _backends = Typed(ExtensionsCollector)
+
+    #: Contributed plots
+    _plots = Typed(ExtensionsCollector)
+
+    #: Resolver for each backend agglomerating all contributions to the backend
+    _resolvers = Dict(str, BackendResolver)
+
+    def _populate_resolvers(self):
+        """Aggregate contributions made to a single backend name respecting priotities."""
+        backends = defaultdict(list)
+        for v in self._backends.contributions.values():
+            backends[v.name].append(v)
+
+        resolvers = {}
+        for name in backends:
+            resolver = BackendResolver()
+            for contrib in sorted(backends[name], key=attrgetter("priority")):
+                resolver.proxies.update(contrib.proxies())
+                resolver.proxies.update(contrib.plot_proxies())
+                for cat, known in resolver.colormaps.items():
+                    known.update(contrib.colormaps.get(cat, set()))
+            resolvers[name] = resolver
