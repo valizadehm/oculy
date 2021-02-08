@@ -1,5 +1,5 @@
 # --------------------------------------------------------------------------------------
-# Copyright 2020 by Oculy Authors, see git history for more details.
+# Copyright 2020-2021 by Oculy Authors, see git history for more details.
 #
 # Distributed under the terms of the BSD license.
 #
@@ -21,7 +21,6 @@ enamldef SimpleViewerContent(Container):
 
     DockArea:
 
-        # 'meas_0' is included here to avoid some nasty bug.
         layout = HSplitLayout("file_selector", TabLayout("1d_panel", "2d_panel"))
 
         style = 'metro'
@@ -34,5 +33,3 @@ enamldef SimpleViewerContent(Container):
 
         Plot2DPanel:
             name = "2d_panel"
-
-

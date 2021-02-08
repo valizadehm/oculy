@@ -21,13 +21,19 @@ from watchdog.events import (
 )
 from watchdog.observers import Observer
 from watchdog.observers.api import ObservedWatch
+from glaze.utils.atom_util import (
+    preferences_from_members,
+    update_members_from_preferences,
+)
 
 from oculy.data import Dataset
 from oculy.io.loader import BaseLoader, BaseLoaderView
+from .plot_1d_model import Plot1DPanelModel
+from .plot_2d_model import Plot2DPanelModel
 
 
 class FileListUpdater(FileSystemEventHandler):
-    """"""
+    """Watchdog event handler ensuring the list of plots is up to date."""
 
     def __init__(self, workspace):
         self.workspace = workspace
@@ -49,7 +55,7 @@ class FileListUpdater(FileSystemEventHandler):
 
 
 class SimpleViewerWorkspace(Workspace):
-    """"""
+    """State of teh simple viewer workspace."""
 
     #: Currently selected folder in which to look for data.
     selected_folder = Str().tag(pref=True)
@@ -75,16 +81,27 @@ class SimpleViewerWorkspace(Workspace):
     #: Should data be loaded automatically.
     auto_load = Bool().tag(pref=True)
 
+    #: Flag signaling that a file change is about to happen.
+    file_changing = Bool()
+
     #: Content of the loaded file. This dict is never updated in place and
     #: can hence be safely observed.
     file_content = Dict()
 
+    # Set up methods used for handling preferences
+    update_members_from_preferences = update_members_from_preferences
+    preferences_from_members = preferences_from_members
+
     def start(self):
         """ """
-        data = invoke_command(self.workbench, "glaze.state.get_state", "oculy.data")
-        self._dataset = data["_simple_viewer"] = Dataset()
+        datastore = self.workbench.get_plugin("oculy.data").datastore
+        # Create nodes used to stored data related to this workspace plots.
+        datastore.store_data(
+            {"_simple_viewer/1d": Dataset(), "_simple_viewer/2d": Dataset()}
+        )
 
-        # XXX Create 1D and 2D plots
+        self._1d_plots = Plot1DPanelModel(self, datastore)
+        self._2d_plots = Plot2DPanelModel(self, datastore)
 
     # FIXME clean up data store
     def stop(self):
@@ -94,7 +111,7 @@ class SimpleViewerWorkspace(Workspace):
         # XXX Delete 1D and 2D plots
 
     def get_loader_view(self) -> BaseLoaderView:
-        """Get a config view for teh current loader."""
+        """Get a config view for the current loader."""
         if self._loader is None:
             self._create_loader()
         return invoke_command(
@@ -106,12 +123,11 @@ class SimpleViewerWorkspace(Workspace):
         if self._loader is None:
             self._create_loader()
         self._loader.determine_content()
+        self.file_changing = True
         self.content = self._loader.content
+        self.file_changing = False
 
     # --- Private API
-
-    #: Dataset driving the plots of the 1D and 2D panels.
-    _dataset = Typed(Dataset)
 
     #: Loader in charge of performing io for the selected file.
     _loader = Typed(BaseLoader)
@@ -125,18 +141,21 @@ class SimpleViewerWorkspace(Workspace):
     #: Watch of teh watchdog.
     _watchdog_watch = Typed(ObservedWatch)
 
-    #: Reference to the state of the IO plugin
-    _io_state = Typed()  # XXX
-
     #: Cache of loader paarmeters used by the user in this session.
     #: Cross-session persistence should be handled through the io plugin.
     _loader_state_cache = Dict(str)
+
+    #: State of the 1D plots
+    _1d_plots = Typed(Plot1DPanelModel)
+
+    #: State of the 2D plot
+    _2d_plots = Typed(Plot2DPanelModel)
 
     def _update_available_files(self):
         """Update the list of available files."""
         files = []
         trim = len(self.selected_folder) + 1
-        exts = self._io_state.supported_extensions
+        exts = self.workbench.get_plugin("oculy.io").supported_extensions
         for dirpath, dirnames, filenames in os.walk(self.selected_folder):
             files.extend(
                 sorted(

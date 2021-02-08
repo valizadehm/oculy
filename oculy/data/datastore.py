@@ -199,6 +199,10 @@ class DataStore(Atom):
                     update[k] = v
             self.update = update
 
+    def remove_data(self, move: Mapping[str, str]):
+        """Remove data from one place to another."""
+        raise NotImplementedError  # FIXME
+
     def move_data(self, move: Mapping[str, str]):
         """Move data from one place to another."""
         raise NotImplementedError  # FIXME

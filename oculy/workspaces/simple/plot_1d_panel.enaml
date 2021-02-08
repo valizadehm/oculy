@@ -9,7 +9,19 @@
 
 """
 from enaml.core.api import Looper
-from enaml.widgets.api import Notebook, DockArea, DockItem, Container, Groupbox, Page, CheckBox, PushButton, ObjectCombo, Label, ToolButton
+from enaml.widgets.api import (
+    Notebook,
+    DockArea,
+    DockItem,
+    Container,
+    Groupbox,
+    Page,
+    CheckBox,
+    PushButton,
+    ObjectCombo,
+    Label,
+    ToolButton
+)
 
 from glaze.utils.widget.list_editor import ListEditor
 from glaze.utils.widgets.qt_list_str_widget import QtListStrWidget
@@ -17,9 +29,9 @@ from glaze.utils.widgets.qt_list_str_widget import QtListStrWidget
 from .mask_view import MaskView
 
 enamldef DataSelection1DPlot(Page):  # XXX rename !
-    """"""
+    """Selection for generating 1D plots."""
     attr plot_model
-    title << f"{loop_item}"
+    title = "1D plots data selection"
 
     Container:
         GroupBox:
@@ -56,7 +68,7 @@ enamldef DataSelection1DPlot(Page):  # XXX rename !
 
 
 enamldef DataSelection1DPanel(DockItem):
-    """"""
+    """Widget to select data to be plotted in 1D plots."""
 
     #: Number of plots to display
     alias displayed_plots_nb: plt_nb.selected
@@ -64,20 +76,37 @@ enamldef DataSelection1DPanel(DockItem):
     closable = False
 
     Container:
-        Label:
+
+        layouts = [
+            vbox(
+                hbox(lab_plt_nb, plt_nb),
+                multi_xaxis.when(multi_xaxis.visible),
+                x_axis.when(x_axis.visible),
+                nb,
+                hbox(auto_re, re)
+            )
+        ]
+
+        Label: lab_plt_nb:
             text = "# plots"
         ObjectCombo: plt_nb:
+            enabled = False
             items = [1, 2, 3, 4]
             # FIXME Provide ways to specify the layout in addition to the number
             # of plots
+            # FIXME when changing the number of plots store previous layout and restore
+            # when going back to the same number of plots.
         CheckBox: multi_xaxis:
             text = "Common x-axis"
+            visible << (plt_nb.selected_item > 1)
+            # False by default if a singleplot is displayed.
+            checked = plt_nb.selected_item > 1
 
-        GroupBox:
+        GroupBox: x_axis:
+            visible << multi_xaxis.checked
             title = "X axis"
             flat = True
             QtListStrWidget:
-                visible << not multi_xaxis.checked
                 sort = False
                 items << list(workspace.file_content)
                 selected_item << model.selected_x_axes.get(loop_item)
@@ -87,7 +116,7 @@ enamldef DataSelection1DPanel(DockItem):
                         c[i] = change["value"]
                     model.selected_x_axes = c
 
-        Notebook:
+        Notebook: nb:
             tabs_closable = False
             tabs_movable = False
             Looper:
@@ -95,12 +124,17 @@ enamldef DataSelection1DPanel(DockItem):
                 DataSelection1DPlot:
                     plot_model << model.models[loop_item]
 
-        CheckBox:
+        CheckBox: auto_re:
             text = "Auto-refresh"
-        PushButton:
+        PushButton: re:
             text = "Refresh"
             clicked::
                 pass # XXX call into the model
+
+
+enamldef Plot1DDockItem(DockItem):
+    """"""
+    pass
 
 
 # workspace is accessible in the parent scope

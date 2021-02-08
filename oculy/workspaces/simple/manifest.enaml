@@ -1,5 +1,5 @@
 # --------------------------------------------------------------------------------------
-# Copyright 2020 by Oculy Authors, see git history for more details.
+# Copyright 2020-2021 by Oculy Authors, see git history for more details.
 #
 # Distributed under the terms of the BSD license.
 #
@@ -15,8 +15,7 @@ from .content import SimpleViewerContent
 
 
 enamldef SimpleViewerManifest(PluginManifest):
-    """
-    """
+    """Provide the dedicated workspace and specific menus and commands."""
 
     Extension:
         id = "oculy.simple_viewer"
@@ -27,4 +26,3 @@ enamldef SimpleViewerManifest(PluginManifest):
             content = SimpleViewerContent
 
     # Add a command to display a log panel
-
