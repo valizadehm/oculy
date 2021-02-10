@@ -12,14 +12,15 @@ from atom.api import Atom, Float, Str
 
 
 # FIXME this is not generic
+# This should be provided as extension to the plugin
 class MaskParameter(Atom):
     """"""
 
-    #:
+    #: Column used as source to compute the mask
     content_id = Str()
 
-    #:
+    #: ID of the mask to apply
     mask_id = Str()
 
-    #:
+    #: Value used to generate the mask
     value = Float()

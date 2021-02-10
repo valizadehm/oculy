@@ -8,16 +8,17 @@
 """Model driving the 1D plot panel.
 
 """
+from contextlib import contextmanager
+from typing import Mapping, Iterator
+
+import numpy as np
 from atom.api import Atom, Bool, List, Str, Typed
 from glaze.utils.atom_util import HasPreferencesAtom
 
+from oculy.plotting.plots import Figure
 from .mask_parameters import MaskParameter
 
 
-# XXX need a clean way to handle file replacement without causing any plot crash
-# use file_changing on workspace to disable update to plotswhile file is changing
-# and get back to a consistent state once the change is over. The UI ensure we have
-# consistent axes with respect to the new file.
 class Plot1DModel(Atom):
     """Model for a 1D plot hadnling data querying, processing and display."""
 
@@ -35,29 +36,53 @@ class Plot1DModel(Atom):
     pipeline = Typed()  # XXX need a dedicated container
 
     def __init__(self, index, workspace, datastore):
+        # XXX Create the figure, and store the datastore.
         pass
 
-    def run_pipeline(self):
-        pass  # FIXME complete when data processing comes into play
+    def refresh_plot(self) -> None:
+        """Force the refreshing of the plot."""
+        pass
+
+    def enable_auto_refresh(self) -> None:
+        """Connect observers to auto refresh when a plot input parameter change."""
+        pass
+
+    def disable_auto_refresh(self) -> None:
+        """Disconnect observers auto refreshing when an input parameter change."""
+        pass
+
+    @contextmanager
+    def ongoing_refresh(self) -> Iterator:
+        """While a refresh is underway ignore external request for updates."""
+        if self._auto_refresh:
+            self.disable_auto_refresh()
+        yield
+        if self._auto_refresh:
+            self.enable_auto_refresh()
 
     # --- Private API
 
-    #: Flag signaling a file change is occuring and hence ignore UI updates
-    _file_changing = Bool()
+    #: Reference to the figure being displayed
+    _figure = Typed(Figure)
 
-    def _update_plots(self, data: Mapping[str, Any]):
-        """ """
+    #:
+    _auto_refresh = Bool()
+
+    def _update_plot(self, data: Mapping[str, np.ndarray]):
+        """Update the plot driven by this model."""
         # XXX
         # - data need to be queried earlier to avoid re-querying things we already have
-        pass
+        # - need to be aware of x data sharing since
 
+    # XXX make this an observer
     def _post_setattr_selected_x_axis(self, old, new):
-        """"""
+        """Refresh the plot to use the new x axis."""
+        # Ignore such changes during a file change since both x and y are
+        # susceptible to change
         if self._file_changing:
             return
-        # XXX Ensure that change to x axes do not break filtering/pipelines
-        pass
 
+    # XXX make this an observer
     def _post_setattr_selected_y_axes(self, old, new):
         """ """
         if self._file_changing:
@@ -65,6 +90,7 @@ class Plot1DModel(Atom):
         # XXX Ensure that change to y axes do not break filtering/pipelines
         pass
 
+    # XXX make this an observer
     def _post_setattr_filters(self, old, new):
         """ """
         if self._file_changing:
@@ -86,6 +112,7 @@ class Plot1DModel(Atom):
                 f"Got invalid position: {position}, expected 'before' or 'after'"
             )
         self.filters = filters
+        # XXX handle auto refresh
 
     def _remove_filter(self, index: int) -> None:
         """ """
@@ -93,11 +120,22 @@ class Plot1DModel(Atom):
         del filters[index]
         self.filters = filters
 
-    def _handle_file_changed(self, change):
-        """Event handler ensuring that we are in a consistent after a file change."""
-        self._file_changing = change["value"]
-        if not self._file_changing:
-            pass  # Handle the resync (remove redundant filters )
+    def _handle_file_change(self, change):
+        """Event handler ensuring that we are in a consistent after a file change.
+
+        Used to observe the workspace itself, signaling the begining of the change
+        with a True and the end with a False.
+
+        """
+        # In the absence of auto refreshing there is nothing to do.
+        if not self._auto_refresh:
+            return
+
+        if change["value"]:
+            self.disable_auto_refresh()
+        else:
+            self.enable_auto_refresh()
+            self.refresh_plot()
 
 
 class Plot1DPanelModel(HasPreferencesAtom):
@@ -105,6 +143,9 @@ class Plot1DPanelModel(HasPreferencesAtom):
 
     #: Model representing the state of each figure.
     models = List()
+
+    #: Should any change to a parameter lead to an automatic replot.
+    auto_refresh = Bool()
 
     #:
     # NOTE use more memory by caching intermediate results
@@ -114,6 +155,16 @@ class Plot1DPanelModel(HasPreferencesAtom):
 
     def __init__(self, workspace, datastore):
         self.models = [Plot1DModel(i, workspace, datastore) for i in range(4)]
+
+    def _post_setattr_auto_refresh(self, old, new):
+        """"""
+        if new:
+            for m in self.models:
+                m.enable_auto_refresh()
+                m.refresh_plot()
+        else:
+            for m in self.models:
+                m.disable_auto_refresh()
 
     def _post_setattr_optimize_for_speed(self, old, new):
         """"""

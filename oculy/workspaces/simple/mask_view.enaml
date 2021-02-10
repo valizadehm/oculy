@@ -8,7 +8,7 @@
 """View for editing mask parameters.
 
 """
-from
+from enaml.widgets.api import Container, ObjectCombo
 
 
 # workspace, plot_model available on parent
@@ -17,9 +17,7 @@ enamldef MaskView(Container):
     attr model
 
     ObjectCombo:
-        items << [e for e in workspace.file_content
-                if e not in [plot_model.selected_x_axis] +
-                plot_model.selected_y_axes]
+        items << plot_model.relevant_masks
         selected := model.content_id
         selected ::
             if not selected:

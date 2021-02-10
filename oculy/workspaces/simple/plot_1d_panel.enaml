@@ -68,7 +68,11 @@ enamldef DataSelection1DPlot(Page):  # XXX rename !
 
 
 enamldef DataSelection1DPanel(DockItem):
-    """Widget to select data to be plotted in 1D plots."""
+    """Widget to select data to be plotted in 1D plots.
+
+    Expect the panel_model to be available in the parent scope.
+
+    """
 
     #: Number of plots to display
     alias displayed_plots_nb: plt_nb.selected
@@ -111,10 +115,8 @@ enamldef DataSelection1DPanel(DockItem):
                 items << list(workspace.file_content)
                 selected_item << model.selected_x_axes.get(loop_item)
                 selected_item ::
-                    c = model.selected_x_axes.copy()
-                    for i in range(1, plt_nb.selected_item+1):
-                        c[i] = change["value"]
-                    model.selected_x_axes = c
+                    for m in panel_model.models:
+                        m.selected_x_axis = change["value"]
 
         Notebook: nb:
             tabs_closable = False
@@ -126,15 +128,17 @@ enamldef DataSelection1DPanel(DockItem):
 
         CheckBox: auto_re:
             text = "Auto-refresh"
+            checked := panel_model.auto_refresh
         PushButton: re:
             text = "Refresh"
             clicked::
-                pass # XXX call into the model
+                for m in panel_model.models:
+                    m.refresh_plots()
 
 
 enamldef Plot1DDockItem(DockItem):
     """"""
-    pass
+    attr model
 
 
 # workspace is accessible in the parent scope
