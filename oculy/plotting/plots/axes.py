@@ -398,8 +398,8 @@ class Axes(PlotElement):
         plot.axes = self
         self.plots[plot.id] = plot
 
-        # Activate teh proxy
-        plot.proxy.activate
+        # Activate the proxy
+        plot.proxy.activate()
 
     def remove_plot(self, id):
         """Remove a plot based on its ID."""

@@ -41,8 +41,8 @@ class Matplotlib1DLineProxy(Plot1DLineProxy):
         self._line.remove()
 
     def set_data(self, data):
-        data = (self.element.data.x, self.element.data.y)
-        ddata = (self.element.data.dx, self.element.data.dy)
+        data = (data.x, data.y)
+        ddata = (data.dx, data.dy)
         if self._invert:
             data = data[::-1]
             ddata = ddata[::-1]
