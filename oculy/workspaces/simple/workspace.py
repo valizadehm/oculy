@@ -55,7 +55,7 @@ class FileListUpdater(FileSystemEventHandler):
 
 
 class SimpleViewerWorkspace(Workspace):
-    """State of teh simple viewer workspace."""
+    """State of the simple viewer workspace."""
 
     #: Currently selected folder in which to look for data.
     selected_folder = Str().tag(pref=True)
