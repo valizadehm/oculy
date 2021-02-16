@@ -138,10 +138,11 @@ class DataStore(Atom):
         """Store data in the store.
 
         All intermediate node are create automatically, and metadata are updated based
-        on the provided values. Metadat with None as value are deleted.
+        on the provided values. Metadata with None as value are deleted, and entry with
+        None for both values and metadat are removed.
 
         The converters declared in the plugin are used to turn the provided values into
-        admissible values for teh data member of a DataArray.
+        admissible values for the data member of a DataArray.
 
         Parameters
         ----------
@@ -152,6 +153,7 @@ class DataStore(Atom):
         added = []
         updated = []
         meta_updated = []
+        removed = []
         # Sort the path to ensure we always create a parent node before its children
         for path in sorted(data):
             val, mval = data[path]
@@ -190,18 +192,17 @@ class DataStore(Atom):
                     k: v for k, v in current[d_key].metadata.items() if v
                 }
 
+            if val is None and mval is None:
+                removed.append(current_path)
+
             update = {}
             for k, v in zip(
-                ("added", "updated", "metadata_updated"),
-                (added, updated, meta_updated),
+                ("added", "removed" "updated", "metadata_updated"),
+                (added, removed, updated, meta_updated),
             ):
                 if v:
                     update[k] = v
             self.update = update
-
-    def remove_data(self, move: Mapping[str, str]):
-        """Remove data from one place to another."""
-        raise NotImplementedError  # FIXME
 
     def move_data(self, move: Mapping[str, str]):
         """Move data from one place to another."""
