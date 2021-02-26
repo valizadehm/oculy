@@ -36,7 +36,7 @@ class SyncManager(Atom):
 
     #: Members to be synced and the corresponding field in data store.
     #: Members name can contain a single . to specify that an attribute of the object
-    #: stored in the structure should be updated. If teh structure is frozen, it is
+    #: stored in the structure should be updated. If the structure is frozen, it is
     #: assumed it has a constructor able of handling member names as keyword argument.
     #: This is mostly useful for things that need to be updated in a single shot
     #: such as data driving a plot.

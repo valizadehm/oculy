@@ -107,7 +107,7 @@ class PlottingPlugin(HasPreferencesPlugin):
         # FIXME Validate specifications and  positions
 
         figure = Figure(backend=backend)
-        for axes_id in axes_specifications:
+        for axes_id in axes_positions:
             figure.add_axes(
                 axes_id, axes_positions[axes_id], axes_specifications.get(axes_id)
             )

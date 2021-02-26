@@ -49,7 +49,7 @@ class MatplotlibFigureProxy(FigureProxy):
         self._figure = Figure(constrained_layout=True)
 
         grid = self.element.grid
-        if grid:
+        if len(grid) > 1:
             raise RuntimeError("Multi-axes per figure are not supported yet")
 
     def deactivate(self):

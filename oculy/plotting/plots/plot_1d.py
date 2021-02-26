@@ -11,7 +11,7 @@
 from typing import Mapping
 
 import numpy as np
-from atom.api import Atom, Bool, Enum, Float, Typed
+from atom.api import Atom, Bool, Enum, Float, Str, Typed
 from enaml.colors import ColorMember, Color
 
 from .base import BasePlot, InvalidPlotData, mark_backend_unsupported
@@ -125,10 +125,10 @@ class Plot1DLine(Plot1D):
     color = ColorMember()
 
     #: Weight of the line
-    line_weight = Float()
+    line_weight = Float(1.0)
 
     #: Style of the line
-    line_style = Float()
+    line_style = Str()
 
     #: Should markers be displayed
     markers_enabled = Bool()

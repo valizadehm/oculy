@@ -27,9 +27,6 @@ class FigureWidget(RawWidget):
     #: Reference to the figure displayed by the widget.
     figure = d_(Typed(Figure))
 
-    #: Reference to the application workbench.
-    workbench = Typed(Workbench)
-
     def create_widget(self, parent):
         """Create the native widget linked to the figure."""
         if not self.figure.proxy:

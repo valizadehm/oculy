@@ -73,7 +73,13 @@ class Figure(PlotElement):
         self, id: str, position: GridPosition, axes: Optional[Axes] = None
     ) -> Axes:
         """Add an axes to the figure"""
-        pass  # FIXME not needed as long as we have a single axes per figure
+        axes = axes or Axes()
+        self.axes_set[id] = axes
+        self.grid[id] = position
+        if self.proxy and self.proxy.is_active:
+            axes.activate()
+
+        return axes
 
     def remove_axes(self, id: str):
         """"""
