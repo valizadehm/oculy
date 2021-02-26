@@ -34,8 +34,6 @@ from atom.api import (
 
 from oculy.io import BaseLoader
 
-# XXX will have to formalize sync mechanism ...
-
 
 def _plugin():
     from .plugin import DataStoragePlugin
