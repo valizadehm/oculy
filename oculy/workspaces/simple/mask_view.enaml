@@ -8,12 +8,13 @@
 """View for editing mask parameters.
 
 """
+import numpy as np
 from enaml.widgets.api import Container, ObjectCombo
 
 
 # workspace, plot_model available on parent
 enamldef MaskView(Container):
-    """"""
+    """View for a mask configuration."""
     attr model
 
     ObjectCombo:
@@ -22,8 +23,9 @@ enamldef MaskView(Container):
         selected ::
             if not selected:
                 allowed_value.items = []
-            # XXX grab the data and figure out the meaningful value
-            pass
+            allowed_value.items = list(
+                np.unique(plot_model._workspace._loader.load_data([selected]))
+            )
     ObjectCombo:
         # FIXME would be nice to find a way to access all the masks
         items << ["==", ">", ">=", "<", "<="]

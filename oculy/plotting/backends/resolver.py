@@ -8,7 +8,7 @@
 """Base class for plot resolver in charge of handling plotting for each class of plot.
 
 """
-from atom.api import Atom, Dict, Typed, Str
+from atom.api import Atom, Dict, Str, Typed
 from enaml.workbench.api import Workbench
 
 from ..plots.base import PlotElement, PlotElementProxy

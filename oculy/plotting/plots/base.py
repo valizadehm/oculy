@@ -8,7 +8,7 @@
 """Base classes for plotting element using a proxy.
 
 """
-from atom.api import Atom, Bool, ForwardTyped, Typed, Str, Dict, Int
+from atom.api import Atom, Bool, Dict, ForwardTyped, Int, Str, Typed
 from enaml.core.api import Declarative, d_, dfunc
 
 

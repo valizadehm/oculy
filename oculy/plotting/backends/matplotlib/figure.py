@@ -9,12 +9,12 @@
 
 """
 from atom.api import Bool, Typed
-from enaml.qt.QtWidgets import QWidget, QVBoxLayout
-from matpltolib.figure import Figure, Gridspec
+from enaml.qt.QtWidgets import QVBoxLayout, QWidget
+from matplotlib.backends.backend_qt5agg import FigureCanvas
 from matplotlib.backends.backend_qt5agg import (
-    FigureCanvas,
-    NavigationToolbar2QT as NavigationToolbar,  # FIXME used temporarily till we implement a nice tool bar
+    NavigationToolbar2QT as NavigationToolbar,,  # FIXME used temporarily till we implement a nice tool bar
 )
+from matpltolib.figure import Figure, Gridspec
 
 try:
     from mplcairo.qt import FigureCanvasQTCairo

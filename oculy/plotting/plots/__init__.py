@@ -10,22 +10,22 @@
 """
 from .axes import (
     Axes,
-    Axis,
-    Colorbar,
-    Cursor,
     AxesProxy,
+    Axis,
     AxisProxy,
+    Colorbar,
     ColorbarProxy,
+    Cursor,
     CursorProxy,
 )
 from .base import BasePlot, BasePlotProxy, Plot
 from .figure import Figure, FigureProxy, GridPosition
-from .plot_1d import Plot1DLine, Plot1DBar, Plot1DLineProxy, Plot1DBarProxy
+from .plot_1d import Plot1DBar, Plot1DBarProxy, Plot1DLine, Plot1DLineProxy
 from .plot_2d import (
-    Plot2DRectangularMesh,
     Plot2DContour,
-    Plot2DRectangularMeshProxy,
     Plot2DContourProxy,
+    Plot2DRectangularMesh,
+    Plot2DRectangularMeshProxy,
 )
 
 __all__ = (

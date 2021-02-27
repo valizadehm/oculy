@@ -9,9 +9,10 @@
 
 """
 import numpy as np
-from atom.api import Typed, Bool, Value
+from atom.api import Bool, Typed, Value
 from matplotlib.axes import Axes
-from ..plots import Plot2DMeshProxy, Plot2DContourProxy
+
+from ..plots import Plot2DContourProxy, Plot2DMeshProxy
 
 
 class Matplotlib2DRectangularMeshProxy(Plot2DMeshProxy):

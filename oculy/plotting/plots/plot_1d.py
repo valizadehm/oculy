@@ -12,7 +12,7 @@ from typing import Mapping
 
 import numpy as np
 from atom.api import Atom, Bool, Enum, Float, Str, Typed
-from enaml.colors import ColorMember, Color
+from enaml.colors import Color, ColorMember
 
 from .base import BasePlot, InvalidPlotData, mark_backend_unsupported
 

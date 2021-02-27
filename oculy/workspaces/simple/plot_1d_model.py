@@ -8,11 +8,12 @@
 """Model driving the 1D plot panel.
 
 """
-from atom.api import Atom, Bool, List, Str, Typed, ForwardTyped, Int
+from atom.api import Atom, Bool, ForwardTyped, Int, List, Str, Typed
 from glaze.utils.atom_util import HasPreferencesAtom
 
 from oculy.data.datastore import DataStore
-from oculy.plotting.plots import Figure
+from oculy.plotting.plots import Figure, Plot1DLine
+
 from .mask_parameters import MaskParameter
 
 
@@ -23,8 +24,6 @@ def _workspace():
 
 
 # FIXME add proper metadata to datastore (need to formalize the format)
-# XXX handle addition of new lines to the figure
-# XXX implement __init__
 class Plot1DModel(Atom):
     """Model for a 1D plot hadnling data querying, processing and display."""
 
@@ -39,7 +38,7 @@ class Plot1DModel(Atom):
 
     #:
     # Allow one pipeline per graph (use a notebook on the UI side)
-    pipeline = Typed()  # XXX need a dedicated container
+    pipeline = Typed()  # FIXME need a dedicated container
 
     #: Is auto refresh currently enabled. This attribute reflects the user selection
     #: but not necessarily the presence of event handler that can be disabled
@@ -47,8 +46,11 @@ class Plot1DModel(Atom):
     auto_refresh = Bool()
 
     def __init__(self, index, workspace, datastore):
-        # XXX Create the figure, and store the datastore.
-        pass
+        self._workspace = workspace
+        self.index = index
+        self._datastore = datastore
+        plot_plugin = workspace.workbench.get_plugin("oculy.plotting")
+        self._figure = plot_plugin.create_figure(f"SW-1D-{index}")
 
     def refresh_plot(self) -> None:
         """Force the refreshing of the plot."""
@@ -58,23 +60,47 @@ class Plot1DModel(Atom):
         )
 
         # FIXME handle pipeline
-
+        axes = self._figure.axes_set["default"]
+        # Update the X axis data
         update = {
             f"sviewer/plot_1d_{self._index}/x": (
                 data[self.selected_y_axes].values,
                 None,
             )
         }
+        # Update the Y axes data
         update.update(
             {
-                # XXX set metadata to indicate data origin
+                # FIXME set metadata to indicate data origin
                 f"sviewer/plot_1d_{self._index}/y_{i}": (data[y_name].values, None)
                 for i, y_name in enumerate(self.selected_y_axes)
             }
         )
+        # Delete data for axes that do not exist anymore
+        if len(axes.plots) > len(self.selected_y_axes):
+            update.update(
+                {
+                    # FIXME set metadata to indicate data origin
+                    f"sviewer/plot_1d_{self._index}/y_{i}": (None, None)
+                    for i in range(len(self.selected_y_axes), len(axes.plots))
+                }
+            )
+
+        # Push a single update
         self._datastore.store_data(update)
 
-        # XXX handle adding new line plots if relevant
+        # Create live plots for the newly selected y axes
+        if len(axes.plots) < len(self.selected_y_axes):
+            pp = self._workspace.workbench.get_plugin("oculy.plotting")
+            for i in range(len(axes.plots), len(self.selected_y_axes)):
+                pp.add_plot(
+                    f"SW-1D-{self._index}",
+                    Plot1DLine(),
+                    sync_data={
+                        "data.x": f"sviewer/plot_1d_{self._index}/x",
+                        "data.y": f"sviewer/plot_1d_{self._index}/y_{i}",
+                    },
+                )
 
     # --- Private API
 
@@ -84,7 +110,8 @@ class Plot1DModel(Atom):
     #: Reference to the application global datastore
     _datastore = Typed(DataStore)
 
-    #: Index of the panel identifying it the datastore.
+    #: Index of the panel identifying its data in the datastore and its figure
+    #: in the plotting plugin.
     _index = Int()
 
     #: Reference to the figure being displayed
@@ -93,7 +120,7 @@ class Plot1DModel(Atom):
     #: Is auto refresh currently enabled at this instant.
     _auto_refresh = Bool()
 
-    # Event handling
+    # --- Event handling
 
     def _post_setattr_auto_refresh(self, old, new) -> None:
         """Connect observers to auto refresh when a plot input parameter change."""
@@ -138,22 +165,8 @@ class Plot1DModel(Atom):
         self._datastore.store_data({f"sviewer/plot_1d_{self._index}/x": (new_x, None)})
 
     def _handle_selected_y_axes_change(self, change):
-        """ """
-        data = self._workspace._loader.load_data(
-            change["value"],
-            {m.mask_id: (m.content_id, m.value) for m in self.filters},
-        )
-
-        self._datastore.store_data(
-            {
-                # XXX set metadata to indicate data origin
-                f"sviewer/plot_1d_{self._index}/y_{i}": (data[y_name].values, None)
-                for i, y_name in enumerate(change["value"])
-            }
-        )
-
-        if change["oldvalue"] and len(change["oldvalue"]) < len(change["value"]):
-            pass  # XXX Add extra plots
+        """Replot data when the slected y axes change."""
+        self.refresh_plot()
 
     def _handle_filters_change(self, change):
         """Replot data when a filter parameter change."""
@@ -225,5 +238,5 @@ class Plot1DPanelModel(HasPreferencesAtom):
 
     def _post_setattr_optimize_for_speed(self, old, new):
         """"""
-        # XXX clean any existing cache when disabling
+        # FIXME clean any existing cache when disabling (currently there is no cache)
         pass

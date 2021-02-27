@@ -13,7 +13,7 @@ from enaml.widgets.api import Container, DockArea
 
 from .file_selector import FileSelector
 from .plot_1d_panel import Plot1DPanel
-from .plot_2d_panel import Plot2DPanel
+#from .plot_2d_panel import Plot2DPanel
 
 enamldef SimpleViewerContent(Container):
 
@@ -21,7 +21,7 @@ enamldef SimpleViewerContent(Container):
 
     DockArea:
 
-        layout = HSplitLayout("file_selector", TabLayout("1d_panel", "2d_panel"))
+        layout = HSplitLayout("file_selector", TabLayout("1d_panel",))
 
         style = 'metro'
 
@@ -31,5 +31,5 @@ enamldef SimpleViewerContent(Container):
         Plot1DPanel:
             name = "1d_panel"
 
-        Plot2DPanel:
-            name = "2d_panel"
+        #Plot2DPanel:
+        #     name = "2d_panel"

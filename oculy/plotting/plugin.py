@@ -14,8 +14,8 @@ from typing import Mapping, Optional, Tuple
 
 from atom.api import Dict, Str, Typed
 from glaze.utils.plugin_tools import (
-    HasPreferencesPlugin,
     ExtensionsCollector,
+    HasPreferencesPlugin,
     make_extension_validator,
 )
 

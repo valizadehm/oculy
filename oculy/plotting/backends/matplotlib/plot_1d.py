@@ -9,10 +9,10 @@
 """
 from atom.api import Bool, Typed
 from matplotlib.axes import Axes
-from matplotlib.lines import Lines2D
 from matplotlib.container import BarContainer
+from matplotlib.lines import Lines2D
 
-from ..plots import Plot1DLineProxy, Plot1DBarProxy
+from ..plots import Plot1DBarProxy, Plot1DLineProxy
 
 
 class Matplotlib1DLineProxy(Plot1DLineProxy):

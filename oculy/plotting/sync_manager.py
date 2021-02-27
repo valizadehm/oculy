@@ -15,6 +15,7 @@ from atom.api import Atom, Dict, Typed
 from glaze.utils.atom_utils import tagged_members
 
 from oculy.data import DataStore
+
 from .plots import BasePlot
 
 

@@ -14,7 +14,7 @@ import numpy as np
 from atom.api import Typed
 from enaml.workbench.api import Plugin
 
-from .datastore import DataStore, DataArray, Dataset
+from .datastore import DataArray, Dataset, DataStore
 
 
 class DataStoragePlugin(Plugin):

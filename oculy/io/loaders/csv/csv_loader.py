@@ -18,6 +18,7 @@ from pandas import read_csv
 from xarray import Dataset
 
 from oculy.transformations import MaskSpecification
+
 from ...loader import BaseLoader, DataKeyError
 
 

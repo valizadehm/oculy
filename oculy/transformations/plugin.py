@@ -12,8 +12,8 @@ from typing import Mapping
 
 import numpy as np
 from atom.api import List, Typed
-from glaze.utils.plugin_tools import ExtensionsCollector, make_extension_validator
 from glaze.utils.atom_util import HasPreferencesAtom
+from glaze.utils.plugin_tools import ExtensionsCollector, make_extension_validator
 
 from .mask import Mask, MaskSpecification
 from .node import Node

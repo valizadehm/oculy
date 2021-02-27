@@ -15,8 +15,8 @@ from .axes import (
     MatplotlibCursorProxy,
 )
 from .figure import MatplotlibFigureProxy
-from .plot_1d import Matplotlib1DLineProxy, Matplotlib1DBarProxy
-from .plot_2d import Matplotlib2DRectangularMeshProxy, Matplotlib2DContourProxy
+from .plot_1d import Matplotlib1DBarProxy, Matplotlib1DLineProxy
+from .plot_2d import Matplotlib2DContourProxy, Matplotlib2DRectangularMeshProxy
 
 __all__ = (
     "MatplotlibAxesProxy",

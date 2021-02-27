@@ -11,7 +11,7 @@
 from typing import Mapping
 
 import numpy as np
-from atom.api import Atom, Typed, Str
+from atom.api import Atom, Str, Typed
 
 from .base import BasePlot, InvalidPlotData, mark_backend_unsupported
 

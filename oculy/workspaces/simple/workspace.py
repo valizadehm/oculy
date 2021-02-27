@@ -13,6 +13,10 @@ import os
 from atom.api import Bool, Dict, List, Str, Typed
 from enaml.workbench.ui.api import Workspace
 from glaze.utils import invoke_command
+from glaze.utils.atom_util import (
+    preferences_from_members,
+    update_members_from_preferences,
+)
 from watchdog.events import (
     FileCreatedEvent,
     FileDeletedEvent,
@@ -21,15 +25,13 @@ from watchdog.events import (
 )
 from watchdog.observers import Observer
 from watchdog.observers.api import ObservedWatch
-from glaze.utils.atom_util import (
-    preferences_from_members,
-    update_members_from_preferences,
-)
 
 from oculy.data import Dataset
 from oculy.io.loader import BaseLoader, BaseLoaderView
+
 from .plot_1d_model import Plot1DPanelModel
-from .plot_2d_model import Plot2DPanelModel
+
+# from .plot_2d_model import Plot2DPanelModel
 
 
 class FileListUpdater(FileSystemEventHandler):
@@ -108,7 +110,7 @@ class SimpleViewerWorkspace(Workspace):
         data = invoke_command(self.workbench, "glaze.state.get_state", "oculy.data")
         del data["_simple_viewer"]
 
-        # XXX Delete 1D and 2D plots
+        # FIXME Delete 1D and 2D plots
 
     def get_loader_view(self) -> BaseLoaderView:
         """Get a config view for the current loader."""

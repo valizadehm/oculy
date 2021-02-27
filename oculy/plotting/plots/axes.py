@@ -8,23 +8,14 @@
 """Axis, axes, colorbar and their associated proxy.
 
 """
-from typing import Any, Optional, Sequence, Tuple, Mapping
+from typing import Any, Mapping, Optional, Sequence, Tuple
 
-from atom.api import (
-    Str,
-    ForwardTyped,
-    Typed,
-    Bool,
-    List,
-    Dict,
-    Float,
-    Tuple as ATuple,
-    Enum,
-    Int,
-)
+from atom.api import Bool, Dict, Enum, Float, ForwardTyped, Int, List, Str
+from atom.api import Tuple as ATuple
+from atom.api import Typed
 
-from .base import BasePlot, PlotElementProxy, PlotElement, mark_backend_unsupported
 from ..backends.resolver import BackendResolver
+from .base import BasePlot, PlotElement, PlotElementProxy, mark_backend_unsupported
 
 
 class AxisProxy(PlotElementProxy):

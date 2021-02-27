@@ -1,0 +1,19 @@
+# --------------------------------------------------------------------------------------
+# Copyright 2021 by Oculy Authors, see git history for more details.
+#
+# Distributed under the terms of the BSD license.
+#
+# The full license is in the file LICENCE, distributed with this software.
+# --------------------------------------------------------------------------------------
+"""Application manifest handling branding and default menus.
+
+"""
+from enaml.workbench.api import PluginManifest, Extension
+from enaml.workbenh.ui.api import MenuItem, ActionItem
+
+
+enamldef SimpleViewerManifest(PluginManifest):
+    """Provide the dedicated workspace and specific menus and commands."""
+
+    Extension:
+        id = ""

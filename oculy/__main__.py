@@ -18,16 +18,16 @@ from enaml.workbench.api import Workbench
 from glaze.utils.argparse import ArgParser, extend_parser
 
 with enaml.imports():
-    from enaml.stdlib.message_box import MessageBox, DialogButton
+    from enaml.stdlib.message_box import DialogButton, MessageBox
     from enaml.workbench.core.core_manifest import CoreManifest
     from enaml.workbench.ui.ui_manifest import UIManifest
-    from glaze.plugins.lifecycle.manifest import LifecycleManifest
-    from glaze.plugins.preferences.manifest import PreferencesManifest
-    from glaze.plugins.states.manifest import StateManifest
     from glaze.plugins.errors.manifest import ErrorsManifest
     from glaze.plugins.icons.manifest import IconManagerManifest
-    from glaze.plugins.packages.manifest import PackagesManifest
+    from glaze.plugins.lifecycle.manifest import LifecycleManifest
     from glaze.plugins.log.manifest import LogManifest
+    from glaze.plugins.packages.manifest import PackagesManifest
+    from glaze.plugins.preferences.manifest import PreferencesManifest
+    from glaze.plugins.states.manifest import StateManifest
 
 
 def setup_thread_excepthook():
@@ -80,7 +80,7 @@ def main(cmd_line_args=None):
     """Main entry point of the Oculy application."""
     # Build parser from ArgParser and parse arguments
     parser = ArgParser()
-    parser.add_choice("workspaces", "exopy.measurement.workspace", "measurement")
+    parser.add_choice("workspaces", "oculy.workspaces.simple", "simple")
     parser.add_argument(
         "-s", "--nocapture", help="Don't capture stdout/stderr", action="store_true"
     )
@@ -88,7 +88,7 @@ def main(cmd_line_args=None):
         "-w",
         "--workspace",
         help="Select start-up workspace",
-        default="single",
+        default="simple",
         choices="workspaces",
     )
     parser.add_argument(

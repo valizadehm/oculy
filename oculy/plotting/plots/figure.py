@@ -8,11 +8,12 @@
 """
 """
 from typing import Optional
-from atom.api import Atom, Int, Dict, Typed
 
-from .base import PlotElement, PlotElementProxy
-from .axes import Axes
+from atom.api import Atom, Dict, Int, Typed
+
 from ..backends.resolver import BackendResolver
+from .axes import Axes
+from .base import PlotElement, PlotElementProxy
 
 
 class FigureProxy(PlotElementProxy):

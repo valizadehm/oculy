@@ -8,6 +8,6 @@
 """Data loading/exporting for Oculy.
 
 """
-from .loader import BaseLoader, Loader, BaseLoaderView
+from .loader import BaseLoader, BaseLoaderView, Loader
 
 __all__ = ("BaseLoader", "Loader", "BaseLoaderView")

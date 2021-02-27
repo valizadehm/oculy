@@ -10,10 +10,10 @@
 """
 from typing import Dict, List, Type
 
-from atom.api import Str, Int
+from atom.api import Int, Str
 from enaml.core.api import Declarative, d_, d_func
 
-from ..plots.base import PlotElement, PlotElementProxy, BasePlot, BasePlotProxy
+from ..plots.base import BasePlot, BasePlotProxy, PlotElement, PlotElementProxy
 
 
 class Backend(Declarative):

@@ -13,7 +13,7 @@ from matplotlib.axes import Axes
 from matplotlib.axis import Axis
 from matplotlib.colorbar import make_axes
 
-from oculy.plotting.plots import AxisProxy, AxesProxy, ColorbarProxy, CursorProxy
+from oculy.plotting.plots import AxesProxy, AxisProxy, ColorbarProxy, CursorProxy
 
 
 class MatplotlibAxisProxy(AxisProxy):
