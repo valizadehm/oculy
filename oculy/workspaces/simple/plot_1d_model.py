@@ -8,8 +8,8 @@
 """Model driving the 1D plot panel.
 
 """
-from atom.api import Atom, Bool, ForwardTyped, Int, List, Str, Typed
-from glaze.utils.atom_util import HasPreferencesAtom
+from atom.api import Bool, ForwardTyped, Int, List, Str, Typed, Value
+from glaze.utils.atom_util import HasPrefAtom
 
 from oculy.data.datastore import DataStore
 from oculy.plotting.plots import Figure, Plot1DLine
@@ -24,7 +24,7 @@ def _workspace():
 
 
 # FIXME add proper metadata to datastore (need to formalize the format)
-class Plot1DModel(Atom):
+class Plot1DModel(HasPrefAtom):
     """Model for a 1D plot hadnling data querying, processing and display."""
 
     #: Selected entry of the data to use as x axis for each plot.
@@ -38,7 +38,7 @@ class Plot1DModel(Atom):
 
     #:
     # Allow one pipeline per graph (use a notebook on the UI side)
-    pipeline = Typed()  # FIXME need a dedicated container
+    pipeline = Value()  # FIXME need a dedicated container
 
     #: Is auto refresh currently enabled. This attribute reflects the user selection
     #: but not necessarily the presence of event handler that can be disabled
@@ -47,7 +47,7 @@ class Plot1DModel(Atom):
 
     def __init__(self, index, workspace, datastore):
         self._workspace = workspace
-        self.index = index
+        self._index = index
         self._datastore = datastore
         plot_plugin = workspace.workbench.get_plugin("oculy.plotting")
         self._figure = plot_plugin.create_figure(f"SW-1D-{index}")
@@ -210,7 +210,7 @@ class Plot1DModel(Atom):
         self.filters = filters
 
 
-class Plot1DPanelModel(HasPreferencesAtom):
+class Plot1DPanelModel(HasPrefAtom):
     """Model representing the current state of the 1D plots panel."""
 
     #: Model representing the state of each figure.

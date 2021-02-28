@@ -28,6 +28,12 @@ with enaml.imports():
     from glaze.plugins.packages.manifest import PackagesManifest
     from glaze.plugins.preferences.manifest import PreferencesManifest
     from glaze.plugins.states.manifest import StateManifest
+    from oculy.oculy_manifest import OculyManifest
+    from oculy.data.manifest import DataStorageManifest
+    from oculy.io.manifest import IOManifest
+    from oculy.plotting.manifest import PlottingManifest
+    from oculy.transformations.manifest import DataTransformerManifest
+    from oculy.workspaces.simple.manifest import SimpleViewerManifest
 
 
 def setup_thread_excepthook():
@@ -80,7 +86,7 @@ def main(cmd_line_args=None):
     """Main entry point of the Oculy application."""
     # Build parser from ArgParser and parse arguments
     parser = ArgParser()
-    parser.add_choice("workspaces", "oculy.workspaces.simple", "simple")
+    parser.add_choice("workspaces", "oculy.simple_viewer", "simple")
     parser.add_argument(
         "-s", "--nocapture", help="Don't capture stdout/stderr", action="store_true"
     )
@@ -128,15 +134,21 @@ def main(cmd_line_args=None):
     workbench.register(LifecycleManifest())
     workbench.register(StateManifest())
     workbench.register(ErrorsManifest())
-    workbench.register(PreferencesManifest())
+    workbench.register(PreferencesManifest(application_name="oculy"))
     workbench.register(IconManagerManifest())
     workbench.register(LogManifest())
     workbench.register(PackagesManifest())
+    workbench.register(OculyManifest())
+    workbench.register(DataStorageManifest())
+    workbench.register(IOManifest())
+    workbench.register(PlottingManifest())
+    workbench.register(DataTransformerManifest())
+    workbench.register(SimpleViewerManifest())
 
     ui = workbench.get_plugin(u"enaml.workbench.ui")  # Create the application
 
     try:
-        app = workbench.get_plugin("glaze.lifecyle")
+        app = workbench.get_plugin("glaze.lifecycle")
         app.run_app_startup(args)
     except Exception as e:
         text = "Error starting plugins"
@@ -166,6 +178,11 @@ def main(cmd_line_args=None):
     core.invoke_command("enaml.workbench.ui.close_workspace", {}, workbench)
 
     # Unregister all contributed packages
+    workbench.unregister("oculy.simple_viewer")
+    workbench.unregister("oculy.data")
+    workbench.unregister("oculy.io")
+    workbench.unregister("oculy.plotting")
+    workbench.unregister("oculy.data_transformer")
     workbench.unregister("glaze.packages")
     workbench.unregister("glaze.icons")
     workbench.unregister("glaze.preferences")

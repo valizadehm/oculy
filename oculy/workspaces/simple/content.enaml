@@ -16,6 +16,7 @@ from .plot_1d_panel import Plot1DPanel
 #from .plot_2d_panel import Plot2DPanel
 
 enamldef SimpleViewerContent(Container):
+    """"""
 
     attr workspace
 
@@ -30,6 +31,7 @@ enamldef SimpleViewerContent(Container):
 
         Plot1DPanel:
             name = "1d_panel"
+            panel_model = workspace._1d_plots
 
         #Plot2DPanel:
         #     name = "2d_panel"

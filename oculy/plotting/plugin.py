@@ -40,7 +40,7 @@ class PlottingPlugin(HasPreferencesPlugin):
         """Collect all extensions and generate resolver for each backend."""
         self._plots = ExtensionsCollector(
             workbench=self.workbench,
-            extension_point="oculy.plotting.plots",
+            point="oculy.plotting.plots",
             ext_class=Plot,
             validate_ext=make_extension_validator(base_cls=Plot, fn_names=("get_cls",)),
         )
@@ -48,10 +48,10 @@ class PlottingPlugin(HasPreferencesPlugin):
 
         self._backends = ExtensionsCollector(
             workbench=self.workbench,
-            extension_point="oculy.plotting.rendering_backends",
+            point="oculy.plotting.rendering-backends",
             ext_class=Backend,
             validate_ext=make_extension_validator(
-                base=Backend,
+                base_cls=Backend,
                 attributes=("name", "priority"),
                 fn_names=("proxies", "plot_proxies", "colormaps"),
             ),
@@ -106,7 +106,7 @@ class PlottingPlugin(HasPreferencesPlugin):
 
         # FIXME Validate specifications and  positions
 
-        figure = Figure(backend=backend)
+        figure = Figure(backend_name=backend)
         for axes_id in axes_positions:
             figure.add_axes(
                 axes_id, axes_positions[axes_id], axes_specifications.get(axes_id)

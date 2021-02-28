@@ -13,7 +13,7 @@ from typing import Mapping, Sequence, Type
 import enaml
 from atom.api import Callable, Dict, Int, List, Str
 from enaml.core.api import Declarative, d_, d_func
-from glaze.utils.atom_util import HasPreferencesAtom
+from glaze.utils.atom_util import HasPrefAtom
 from xarray import Dataset
 
 from oculy.transformations import MaskSpecification
@@ -37,7 +37,7 @@ class DataKeyError(KeyError):
 
 
 # NOTE use an actual instance as a base to store preferences (Dict per id on plugin)
-class BaseLoader(HasPreferencesAtom):
+class BaseLoader(HasPrefAtom):
     """"""
 
     #: Path to the on-disk file storing the data

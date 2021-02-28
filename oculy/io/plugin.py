@@ -12,7 +12,7 @@ import os
 from typing import List, Mapping
 
 from atom.api import Dict, Typed
-from glaze.utils.atom_util import HasPreferencesAtom
+from glaze.utils.atom_util import HasPrefAtom
 from glaze.utils.plugin_tools import ExtensionsCollector, make_extension_validator
 from xarray import Dataset
 
@@ -23,7 +23,7 @@ from .loader import BaseLoader, Loader
 LOADER_POINT = "oculy.io.loaders"
 
 
-class IOPlugin(HasPreferencesAtom):
+class IOPlugin(HasPrefAtom):
     """Plugin responsible for handling IO
 
     This plugin is in particular in charge of loading experimental data to be

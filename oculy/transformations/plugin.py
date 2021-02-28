@@ -12,7 +12,7 @@ from typing import Mapping
 
 import numpy as np
 from atom.api import List, Typed
-from glaze.utils.atom_util import HasPreferencesAtom
+from glaze.utils.atom_util import HasPrefAtom
 from glaze.utils.plugin_tools import ExtensionsCollector, make_extension_validator
 
 from .mask import Mask, MaskSpecification
@@ -25,7 +25,7 @@ NODES_POINT = "oculy.transformers.compute_nodes"
 
 # FIXME add proper node support (namespaced and with automatic classification
 # based on signature)
-class TransformerPlugin(HasPreferencesAtom):
+class TransformerPlugin(HasPrefAtom):
     """Plugin responsible for handling data transformation including masking."""
 
     #: Ids of the contributed masks

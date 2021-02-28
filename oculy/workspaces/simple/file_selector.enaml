@@ -8,8 +8,9 @@
 """File selector widget.
 
 """
+from enaml.core.api import Include
 from enaml.layout.api import hbox, vbox
-from enaml.widget.api import (
+from enaml.widgets.api import (
     CheckBox,
     Container,
     DockItem,
@@ -21,7 +22,7 @@ from enaml.widget.api import (
     PushButton,
     ToolButton,
 )
-from glaze.plugins.icons import get_icons
+from glaze.plugins.icons import get_icon
 
 
 # workbench and workspace are accessible through the dynamic namespacing
@@ -40,7 +41,7 @@ enamldef FileSelector(DockItem):
                 read_only = True
                 text << workspace.selected_folder
             ToolButton: folder_tool:
-                icon = get_icons(workbench, "open-folder")
+                icon = get_icon(workbench, "open-folder")
                 clicked ::
                     path = FileDialogEx.get_existing_directory(self)
                     if path:
@@ -62,11 +63,11 @@ enamldef FileSelector(DockItem):
             # NOTE Hide if we decide to use a different view
             ObjectCombo: file_combo:
                 items << workspace.available_files
-                selected_item := workspace.selected_file
+                selected := workspace.selected_file
             ObjectCombo: loader_combo:
                 items << workspace.matching_loaders
                 enabled << len(items) > 1
-                selected_item := workspace.selected_loader
+                selected := workspace.selected_loader
             PushButton: load_button:
                 text = "Load"
                 clicked ::

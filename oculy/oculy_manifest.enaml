@@ -9,11 +9,39 @@
 
 """
 from enaml.workbench.api import PluginManifest, Extension
-from enaml.workbenh.ui.api import MenuItem, ActionItem
+from enaml.workbench.ui.api import ActionItem, Branding, MenuItem
 
 
-enamldef SimpleViewerManifest(PluginManifest):
-    """Provide the dedicated workspace and specific menus and commands."""
+enamldef OculyManifest(PluginManifest):
+    """Application branding and menus."""
+
+    id = "oculy"
 
     Extension:
-        id = ""
+        id = "enaml.workbench.ui.branding"
+        Branding:
+            title = "Oculy"
+
+    Extension:
+        id = "oculy.menus"
+        point = "enaml.workbench.ui.actions"
+        MenuItem:
+            path = "/file"
+            before = "prefs"
+            label = "File"
+        ActionItem:
+            path = "/file/quit"
+            label = "Quit"
+            command = "enaml.workbench.ui.close_window"
+
+        MenuItem:
+            path = "/tools"
+            after = "prefs"
+            label = "Tools"
+        MenuItem:
+            path = "/tools/workspace"
+            label = "Select workspace"
+        ActionItem:
+            path = "/tools/workspace/close"
+            label = "Close workspace"
+            command = "enaml.workbench.ui.close_workspace"

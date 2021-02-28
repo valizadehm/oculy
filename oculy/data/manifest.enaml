@@ -8,8 +8,9 @@
 """Central data storage system for Oculy.
 
 """
-from enaml.workbench.api import PluginManifest
+from typing import TYPE_CHECKING
 
+from enaml.workbench.api import PluginManifest
 
 # =============================================================================
 # --- Factories ---------------------------------------------------------------

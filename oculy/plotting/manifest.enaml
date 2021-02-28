@@ -8,9 +8,11 @@
 """Plotting plugin manifest.
 
 """
-from matplotlib.
+from typing import TYPE_CHECKING
+
 from enaml.workbench.api import PluginManifest, Extension, ExtensionPoint
 
+from .backends import Backend
 from .plots import (
     Axes,
     Axis,
@@ -41,31 +43,35 @@ enamldef PlottingManifest(PluginManifest):
 
     """
     id = "oculy.plotting"
-    factory = None  # FIXME
+    factory = plotting_plugin_factory
 
     ExtensionPoint:
         id = "plots"
 
     ExtensionPoint:
-        id = "rendering-backend"
+        id = "rendering-backends"
 
     Extension:
         id = "builtin-plots"
         point = "oculy.plotting.plots"
         Plot:
             id = "line-plot"
+            description = "Line plot supporting markers."
             get_cls => ():
                 return Plot1DLine
-         Plot:
+        Plot:
             id = "histogram"
+            description = "Histogram as a bar plot with contiguous bars."
             get_cls => ():
                 return Plot1DHistogram
         Plot:
             id = "rectangular-mesh"
+            description = "Color plot on a reactangular mesh."
             get_cls => ():
                 return Plot2DRectangularMesh
         Plot:
             id = "contour"
+            description = "Contour plot."
             get_cls => ():
                 return Plot2DContour
 
@@ -73,7 +79,7 @@ enamldef PlottingManifest(PluginManifest):
         id = "matplotlib-backend"
         point = "oculy.plotting.rendering-backend"
         Backend:
-            id = "matplotlib"
+            name = "matplotlib"
             proxies => ():
                 from .backends.matplotlib import (
                     MatplotlibAxesProxy,
@@ -86,7 +92,7 @@ enamldef PlottingManifest(PluginManifest):
                         Axis: MatplotlibAxisProxy,
                         Colorbar: MatplotlibColorbarProxy,
                         Cursor: MatplotlibCursorProxy,
-                        Figure, MatplotlibFigureProxy}
+                        Figure: MatplotlibFigureProxy}
             plot_proxies => ():
                 from .backend.matplotlib import (
                     Matplotlib1DLineProxy,

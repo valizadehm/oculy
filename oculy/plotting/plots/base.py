@@ -9,7 +9,7 @@
 
 """
 from atom.api import Atom, Bool, Dict, ForwardTyped, Int, Str, Typed
-from enaml.core.api import Declarative, d_, dfunc
+from enaml.core.api import Declarative, d_, d_func
 
 
 def mark_backend_unsupported(func):
@@ -112,10 +112,13 @@ class InvalidPlotData(Exception):
 # declarative part for a plot
 class Plot(Declarative):
 
-    #:
+    #: Id of the plot identifying the contributed plot.
     id = d_(Str())
 
-    #:
-    @dfunc
+    #: Description of the kind of plot being declared
+    description = d_(Str())
+
+    @d_func
     def get_cls(self) -> BasePlot:
+        """Access the class implementing the logic."""
         pass

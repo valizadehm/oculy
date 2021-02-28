@@ -12,7 +12,7 @@ from collections import defaultdict
 from typing import Any, Mapping, MutableMapping
 
 from atom.api import Atom, Dict, Typed
-from glaze.utils.atom_utils import tagged_members
+from glaze.utils.atom_util import tagged_members
 
 from oculy.data import DataStore
 

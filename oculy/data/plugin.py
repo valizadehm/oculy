@@ -21,13 +21,13 @@ class DataStoragePlugin(Plugin):
     """Plugin handling storing for the whole application."""
 
     #: Data store object handling the book keeping.
-    data = Typed(DataStore)
+    datastore = Typed(DataStore)
 
     #: Converters used to turn input data into valid data for the datastore.
     converters = None  # FIXME
 
     def start(self):
-        pass
+        self.datastore = DataStore()
 
     def stop(self):
         pass

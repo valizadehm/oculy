@@ -148,16 +148,16 @@ class DataStore(Atom):
         # Sort the path to ensure we always create a parent node before its children
         for path in sorted(data):
             val, mval = data[path]
-            current = self
+            current = self._data
             current_path = ""
             split_path = path.split("/")
             for p in split_path[:-1]:
-                if p not in current._data:
-                    n_path = current_path + "/" + p
-                    current._data[n_path] = Dataset()
+                if p not in current:
+                    n_path = current_path + "/" + p if current_path else p
+                    current[n_path] = Dataset()
                     added.append(n_path)
 
-                current = current[p]
+                current = current[p]._data
                 current_path += "/" + p
 
             d_key = split_path[-1]

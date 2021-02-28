@@ -8,7 +8,12 @@
 """Manifest for Oculy IO plugin.
 
 """
+from typing import TYPE_CHECKING
+
 from enaml.workbench.api import PluginManifest, Extension, ExtensionPoint
+from enaml.workbench.core.api import Command
+
+from glaze.utils.plugin_tools import make_handler
 from .loader import Loader
 
 PLUGIN_ID = "oculy.io"

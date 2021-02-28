@@ -8,21 +8,31 @@
 """Simple workspace manifest.
 
 """
-from enaml.workbench.api import PluginManifest, Extension
+from typing import TYPE_CHECKING
 
-from .workspace import SimpleViewerWorkspace
-from .content import SimpleViewerContent
+from enaml.workbench.api import Extension, PluginManifest, Workbench
+
+if TYPE_CHECKING:
+    from .workspace import SimpleViewerWorkspace
+
+
+def workspace_factory(workbench: Workbench) -> "SimpleViewerContent":
+    """Factory function for the workspace.
+
+    Delayed import allow faster start-up.
+
+    """
+    from .workspace import SimpleViewerWorkspace
+    return SimpleViewerWorkspace()
 
 
 enamldef SimpleViewerManifest(PluginManifest):
     """Provide the dedicated workspace and specific menus and commands."""
 
+    #: Id of the manifest
+    id = "oculy.workspaces.simple_viewer"
+
     Extension:
         id = "oculy.simple_viewer"
-        point = "enaml.workbench.ui.workspace"
-
-        SimpleViewerWorkspace:
-            window_title = "Simple viewer"
-            content = SimpleViewerContent
-
-    # Add a command to display a log panel
+        point = "enaml.workbench.ui.workspaces"
+        factory = workspace_factory

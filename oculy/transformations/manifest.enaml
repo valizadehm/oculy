@@ -8,6 +8,8 @@
 """Manifest for the data transformation plugin.
 
 """
+from typing import TYPE_CHECKING
+
 from enaml.workbench.api import PluginManifest, Extension, ExtensionPoint
 from glaze.plugins.states import State
 
