@@ -300,13 +300,22 @@ class Axes(PlotElement):
     legends = Dict(str, str)
 
     #: Projection to use on the axes.
-    projection = Enum(("cartesian", "polar"))
+    projection = Enum("cartesian", "polar")
+
+    def __init__(self, **kwargs):
+        super().__init__(**kwargs)
+        if not self.bottom_axis or self.top_axis:
+            self.bottom_axis = Axis(axes=self)
+        if not self.left_axis or self.right_axis:
+            self.left_axis = Axis(axes=self)
 
     def initialize(self, resolver):
         """Initialize the proxy of the object and the axes."""
         self._resolver = resolver
         super().initialize(resolver)
         for axis in (self.left_axis, self.bottom_axis, self.right_axis, self.top_axis):
+            if not axis:
+                continue
             axis.backend_name = self.backend_name
             axis.initialize(resolver)
         if self.colorbar:
@@ -319,8 +328,9 @@ class Axes(PlotElement):
             p.backend_name = self.backend_name
             p.initialize(resolver)
 
-        #: Conserve
-        self._plugin
+        #: Conserve a reference to the resolver to be able to add more elements
+        #: later on.
+        self._resolver = resolver
 
     def finalize(self):
         """Finalize the proxy of the figure."""

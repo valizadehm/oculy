@@ -10,9 +10,9 @@
 from atom.api import Bool, Typed
 from matplotlib.axes import Axes
 from matplotlib.container import BarContainer
-from matplotlib.lines import Lines2D
+from matplotlib.lines import Line2D
 
-from ..plots import Plot1DBarProxy, Plot1DLineProxy
+from oculy.plotting.plots import Plot1DBarProxy, Plot1DLineProxy
 
 
 class Matplotlib1DLineProxy(Plot1DLineProxy):
@@ -56,7 +56,7 @@ class Matplotlib1DLineProxy(Plot1DLineProxy):
     _invert = Bool()
 
     #: Line created by the backend.
-    _line = Typed(Lines2D)
+    _line = Typed(Line2D)
 
 
 class Matplotlib1DBarProxy(Plot1DBarProxy):

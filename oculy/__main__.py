@@ -28,9 +28,10 @@ with enaml.imports():
     from glaze.plugins.packages.manifest import PackagesManifest
     from glaze.plugins.preferences.manifest import PreferencesManifest
     from glaze.plugins.states.manifest import StateManifest
-    from oculy.oculy_manifest import OculyManifest
+
     from oculy.data.manifest import DataStorageManifest
     from oculy.io.manifest import IOManifest
+    from oculy.oculy_manifest import OculyManifest
     from oculy.plotting.manifest import PlottingManifest
     from oculy.transformations.manifest import DataTransformerManifest
     from oculy.workspaces.simple.manifest import SimpleViewerManifest

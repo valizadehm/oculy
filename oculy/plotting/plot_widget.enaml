@@ -30,7 +30,8 @@ class FigureWidget(RawWidget):
     def create_widget(self, parent):
         """Create the native widget linked to the figure."""
         if not self.figure.proxy:
-            plugin = self.workbench.get_plugin("oculy.plotting")
+            # Assume that the root window has a reference to the workbench
+            plugin = self.root_object().workbench.get_plugin("oculy.plotting")
             self.figure.initialize(plugin.get_resolver(self.figure.backend_name))
         if not self.figure.proxy.is_active:
             self.figure.proxy.activate()

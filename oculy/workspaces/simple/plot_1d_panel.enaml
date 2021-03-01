@@ -9,7 +9,7 @@
 
 """
 from enaml.core.api import Looper
-from enaml.layout.api import HSplitLayout, VSplitLayout
+from enaml.layout.api import HSplitLayout, VSplitLayout, vbox, hbox
 from enaml.widgets.api import (
     Notebook,
     DockArea,
@@ -33,15 +33,19 @@ from .mask_view import MaskView
 enamldef DataSelection1DPlot(Page):
     """Selection for generating 1D plots."""
 
-    #:
+    #: Reference to the 1D plot model driving this widget
     attr plot_model
+
+    #: Are we using a single x-axis across all plot
+    attr single_xaxis : bool
+
     title = "1D plots data selection"
 
     Container:
         GroupBox:
             title = "X axis"
             flat = True
-            visible << multi_xaxis.checked
+            visible << not single_xaxis
             QtListStrWidget:
                 items << list(workspace.file_content)
                 sort = False
@@ -54,7 +58,7 @@ enamldef DataSelection1DPlot(Page):
                 multiselect = True
                 sort = False
                 items << list(workspace.file_content)
-                selected_items := plot_model.selected_x_axes
+                selected_items := plot_model.selected_y_axes
 
         GroupBox:
             title = "Filtering"
@@ -117,7 +121,7 @@ enamldef DataSelection1DPanel(DockItem):
             QtListStrWidget:
                 sort = False
                 items << list(workspace.file_content)
-                selected_item << model.selected_x_axes.get(loop_item)
+                selected_item << panel_model.models[0].selected_x_axis
                 selected_item ::
                     for m in panel_model.models:
                         m.selected_x_axis = change["value"]
@@ -129,6 +133,7 @@ enamldef DataSelection1DPanel(DockItem):
                 iterable << range(1, plt_nb.selected + 1)
                 DataSelection1DPlot:
                     plot_model << panel_model.models[loop_item]
+                    single_xaxis << not multi_xaxis.checked
 
         CheckBox: auto_re:
             text = "Auto-refresh"

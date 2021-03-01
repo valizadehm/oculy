@@ -28,7 +28,7 @@ class PlottingPlugin(HasPreferencesPlugin):
     """Plugin handling plotting of data."""
 
     #: Default backend to use.
-    default_backend = Str().tag(pref=True)
+    default_backend = Str("matplotlib").tag(pref=True)
 
     #: Mapping of figures managed by the plugin. Should not be edited in place.
     figures = Dict(str, Figure)
@@ -75,7 +75,7 @@ class PlottingPlugin(HasPreferencesPlugin):
         backend: Optional[str] = None,
         axes_positions: Optional[Mapping[str, GridPosition]] = None,
         axes_specifications: Optional[Mapping[str, Optional[Axes]]] = None,
-    ) -> None:
+    ) -> Figure:
         """Create a figure with a set of axis.
 
         Parameters
@@ -90,6 +90,11 @@ class PlottingPlugin(HasPreferencesPlugin):
         axes_specifications : Optional[Mapping[str, Axes]], optional
             Specification of each axes, default to None which will create
             a left and bottom axis.
+
+        Returns
+        -------
+        Figure :
+            The newly created figure.
 
         """
         if id in self.figures:
@@ -112,6 +117,8 @@ class PlottingPlugin(HasPreferencesPlugin):
                 axes_id, axes_positions[axes_id], axes_specifications.get(axes_id)
             )
         self.figures[id] = figure
+
+        return figure
 
     def destroy_figure(self, id: str):
         """Destroy a figure."""
@@ -170,6 +177,10 @@ class PlottingPlugin(HasPreferencesPlugin):
 
         ax.add_plot(plot.id, plot, axes)
 
+    def get_resolver(self, backend_name: str) -> BackendResolver:
+        """Access the resolver associated with a given backend."""
+        return self._resolvers[backend_name]
+
     # --- Private API
 
     #: Contributed backends
@@ -185,7 +196,7 @@ class PlottingPlugin(HasPreferencesPlugin):
         """Aggregate contributions made to a single backend name respecting priotities."""
         backends = defaultdict(list)
         for v in self._backends.contributions.values():
-            backends[v.name].append(v)
+            backends[v.id].append(v)
 
         resolvers = {}
         for name in backends:
@@ -193,6 +204,9 @@ class PlottingPlugin(HasPreferencesPlugin):
             for contrib in sorted(backends[name], key=attrgetter("priority")):
                 resolver.proxies.update(contrib.proxies())
                 resolver.proxies.update(contrib.plot_proxies())
+                c_colormaps = contrib.colormaps()
                 for cat, known in resolver.colormaps.items():
-                    known.update(contrib.colormaps.get(cat, set()))
+                    known.update(c_colormaps.get(cat, set()))
             resolvers[name] = resolver
+
+        self._resolvers = resolvers

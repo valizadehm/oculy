@@ -14,7 +14,7 @@ from matplotlib.backends.backend_qt5agg import FigureCanvas
 from matplotlib.backends.backend_qt5agg import (
     NavigationToolbar2QT as NavigationToolbar,,  # FIXME used temporarily till we implement a nice tool bar
 )
-from matpltolib.figure import Figure, Gridspec
+from matplotlib.figure import Figure, GridSpec
 
 try:
     from mplcairo.qt import FigureCanvasQTCairo
@@ -29,10 +29,10 @@ class _TempWidgetPlot(QWidget):
     def __init__(self, parent, proxy):
         QWidget.__init__(self, parent)
         self.setLayout(QVBoxLayout())
-        if FigureCanvasQTCairo is not None and self.use_cairo:
-            self.canvas = FigureCanvasQTCairo(self._figure, self)
+        if FigureCanvasQTCairo is not None and proxy.use_cairo:
+            self.canvas = FigureCanvasQTCairo(proxy._figure)
         else:
-            self.canvas = FigureCanvas(self._figure, self)
+            self.canvas = FigureCanvas(proxy._figure)
         self.toolbar = NavigationToolbar(self.canvas, self)
         self.layout().addWidget(self.toolbar)
         self.layout().addWidget(self.canvas)
@@ -72,7 +72,7 @@ class MatplotlibFigureProxy(FigureProxy):
     _figure = Typed(Figure)
 
     #: Gridspec used to organize the axes. None if a single axes exist.
-    _gridspec = Typed(Gridspec)
+    _gridspec = Typed(GridSpec)
 
     #: Cache for the Canvas holding the figure
     _canvas = Typed(QWidget)

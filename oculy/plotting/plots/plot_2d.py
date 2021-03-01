@@ -13,10 +13,10 @@ from typing import Mapping
 import numpy as np
 from atom.api import Atom, Str, Typed
 
-from .base import BasePlot, InvalidPlotData, mark_backend_unsupported
+from .base import BasePlot, InvalidPlotData, PlotElementProxy, mark_backend_unsupported
 
 
-class Plot2DProxy(Atom):
+class Plot2DProxy(PlotElementProxy):
     """"""
 
     @mark_backend_unsupported

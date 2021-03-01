@@ -39,12 +39,12 @@ class MatplotlibAxisProxy(AxisProxy):
 
         if ax_dir in ("bottom", "top"):
             for c in ("left", "right"):
-                if (c, ax_dir) in axes.proxy._axes:
-                    self._axis = axes.proxy._axes.xaxis
+                if (ax_dir, c) in axes.proxy._axes:
+                    self._axis = axes.proxy._axes[(ax_dir, c)].xaxis
         else:
             for c in ("bottom", "top"):
-                if (ax_dir, c) in axes.proxy._axes:
-                    self._axis = axes.proxy._axes.yaxis
+                if (c, ax_dir) in axes.proxy._axes:
+                    self._axis = axes.proxy._axes[].yaxis
 
         if not self._axis:
             raise RuntimeError("Failed to find backend axis.")
@@ -162,6 +162,7 @@ class MatplotlibAxesProxy(AxesProxy):
             for direction in ("left", "bottom", "right", "top")
             if getattr(el, f"{direction}_axis")
         }
+
         if len(active_axes) == 2:
             if "right" in active_axes:
                 first_axes.yaxis.set_tick_position("right")

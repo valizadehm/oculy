@@ -77,9 +77,10 @@ enamldef PlottingManifest(PluginManifest):
 
     Extension:
         id = "matplotlib-backend"
-        point = "oculy.plotting.rendering-backend"
+        point = "oculy.plotting.rendering-backends"
         Backend:
-            name = "matplotlib"
+            id = "matplotlib"
+            description = "Backend running on Matplolib an if available mplcairo"
             proxies => ():
                 from .backends.matplotlib import (
                     MatplotlibAxesProxy,
@@ -94,7 +95,7 @@ enamldef PlottingManifest(PluginManifest):
                         Cursor: MatplotlibCursorProxy,
                         Figure: MatplotlibFigureProxy}
             plot_proxies => ():
-                from .backend.matplotlib import (
+                from .backends.matplotlib import (
                     Matplotlib1DLineProxy,
                     Matplotlib1DBarProxy,
                     Matplotlib2DRectangularMeshProxy,

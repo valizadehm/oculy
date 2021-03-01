@@ -77,7 +77,7 @@ enamldef FileSelector(DockItem):
                 checked := workspace.should_filter_files
             CheckBox: filter_loaders:
                 text = "Filter loaders"
-                checked := workspace.should_filter_loader
+                checked := workspace.should_filter_loaders
             Include: loader:
                 objects << (
                     [workspace.get_loader_view()]

@@ -14,10 +14,10 @@ import numpy as np
 from atom.api import Atom, Bool, Enum, Float, Str, Typed
 from enaml.colors import Color, ColorMember
 
-from .base import BasePlot, InvalidPlotData, mark_backend_unsupported
+from .base import BasePlot, InvalidPlotData, PlotElementProxy, mark_backend_unsupported
 
 
-class Plot1DProxy(Atom):
+class Plot1DProxy(PlotElementProxy):
     """Base proxy for a 1D plot, ie based on 2 inputs: x, y"""
 
     @mark_backend_unsupported

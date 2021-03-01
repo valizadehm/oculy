@@ -8,7 +8,7 @@
 """Base class for plot resolver in charge of handling plotting for each class of plot.
 
 """
-from atom.api import Atom, Dict, Str, Typed
+from atom.api import Atom, Dict, Str, Subclass, Typed
 from enaml.workbench.api import Workbench
 
 from ..plots.base import PlotElement, PlotElementProxy
@@ -24,10 +24,10 @@ class BackendResolver(Atom):
     backend_name = Str()
 
     #: Backend specific proxies.
-    proxies = Dict(PlotElement, PlotElementProxy)
+    proxies = Dict(Subclass(PlotElement), Subclass(PlotElementProxy))
 
     #: Valid colormaps for the backend by category.
-    colormaps = Dict(str, str)
+    colormaps = Dict(str, set)
 
     def resolve_proxy(self, element: PlotElement) -> PlotElementProxy:
         """Resolve and create the proxy for an element."""

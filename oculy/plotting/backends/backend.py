@@ -20,7 +20,10 @@ class Backend(Declarative):
     """Declaration of a backend contributed to "oculy.plotting.rendering-backend"."""
 
     #: Name of the backend
-    name = d_(Str())
+    id = d_(Str())
+
+    #: Short description of the backend.
+    description = d_(Str())
 
     #: Priority of the backend contributions.
     #: Used if multiple declaration refer to the same backend, higher number have

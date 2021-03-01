@@ -62,7 +62,7 @@ class PlotElement(Atom):
 
     def initialize(self, resolver):
         """Initialize the element by creating the proxy."""
-        proxy = resolver.resolve(self, self.backend_name)
+        proxy = resolver.resolve_proxy(self)
         proxy.activate()
         self.observe("visibility", update_proxy)
 

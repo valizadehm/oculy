@@ -12,10 +12,10 @@ import numpy as np
 from atom.api import Bool, Typed, Value
 from matplotlib.axes import Axes
 
-from ..plots import Plot2DContourProxy, Plot2DMeshProxy
+from oculy.plotting.plots import Plot2DContourProxy, Plot2DRectangularMeshProxy
 
 
-class Matplotlib2DRectangularMeshProxy(Plot2DMeshProxy):
+class Matplotlib2DRectangularMeshProxy(Plot2DRectangularMeshProxy):
     """Matplotlib proxy for a mesh plot.
 
     If the grid can be identified as regular we use imshow, otherwise we use pcolormesh.
