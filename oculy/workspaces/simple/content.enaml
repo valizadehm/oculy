@@ -22,15 +22,21 @@ enamldef SimpleViewerContent(Container):
 
     DockArea:
 
-        layout = HSplitLayout("file_selector", TabLayout("1d_panel",))
+        layout = HSplitLayout(
+            "file_selector",
+            TabLayout("1d_panel",),
+            sizes=[1, 5000]
+        )
 
         style = 'metro'
 
         FileSelector:
+            title = "File selection"
             name = "file_selector"
 
         Plot1DPanel:
             name = "1d_panel"
+            title = "1D plots"
             panel_model = workspace._1d_plots
 
         #Plot2DPanel:

@@ -115,8 +115,8 @@ class SimpleViewerWorkspace(Workspace):
 
     # FIXME clean up data store
     def stop(self):
-        data = invoke_command(self.workbench, "glaze.state.get_state", "oculy.data")
-        del data["_simple_viewer"]
+        datastore = self.workbench.get_plugin("oculy.data").datastore
+        datastore.store_data({"_simple_viewer/1d": (None, None)})
 
         # FIXME Delete 1D and 2D plots
 

@@ -44,7 +44,7 @@ class MatplotlibAxisProxy(AxisProxy):
         else:
             for c in ("bottom", "top"):
                 if (c, ax_dir) in axes.proxy._axes:
-                    self._axis = axes.proxy._axes[].yaxis
+                    self._axis = axes.proxy._axes[(c, ax_dir)].yaxis
 
         if not self._axis:
             raise RuntimeError("Failed to find backend axis.")
@@ -153,8 +153,9 @@ class MatplotlibAxesProxy(AxesProxy):
         if len(fig.axes_set) > 1:
             raise RuntimeError()  # Add support for more than one axis.
         else:
-            first_axes = fig.proxy._figure.gca(
-                projection=el.projection if el.projection != "cartesian" else None
+            first_axes = fig.proxy._figure.add_axes(
+                [0, 0, 1, 1],
+                projection=el.projection if el.projection != "cartesian" else None,
             )
 
         active_axes = {

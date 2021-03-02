@@ -52,7 +52,7 @@ class PlottingPlugin(HasPreferencesPlugin):
             ext_class=Backend,
             validate_ext=make_extension_validator(
                 base_cls=Backend,
-                attributes=("name", "priority"),
+                attributes=("priority",),
                 fn_names=("proxies", "plot_proxies", "colormaps"),
             ),
         )

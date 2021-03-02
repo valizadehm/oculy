@@ -11,8 +11,10 @@
 from atom.api import Bool, Typed
 from enaml.qt.QtWidgets import QVBoxLayout, QWidget
 from matplotlib.backends.backend_qt5agg import FigureCanvas
+
+# FIXME used temporarily till we implement a nice tool bar
 from matplotlib.backends.backend_qt5agg import (
-    NavigationToolbar2QT as NavigationToolbar,,  # FIXME used temporarily till we implement a nice tool bar
+    NavigationToolbar2QT as NavigationToolbar,
 )
 from matplotlib.figure import Figure, GridSpec
 
@@ -46,7 +48,7 @@ class MatplotlibFigureProxy(FigureProxy):
 
     def activate(self):
         """Activate the proxy figure."""
-        self._figure = Figure(constrained_layout=True)
+        self._figure = Figure(figsize=(1, 1), constrained_layout=True)
 
         grid = self.element.grid
         if len(grid) > 1:

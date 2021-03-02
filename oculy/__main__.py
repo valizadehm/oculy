@@ -179,18 +179,19 @@ def main(cmd_line_args=None):
     core.invoke_command("enaml.workbench.ui.close_workspace", {}, workbench)
 
     # Unregister all contributed packages
-    workbench.unregister("oculy.simple_viewer")
+    workbench.unregister("oculy.workspaces.simple_viewer")
     workbench.unregister("oculy.data")
     workbench.unregister("oculy.io")
     workbench.unregister("oculy.plotting")
     workbench.unregister("oculy.data_transformer")
     workbench.unregister("glaze.packages")
     workbench.unregister("glaze.icons")
-    workbench.unregister("glaze.preferences")
     workbench.unregister("glaze.states")
     workbench.unregister("glaze.errors")
     workbench.unregister("glaze.logging")
-    workbench.unregister("glaze.lifecyle")
+    workbench.unregister("oculy")
+    workbench.unregister("glaze.preferences")
+    workbench.unregister("glaze.lifecycle")
     workbench.unregister("enaml.workbench.ui")
     workbench.unregister("enaml.workbench.core")
 

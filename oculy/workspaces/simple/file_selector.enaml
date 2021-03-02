@@ -30,6 +30,8 @@ enamldef FileSelector(DockItem):
     """Select a folder, file, and appropriate loader to explore.
 
     """
+    closable = False
+
     Container:
         GroupBox:
             title = "Selected folder"
@@ -53,7 +55,11 @@ enamldef FileSelector(DockItem):
             padding = 1
             constraints = [
                 vbox(
-                    *([file_combo, hbox(loader_combo, load_button)] +
+                    *([
+                        file_combo,
+                        hbox(loader_combo, load_button),
+                        hbox(filter_files, filter_loaders),
+                      ] +
                       loader.objects +
                       [hbox(loader_parameters, auto_load)]
                     )

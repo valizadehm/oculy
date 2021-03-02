@@ -104,6 +104,7 @@ enamldef DataSelection1DPanel(DockItem):
         ObjectCombo: plt_nb:
             enabled = False
             items = [1, 2, 3, 4]
+            selected = 1
             # FIXME Provide ways to specify the layout in addition to the number
             # of plots
             # FIXME when changing the number of plots store previous layout and restore
@@ -151,9 +152,15 @@ enamldef Plot1DDockItem(DockItem):
     # Plot1DModel driving the UI
     attr model
 
+    closable = False
+
     Container:
         FigureWidget:
             figure = model._figure
+
+
+def generate_dock_layout(plt_nb: int):
+    """Generate a dock layout based on the number of plots."""
 
 
 # workspace is accessible in the parent scope
@@ -163,29 +170,30 @@ enamldef Plot1DPanel(DockItem):
     #: Model driving the view
     attr panel_model
 
+    closable = False
+
     Container:
-        DockArea:
-            layout = HSplitLayout("selection",
-                VSplitLayout(
-                    HSplitLayout("plot_1", "plot_2"),
-                    HSplitLayout("plot_3", "plot_4")
-                )
+        DockArea: area:
+            layout = HSplitLayout(
+                "selection", "plot_1",
+                sizes=[1, 5000]
             )
+
+            style = 'metro'
+
+            attr _layout_cache: dict = {}
+
+            func generate_dock_layout():
+                pass
 
             DataSelection1DPanel: d_sel:
                 name = "selection"
-            Plot1DDockItem:
-                name = "plot_1"
-                model = panel_model.models[0]
-            Plot1DDockItem:
-                name = "plot_2"
-                visible << d_sel.displayed_plots_nb > 1
-                model = panel_model.models[1]
-            Plot1DDockItem:
-                name = "plot_3"
-                visible << d_sel.displayed_plots_nb > 2
-                model = panel_model.models[2]
-            Plot1DDockItem:
-                name = "plot_4"
-                visible << d_sel.displayed_plots_nb > 3
-                model = panel_model.models[3]
+                title = "Data selection"
+                displayed_plots_nb::
+                    pass  # need to update plots and then layout based on cache
+            Looper: plots:
+                iterable = list(range(d_sel.displayed_plots_nb))
+                Plot1DDockItem:
+                    name << f"plot_{loop.item + 1}"
+                    title << f"Plot {loop.item + 1}    "
+                    model << panel_model.models[loop.item]
