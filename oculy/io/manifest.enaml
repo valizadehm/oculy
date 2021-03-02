@@ -50,7 +50,7 @@ enamldef IOManifest(PluginManifest):
 
     """
     id = PLUGIN_ID
-    factory = manager_plugin_factory
+    factory = io_plugin_factory
 
     # =========================================================================
     # --- Extension points ----------------------------------------------------

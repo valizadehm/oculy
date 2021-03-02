@@ -42,9 +42,9 @@ class TransformerPlugin(HasPrefAtom):
 
         """
         core = self.workbench.get_plugin("enaml.workbench.core")
-        core.invoke_command("exopy.app.errors.enter_error_gathering")
+        core.invoke_command("glaze.errors.enter_error_gathering")
 
-        validator = make_extension_validator(Mask, (), ("func"))
+        validator = make_extension_validator(Mask, (), ("func",))
         self._masks = ExtensionsCollector(
             workbench=self.workbench,
             point=MASKING_POINT,
@@ -55,7 +55,7 @@ class TransformerPlugin(HasPrefAtom):
 
         self._masks.start()
 
-        validator = make_extension_validator(Node, (), ("func"))
+        validator = make_extension_validator(Node, (), ("func",))
         self._masks = ExtensionsCollector(
             workbench=self.workbench,
             point=NODES_POINT,
@@ -65,7 +65,7 @@ class TransformerPlugin(HasPrefAtom):
 
         self.nodes.start()
 
-        core.invoke_command("exopy.app.errors.exit_error_gathering")
+        core.invoke_command("glaze.errors.exit_error_gathering")
 
     def stop(self) -> None:
         """Stop the plugin life-cycle.

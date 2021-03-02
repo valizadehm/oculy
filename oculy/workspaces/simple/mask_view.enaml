@@ -18,7 +18,7 @@ enamldef MaskView(Container):
     attr model
 
     ObjectCombo:
-        items << plot_model.relevant_masks
+        items <<  list(workspace.file_content)
         selected := model.content_id
         selected ::
             if not selected:

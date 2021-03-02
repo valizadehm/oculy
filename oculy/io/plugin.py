@@ -12,8 +12,11 @@ import os
 from typing import List, Mapping
 
 from atom.api import Dict, Typed
-from glaze.utils.atom_util import HasPrefAtom
-from glaze.utils.plugin_tools import ExtensionsCollector, make_extension_validator
+from glaze.utils.plugin_tools import (
+    ExtensionsCollector,
+    HasPreferencesPlugin,
+    make_extension_validator,
+)
 from xarray import Dataset
 
 from oculy.transformations import MaskSpecification
@@ -23,13 +26,15 @@ from .loader import BaseLoader, Loader
 LOADER_POINT = "oculy.io.loaders"
 
 
-class IOPlugin(HasPrefAtom):
+class IOPlugin(HasPreferencesPlugin):
     """Plugin responsible for handling IO
 
     This plugin is in particular in charge of loading experimental data to be
     visualized.
 
     """
+
+    # XXX need to track supported extensions
 
     #: Preferred loader for a given extension.
     preferred_loader = Dict(str, str).tag(pref=True)
@@ -48,10 +53,10 @@ class IOPlugin(HasPrefAtom):
 
         """
         core = self.workbench.get_plugin("enaml.workbench.core")
-        core.invoke_command("exopy.app.errors.enter_error_gathering")
+        core.invoke_command("glaze.errors.enter_error_gathering")
 
         validator = make_extension_validator(
-            Loader, ("get_cls", "get_config_view"), ("file_extensions")
+            Loader, ("get_cls", "get_config_view"), ("file_extensions",)
         )
         self.loaders = ExtensionsCollector(
             workbench=self.workbench,
@@ -62,7 +67,7 @@ class IOPlugin(HasPrefAtom):
 
         self.loaders.start()
 
-        core.invoke_command("exopy.app.errors.exit_error_gathering")
+        core.invoke_command("glaze.errors.exit_error_gathering")
 
     def stop(self) -> None:
         """Stop the plugin life-cycle.

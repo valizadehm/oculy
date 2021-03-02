@@ -43,11 +43,11 @@ enamldef FileSelector(DockItem):
                 read_only = True
                 text << workspace.selected_folder
             ToolButton: folder_tool:
-                icon = get_icon(workbench, "open-folder")
+                icon = get_icon(workbench, "folder-open")
                 clicked ::
                     path = FileDialogEx.get_existing_directory(self)
                     if path:
-                        workspace.selected_folder
+                        workspace.selected_folder = path
 
         GroupBox:
             title = "Select file"
