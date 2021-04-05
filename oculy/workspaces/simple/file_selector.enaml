@@ -53,7 +53,7 @@ enamldef FileSelector(DockItem):
             title = "Select file"
             flat = True
             padding = 1
-            constraints = [
+            constraints << [
                 vbox(
                     *([
                         file_combo,
@@ -76,6 +76,10 @@ enamldef FileSelector(DockItem):
                 selected := workspace.selected_loader
             PushButton: load_button:
                 text = "Load"
+                enabled << (
+                    bool(workspace.selected_file) and
+                    bool(workspace.selected_loader)
+                )
                 clicked ::
                     workspace.load_file()
             CheckBox: filter_files:

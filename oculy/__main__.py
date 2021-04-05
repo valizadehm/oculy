@@ -89,7 +89,10 @@ def main(cmd_line_args=None):
     parser = ArgParser()
     parser.add_choice("workspaces", "oculy.simple_viewer", "simple")
     parser.add_argument(
-        "-s", "--nocapture", help="Don't capture stdout/stderr", action="store_true"
+        "-d",
+        "--debug",
+        help="Don't capture stdout/stderr, and do not catch top level exceptions",
+        action="store_true",
     )
     parser.add_argument(
         "-w",
@@ -116,6 +119,8 @@ def main(cmd_line_args=None):
     try:
         args = parser.parse_args(cmd_line_args)
     except BaseException as e:
+        if self.debug:
+            raise
         if e.args == (0,):
             sys.exit(0)
         text = "Failed to parse cmd line arguments"
@@ -127,7 +132,8 @@ def main(cmd_line_args=None):
         display_startup_error_dialog(text, content, details)
 
     # Patch Thread to use sys.excepthook
-    setup_thread_excepthook()
+    if not args.debug:
+        setup_thread_excepthook()
 
     workbench = Workbench()
     workbench.register(CoreManifest())
@@ -137,7 +143,7 @@ def main(cmd_line_args=None):
     workbench.register(ErrorsManifest())
     workbench.register(PreferencesManifest(application_name="oculy"))
     workbench.register(IconManagerManifest())
-    workbench.register(LogManifest())
+    workbench.register(LogManifest(no_capture=args.debug))
     workbench.register(PackagesManifest())
     workbench.register(OculyManifest())
     workbench.register(DataStorageManifest())
@@ -152,6 +158,8 @@ def main(cmd_line_args=None):
         app = workbench.get_plugin("glaze.lifecycle")
         app.run_app_startup(args)
     except Exception as e:
+        if args.debug:
+            raise
         text = "Error starting plugins"
         content = (
             "The following error occurred when executing plugins "
@@ -163,7 +171,7 @@ def main(cmd_line_args=None):
     core = workbench.get_plugin("enaml.workbench.core")
 
     # Install global except hook.
-    if not args.nocapture:
+    if not args.debug:
         core.invoke_command("glaze.errors.install_excepthook", {})
 
     # Select workspace

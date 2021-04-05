@@ -21,9 +21,11 @@ enamldef CSVLoaderConfig(BaseLoaderView):
         Label:
             text = "Delimiter"
         Field:
-            text := loader.delimiter
+            text << loader.delimiter.replace("\t", "\\t")
+            text ::
+                loader.delimiter = text.replace("\\t", "\t")
             placeholder = "Inferred"
-            tooltip = (
+            tool_tip = (
                 "Column delimiter, an empty string means that the separator "
                 "should be inferred."
             )
@@ -31,11 +33,11 @@ enamldef CSVLoaderConfig(BaseLoaderView):
             text = "Comment"
         Field:
             text := loader.comment
-            tooltip = "Character marking a comment, fully commented lines are ignored."
+            tool_tip = "Character marking a comment, fully commented lines are ignored."
         CheckBox:
             text = "Eager load"
             checked := loader.eager_load
-            tooltip = (
+            tool_tip = (
                 "Should data file be loaded all at once or "
                 "should only the relevant columns be loaded."
             )

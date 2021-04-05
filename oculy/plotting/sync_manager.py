@@ -30,7 +30,7 @@ class SyncManager(Atom):
     """Manager handling updating the plot any time data change in the data store."""
 
     #: Reference to the data store
-    data_store = Typed(DataStore)
+    datastore = Typed(DataStore)
 
     #: Plot for which some attribute need to be in sync with the data store.
     plot = Typed(BasePlot)
@@ -46,16 +46,15 @@ class SyncManager(Atom):
 
     def __init__(
         self,
-        data_store: DataStore,
+        datastore: DataStore,
         plot: BasePlot,
         synced_members: Mapping[str, str],
     ):
-        super().__init__(
-            data_store=data_store, plot=plot, synced_members=synced_members
-        )
+        super().__init__(datastore=datastore, plot=plot, synced_members=synced_members)
         # Ensure that all the members that are supposed to be synced can be synced
         plt_sync_tag = tagged_members(plot, "sync")
-        if any(m.split(".")[0] not in plt_sync_tag for m in synced_members):
+        bare_sync_members = [m.split(".")[0] for m in synced_members]
+        if any(m not in plt_sync_tag for m in bare_sync_members):
             raise RuntimeError(
                 "Synchronization to the data store was requested for: "
                 f"{list(synced_members)}. But the only members that can be synced are "
@@ -64,8 +63,8 @@ class SyncManager(Atom):
 
         self._sync_markers = {
             k: plt_sync_tag[k].metadata["sync"]
-            for k in synced_members
-            if isinstance(plt_sync_tag[k], SyncMarker)
+            for k in bare_sync_members
+            if isinstance(plt_sync_tag[k].metadata["sync"], SyncMarker)
         }
 
         update_map = defaultdict(list)
@@ -73,25 +72,21 @@ class SyncManager(Atom):
             update_map[v].append(k)
         self._update_map = update_map
 
-        self.data_store.observe("update", self.update_plot)
+        self.datastore.observe("update", self.update_plot)
 
     def update_plot(self, change: Mapping[str, Any]):
         """Update the plot based on the modification to the data store."""
-        if any(
-            v in change["value"]["removed"] or v in change["value"]["moved"]
-            for v in self.synced_members.values()
-        ):
+        if any(v in change["value"]["removed"] for v in self.synced_members.values()):
             self.plot.axes.remove_plot(self.plot.id)
 
         # Build mapping of updated values
         all_updates = change["value"]["updated"]
-        updates = {
-            k: all_updates[v]
-            for k, v in self.synced_members.items()
-            if v in all_updates
-        }
+        updates = {k: v for k, v in self.synced_members.items() if v in all_updates}
         if not updates:
             return
+
+        data = self.datastore.get_data(updates.values())
+        updates = {k: data[v].values for k, v in updates.items()}
 
         for k, v in updates.items():
             if k in self._sync_markers:

@@ -125,7 +125,10 @@ class SimpleViewerWorkspace(Workspace):
         if self._loader is None:
             self._create_loader()
         return invoke_command(
-            "oculy.io.create_loader_config", self.selected_loader, self._loader
+            self.workbench,
+            "oculy.io.create_loader_config",
+            {"id": self.selected_loader, "loader": self._loader},
+            self._loader,
         )
 
     def load_file(self):
@@ -134,7 +137,7 @@ class SimpleViewerWorkspace(Workspace):
             self._create_loader()
         self._loader.determine_content()
         self.file_changing = True
-        self.content = self._loader.content
+        self.file_content = self._loader.content
         self.file_changing = False
 
     # --- Private API
@@ -143,7 +146,7 @@ class SimpleViewerWorkspace(Workspace):
     _loader = Typed(BaseLoader)
 
     #: Watchdog observer monitoring the currently selected folder.
-    _watchdog = Typed(Observer)
+    _watchdog = Typed(Observer, ())
 
     #: Handler for watchdog events.
     _watchdog_handler = Typed(FileListUpdater)
@@ -187,15 +190,18 @@ class SimpleViewerWorkspace(Workspace):
     def _update_matching_loaders(self):
         """Update the list of loaders matching the selected file."""
         matching, preferred = invoke_command(
-            "oculy.io.list_matching_loaders", {"filename": self.selected_file}
+            self.workbench,
+            "oculy.io.list_matching_loaders",
+            {"filename": self.selected_file},
         )
         self.matching_loaders = matching
         if self.selected_loader not in matching:
-            self.selected_loader = preferred
+            self.selected_loader = preferred or matching[0]
 
     def _create_loader(self):
         """Create a loader matching selection."""
         self._loader = invoke_command(
+            self.workbench,
             "oculy.io.create_loader",
             {
                 "id": self.selected_loader,
@@ -210,8 +216,8 @@ class SimpleViewerWorkspace(Workspace):
 
         self._update_available_files()
 
-        self._watchdog_watch = self._watchdog.schedule(self._watchdog_handler, self.new)
-        if not self._watchdog.isAlive():
+        self._watchdog_watch = self._watchdog.schedule(self._watchdog_handler, new)
+        if not self._watchdog.is_alive():
             self._watchdog.start()
 
     def _post_setattr_should_filter_files(self, old, new):
@@ -237,6 +243,9 @@ class SimpleViewerWorkspace(Workspace):
         self._loader = None
 
     def _post_set_auto_load(self, old, new):
-        """Ensure we auto-load the rele"""
+        """Ensure we auto-load the relevant file."""
         if new and self.selected_folder and self.selected_file and self.selected_loader:
             self.load_file()
+
+    def _default__watchdog_handler(self):
+        return FileListUpdater(workspace=self)

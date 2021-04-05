@@ -50,7 +50,7 @@ class DataArray(Atom):
 
     def _post_setattr_values(self, old, new):
         """Enforce that all arrays stored in the datastore are read-only."""
-        new.writable = False
+        new.flags.writeable = False
 
 
 class Dataset(Atom):
@@ -119,7 +119,7 @@ class DataStore(Atom):
         data = {}
         root = _lookup_in_store(self._data, common)
         for p, sp in zip(paths, split_paths):
-            data["/".join(p)] = _lookup_in_store(root, sp[len(common) :])
+            data[p] = _lookup_in_store(root, sp[len(common) :])
 
         return data
 
@@ -154,11 +154,11 @@ class DataStore(Atom):
             for p in split_path[:-1]:
                 if p not in current:
                     n_path = current_path + "/" + p if current_path else p
-                    current[n_path] = Dataset()
+                    current[p] = Dataset()
                     added.append(n_path)
 
                 current = current[p]._data
-                current_path += "/" + p
+                current_path += "/" + p if current_path else p
 
             d_key = split_path[-1]
             current_path += "/" + d_key
@@ -186,14 +186,14 @@ class DataStore(Atom):
             if val is None and mval is None:
                 removed.append(current_path)
 
-            update = {}
-            for k, v in zip(
-                ("added", "removed" "updated", "metadata_updated"),
-                (added, removed, updated, meta_updated),
-            ):
-                if v:
-                    update[k] = v
-            self.update = update
+        update = {}
+        for k, v in zip(
+            ("added", "removed", "updated", "metadata_updated"),
+            (added, removed, updated, meta_updated),
+        ):
+            update[k] = v
+
+        self.update = update
 
     def move_data(self, move: Mapping[str, str]):
         """Move data from one place to another."""

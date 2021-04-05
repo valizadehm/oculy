@@ -133,7 +133,6 @@ class PlottingPlugin(HasPreferencesPlugin):
         fig_id: str,
         plot: BasePlot,
         axes_id: Optional[str] = None,
-        axes: Optional[Tuple[str, str]] = None,
         sync_data: Optional[Mapping[str, str]] = None,
     ) -> None:
         """Add a plot a to the specified figure.
@@ -172,10 +171,10 @@ class PlottingPlugin(HasPreferencesPlugin):
             )
 
         if sync_data:
-            data_store = self.workbench.get_plugin("oculy.data").data_store
-            self.sync_managers[plot] = SyncManager(data_store, plot, sync_data)
+            datastore = self.workbench.get_plugin("oculy.data").datastore
+            self.sync_managers[plot] = SyncManager(datastore, plot, sync_data)
 
-        ax.add_plot(plot.id, plot, axes)
+        ax.add_plot(plot)
 
     def get_resolver(self, backend_name: str) -> BackendResolver:
         """Access the resolver associated with a given backend."""

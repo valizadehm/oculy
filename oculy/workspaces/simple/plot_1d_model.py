@@ -12,7 +12,7 @@ from atom.api import Bool, ForwardTyped, Int, List, Str, Typed, Value
 from glaze.utils.atom_util import HasPrefAtom
 
 from oculy.data.datastore import DataStore
-from oculy.plotting.plots import Figure, Plot1DLine
+from oculy.plotting.plots import Figure, Plot1DLine, Plot1DData
 
 from .mask_parameters import MaskParameter
 
@@ -54,6 +54,10 @@ class Plot1DModel(HasPrefAtom):
 
     def refresh_plot(self) -> None:
         """Force the refreshing of the plot."""
+        # Do not plot if there is nno selection on some axes
+        # NOTE may not be the cleanest way to do this.
+        if not self.selected_x_axis or not self.selected_y_axes:
+            return
         data = self._workspace._loader.load_data(
             [self.selected_x_axis] + self.selected_y_axes,
             {m.mask_id: (m.content_id, m.value) for m in self.filters},
@@ -64,7 +68,7 @@ class Plot1DModel(HasPrefAtom):
         # Update the X axis data
         update = {
             f"sviewer/plot_1d_{self._index}/x": (
-                data[self.selected_y_axes].values,
+                data[self.selected_x_axis].values,
                 None,
             )
         }
@@ -95,7 +99,12 @@ class Plot1DModel(HasPrefAtom):
             for i in range(len(axes.plots), len(self.selected_y_axes)):
                 pp.add_plot(
                     f"SW-1D-{self._index}",
-                    Plot1DLine(),
+                    Plot1DLine(
+                        data=Plot1DData(
+                            x=update[f"sviewer/plot_1d_{self._index}/x"][0],
+                            y=update[f"sviewer/plot_1d_{self._index}/y_{i}"][0],
+                        )
+                    ),
                     sync_data={
                         "data.x": f"sviewer/plot_1d_{self._index}/x",
                         "data.y": f"sviewer/plot_1d_{self._index}/y_{i}",
@@ -104,7 +113,7 @@ class Plot1DModel(HasPrefAtom):
 
     # --- Private API
 
-    #: Reference to the worspace holding the loader
+    #: Reference to the workspace holding the loader
     _workspace = ForwardTyped(_workspace)
 
     #: Reference to the application global datastore
@@ -224,7 +233,7 @@ class Plot1DPanelModel(HasPrefAtom):
     optimize_for_speed = Bool()
 
     def __init__(self, workspace, datastore):
-        self.models = [Plot1DModel(i, workspace, datastore) for i in range(4)]
+        self.models = [Plot1DModel(i, workspace, datastore) for i in range(1)]
 
     def _post_setattr_auto_refresh(self, old, new):
         """"""

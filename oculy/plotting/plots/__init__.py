@@ -20,7 +20,7 @@ from .axes import (
 )
 from .base import BasePlot, BasePlotProxy, Plot
 from .figure import Figure, FigureProxy, GridPosition
-from .plot_1d import Plot1DBar, Plot1DBarProxy, Plot1DLine, Plot1DLineProxy
+from .plot_1d import Plot1DData, Plot1DBar, Plot1DBarProxy, Plot1DLine, Plot1DLineProxy
 from .plot_2d import (
     Plot2DContour,
     Plot2DContourProxy,
@@ -43,6 +43,7 @@ __all__ = (
     "Figure",
     "FigureProxy",
     "GridPosition",
+    "Plot1DData",
     "Plot1DLine",
     "Plot1DBar",
     "Plot1DLineProxy",

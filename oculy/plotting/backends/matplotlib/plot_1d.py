@@ -18,9 +18,11 @@ from oculy.plotting.plots import Plot1DBarProxy, Plot1DLineProxy
 class Matplotlib1DLineProxy(Plot1DLineProxy):
     """Matplotlib proxy handling line plot."""
 
-    def initialize(self, resolver):
-        super().initialize(resolver)
-        axes_mapping = self.element.axes_mapping
+    def activate(self):
+        super().activate()
+        axes_mapping = (
+            self.element.axes_mapping or self.element.axes.get_default_axes_mapping()
+        )
         axes = (axes_mapping["x"], axes_mapping["y"])
         data = (self.element.data.x, self.element.data.y)
         ddata = (self.element.data.dx, self.element.data.dy)
@@ -30,29 +32,33 @@ class Matplotlib1DLineProxy(Plot1DLineProxy):
             data = data[::-1]
             ddata = ddata[::-1]
 
-        mpl_axes = self.element.axes._proxy._axes[axes]
+        mpl_axes = self.element.axes.proxy._axes[axes]
         if self.element.data.dx or self.element.data.dy:
             raise RuntimeError("Errorbars are not currently supported.")
         else:
             # FIXME handle extra states
             self._line = mpl_axes.plot(*data, zorder=self.element.zorder)[0]
+        self.element.axes.figure.proxy.request_redraw()
 
-    def finalize(self):
+    def deactivate(self):
         self._line.remove()
+        self.element.axes.figure.proxy.request_redraw(clear=True)
+        super().deactivate()
 
     def set_data(self, data):
-        data = (data.x, data.y)
-        ddata = (data.dx, data.dy)
+        d = (data.x, data.y)
+        dd = (data.dx, data.dy)
         if self._invert:
-            data = data[::-1]
-            ddata = ddata[::-1]
+            d = d[::-1]
+            dd = dd[::-1]
 
         # FIXME handle error bars
-        self._line.set_data(*data)
+        self._line.set_data(*d)
+        self.element.axes.figure.proxy.request_redraw()
 
     # --- Private API
 
-    #: Do we need to invert and y due to the axes mapping
+    #: Do we need to invert x and y due to the axes mapping
     _invert = Bool()
 
     #: Line created by the backend.
@@ -62,23 +68,26 @@ class Matplotlib1DLineProxy(Plot1DLineProxy):
 class Matplotlib1DBarProxy(Plot1DBarProxy):
     """Matplotlib proxy for a 1D histogram."""
 
-    def initialize(self, resolver):
-        super().initialize(resolver)
+    def activate(self):
+        super().activate(resolver)
         axes_mapping = self.element.axes_mapping
         axes = (axes_mapping["x"], axes_mapping["y"])
         if axes_mapping["x"] in ("left", "right"):
             self._invert = True
             axes = axes[::-1]
 
-        self._mpl_axes = self.element.axes._proxy._axes[axes]
+        self._mpl_axes = self.element.axes.proxy._axes[axes]
         self._draw_bars()
+        self.element.axes.figure.proxy.request_redraw()
 
-    def finalize(self):
+    def deactivate(self):
         self._bar.remove()
+        self.element.axes.figure.proxy.request_redraw(clear=True)
 
     def set_data(self, data):
         self._bar.remove()
         self._draw_bars()
+        self.element.axes.figure.proxy.request_redraw()
 
     # --- Private API
 

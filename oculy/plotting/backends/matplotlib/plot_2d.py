@@ -22,8 +22,8 @@ class Matplotlib2DRectangularMeshProxy(Plot2DRectangularMeshProxy):
 
     """
 
-    def initialize(self, resolver):
-        super().initialize(resolver)
+    def activate(self):
+        super().activate()
         axes_mapping = self.element.axes_mapping
         axes = (axes_mapping["x"], axes_mapping["y"])
         if axes_mapping["x"] in ("left", "right"):
@@ -35,6 +35,7 @@ class Matplotlib2DRectangularMeshProxy(Plot2DRectangularMeshProxy):
 
     def finalize(self):
         self._line.remove()
+        super().deactivate()
 
     def set_data(self, data):
         self._mesh.remove()

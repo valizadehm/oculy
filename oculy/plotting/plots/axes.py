@@ -287,7 +287,7 @@ class Axes(PlotElement):
     cursors = ATuple(Cursor)
 
     #: Set of plots currently displayed in the axes
-    plots = ATuple(BasePlot)
+    plots = Dict(str, BasePlot)
 
     #: Display a major grid
     major_grid_enabled = Bool()
@@ -311,7 +311,6 @@ class Axes(PlotElement):
 
     def initialize(self, resolver):
         """Initialize the proxy of the object and the axes."""
-        self._resolver = resolver
         super().initialize(resolver)
         for axis in (self.left_axis, self.bottom_axis, self.right_axis, self.top_axis):
             if not axis:
@@ -324,7 +323,7 @@ class Axes(PlotElement):
         for c in self.cursors:
             c.backend_name = self.backend_name
             c.initialize(resolver)
-        for p in self.plots:
+        for p in self.plots.values():
             p.backend_name = self.backend_name
             p.initialize(resolver)
 
@@ -334,7 +333,7 @@ class Axes(PlotElement):
 
     def finalize(self):
         """Finalize the proxy of the figure."""
-        for p in self.plots:
+        for p in self.plots.values():
             p.finalize()
         for c in self.cursors:
             c.finalize()
@@ -356,17 +355,18 @@ class Axes(PlotElement):
             raise RuntimeError(f"A plot with {id} already exist in axes {self}")
 
         axes = plot.axes_mapping
-        if axes is None:
+        if not axes:
             axes = {
-                "x": "bottom" if self.element.bottom_axis else "top",
-                "y": "left" if self.element.left_axis else "right",
+                "x": "bottom" if self.bottom_axis else "top",
+                "y": "left" if self.left_axis else "right",
             }
+            plot.axes_mapping = axes
 
         # Validate the axes supposed to be used.
         if any(
             (
                 pa not in ("left", "bottom", "right", "top")
-                or getattr(axes, f"{pa}_axis") is None
+                or getattr(self, f"{pa}_axis") is None
             )
             for pa in axes.values()
         ):
@@ -392,15 +392,13 @@ class Axes(PlotElement):
                     f"specified axes are {[pa for _, pa in missing]}."
                 )
 
-        # Create a proxy
-        self._resolver.resolve_proxy(self, plot, axes)
-
         # Make sure the plot knows where it is plotted.
         plot.axes = self
         self.plots[plot.id] = plot
 
-        # Activate the proxy
-        plot.proxy.activate()
+        # Initialize the plot if we have a resolver
+        if self._resolver:
+            plot.initialize(self._resolver)
 
     def remove_plot(self, id):
         """Remove a plot based on its ID."""

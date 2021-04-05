@@ -101,7 +101,7 @@ class Plot1DData(Atom):
                 f"Got y: {y.shape}, dx: {dy.shape}."
             )
 
-        # Make the object unmutable.
+        # Make the object immutable.
         self.freeze()
 
 

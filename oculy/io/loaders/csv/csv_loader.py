@@ -85,6 +85,7 @@ class CSVLoader(BaseLoader):
                 sep=self.delimiter or None,
                 comment=self.comment,
                 usecols=required if self.eager_load else None,
+                engine="c" if self.delimiter else "python",
             ).to_xarray()
         else:
             missing = [r for r in required if r not in self._data]
@@ -95,6 +96,7 @@ class CSVLoader(BaseLoader):
                         sep=self.delimiter or None,
                         comment=self.comment,
                         usecols=missing,
+                        engine="c" if self.delimiter else "python",
                     ).to_xarray()
                 )
 

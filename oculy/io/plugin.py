@@ -11,7 +11,7 @@
 import os
 from typing import List, Mapping
 
-from atom.api import Dict, Typed
+from atom.api import Dict, Set, Typed
 from glaze.utils.plugin_tools import (
     ExtensionsCollector,
     HasPreferencesPlugin,
@@ -34,13 +34,14 @@ class IOPlugin(HasPreferencesPlugin):
 
     """
 
-    # XXX need to track supported extensions
+    #: Set of extensions for which we have a registered loader.
+    supported_extensions = Set(str)
 
     #: Preferred loader for a given extension.
     preferred_loader = Dict(str, str).tag(pref=True)
 
     #: Custom association between loaders and file extensions.
-    custom_loader_extensions = Dict(str, list).tag(pref=True)
+    custom_loader_extensions = Dict(str, list, default={"csv": [".dat"]}).tag(pref=True)
 
     #: Collect all contributed Loader extensions.
     loaders = Typed(ExtensionsCollector)  # FIXME make private
@@ -67,6 +68,12 @@ class IOPlugin(HasPreferencesPlugin):
 
         self.loaders.start()
 
+        # Ensure the list of supported extensions is up to date
+        self._update_supported_extensions(None)
+
+        self.observe("custom_loader_extensions", self._update_supported_extensions)
+        self.loaders.observe("contributions", self._update_supported_extensions)
+
         core.invoke_command("glaze.errors.exit_error_gathering")
 
     def stop(self) -> None:
@@ -91,11 +98,11 @@ class IOPlugin(HasPreferencesPlugin):
             if ext in loader.file_extensions:
                 matching_loaders.append(id)
 
-        for id, exts in self.custom_loader_extensions:
+        for id, exts in self.custom_loader_extensions.items():
             if ext in exts:
                 matching_loaders.append(id)
 
-        return matching_loaders
+        return matching_loaders, self.preferred_loader.get(ext)
 
     def create_loader(self, id: str, path: str) -> BaseLoader:
         """Create a loader associated with a path
@@ -147,6 +154,16 @@ class IOPlugin(HasPreferencesPlugin):
         return self.loaders.contributions[id].get_config_view(loader)
 
     # --- Private API ---------------------------------------------------------
+
+    def _update_supported_extensions(self, change):
+        """Update the list of supported extensions."""
+        exts = set()
+        for loader in self.loaders.contributions.values():
+            exts |= set(loader.file_extensions)
+        for e in self.custom_loader_extensions.values():
+            exts |= set(e)
+
+        self.supported_extensions = exts
 
     #: Store user preferences for loaders.
     _loader_preferences = Dict().tag(pref=True)

@@ -36,8 +36,8 @@ enamldef DataSelection1DPlot(Page):
     #: Reference to the 1D plot model driving this widget
     attr plot_model
 
-    #: Are we using a single x-axis across all plot
-    attr single_xaxis : bool
+    #: Are we using a common x-axis across all plot
+    attr common_xaxis : bool
 
     title = "1D plots data selection"
 
@@ -45,7 +45,7 @@ enamldef DataSelection1DPlot(Page):
         GroupBox:
             title = "X axis"
             flat = True
-            visible << not single_xaxis
+            visible << not common_xaxis
             QtListStrWidget:
                 items << list(workspace.file_content)
                 sort = False
@@ -92,7 +92,7 @@ enamldef DataSelection1DPanel(DockItem):
         constraints = [
             vbox(
                 hbox(lab_plt_nb, plt_nb),
-                multi_xaxis.when(multi_xaxis.visible),
+                common_xaxis.when(common_xaxis.visible),
                 x_axis.when(x_axis.visible),
                 nb,
                 hbox(auto_re, re)
@@ -109,14 +109,13 @@ enamldef DataSelection1DPanel(DockItem):
             # of plots
             # FIXME when changing the number of plots store previous layout and restore
             # when going back to the same number of plots.
-        CheckBox: multi_xaxis:
+        CheckBox: common_xaxis:
             text = "Common x-axis"
             visible << (plt_nb.selected > 1)
-            # False by default if a singleplot is displayed.
-            checked = plt_nb.selected > 1
+            checked = False
 
         GroupBox: x_axis:
-            visible << multi_xaxis.checked
+            visible << common_xaxis.checked
             title = "X axis"
             flat = True
             QtListStrWidget:
@@ -131,10 +130,10 @@ enamldef DataSelection1DPanel(DockItem):
             tabs_closable = False
             tabs_movable = False
             Looper:
-                iterable << range(1, plt_nb.selected + 1)
+                iterable << range(plt_nb.selected)
                 DataSelection1DPlot:
                     plot_model << panel_model.models[loop_item]
-                    single_xaxis << not multi_xaxis.checked
+                    common_xaxis << common_xaxis.checked
 
         CheckBox: auto_re:
             text = "Auto-refresh"
@@ -143,7 +142,7 @@ enamldef DataSelection1DPanel(DockItem):
             text = "Refresh"
             clicked::
                 for m in panel_model.models:
-                    m.refresh_plots()
+                    m.refresh_plot()
 
 
 enamldef Plot1DDockItem(DockItem):

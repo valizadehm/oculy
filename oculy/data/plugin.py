@@ -27,15 +27,15 @@ class DataStoragePlugin(Plugin):
     converters = None  # FIXME
 
     def start(self):
-        self.datastore = DataStore()
+        self.datastore = DataStore(_plugin=self)
 
     def stop(self):
         pass
 
-    def run_converters(self, data: Any) -> Union[Dataset, DataArray]:
+    def run_converter(self, data: Any) -> Union[Dataset, DataArray]:
         """Convert data to an admissible element of the data store."""
         if not isinstance(data, np.ndarray) or data.dtype.names is not None:
             # FIXME run custom converters (including for numpy arrays)
             raise NotImplementedError
 
-        return DataArray(data=data)
+        return DataArray(values=data)

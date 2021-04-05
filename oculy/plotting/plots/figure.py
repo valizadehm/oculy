@@ -77,8 +77,8 @@ class Figure(PlotElement):
         axes = axes or Axes()
         self.axes_set[id] = axes
         self.grid[id] = position
-        if self.proxy and self.proxy.is_active:
-            axes.activate()
+        if self._resolver:
+            axes.initialize(self._resolver)
 
         return axes
 

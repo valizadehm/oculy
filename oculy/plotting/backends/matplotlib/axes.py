@@ -148,15 +148,16 @@ class MatplotlibAxesProxy(AxesProxy):
 
     def activate(self):
         """Activate the proxy axes."""
+        super().activate()
         el = self.element
         fig = el.figure
         if len(fig.axes_set) > 1:
             raise RuntimeError()  # Add support for more than one axis.
         else:
-            first_axes = fig.proxy._figure.add_axes(
-                [0, 0, 1, 1],
+            first_axes = fig.proxy._figure.add_subplot(
                 projection=el.projection if el.projection != "cartesian" else None,
             )
+            first_axes.set_autoscale_on(True)
 
         active_axes = {
             direction: getattr(el, f"{direction}_axis")
@@ -177,11 +178,16 @@ class MatplotlibAxesProxy(AxesProxy):
             }
         else:
             raise RuntimeError("Support is currently limited to 2 axes")
+        self.element.figure.proxy.request_redraw()
 
     def deactivate(self):
         """Deactivate the proxy axes."""
         self._axes.clear()
         del self._axes
+        super().deactivate()
+
+    def get_default_axes_mapping(self):
+        """Get teh default axes mapping for plots."""
 
     # @mark_backend_unsupported
     # def enable_zooming(self, bound: str, button: str):
