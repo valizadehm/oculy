@@ -138,7 +138,7 @@ class IOPlugin(HasPreferencesPlugin):
             specifications: Mapping[str, MaskSpecification],
         ) -> Dataset:
             # FIXME should we be invoking a command here ?
-            mask = self.workbench.get_plugin("oculy.transformations").create_mask(
+            mask = self.workbench.get_plugin("oculy.transformers").create_mask(
                 filter_base, specifications
             )
             return to_filter.where(mask)

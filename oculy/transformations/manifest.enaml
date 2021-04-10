@@ -59,7 +59,8 @@ NODES_DESC =\
 enamldef DataTransformerManifest(PluginManifest):
     """
     """
-    id = "oculy.data_transformer"
+
+    id = "oculy.transformers"
     factory = io_plugin_factory
 
     # --- Extension points ----------------------------------------------------
@@ -76,7 +77,7 @@ enamldef DataTransformerManifest(PluginManifest):
 
     Extension:
         id = "builtin-masks"
-        point = "oculy.data_transformer.masking"
+        point = "oculy.transformers.masking"
         Mask:
             id = ">"
             func = mask_greater
@@ -98,7 +99,7 @@ enamldef DataTransformerManifest(PluginManifest):
 
     Extension:
         id = "base-operation"
-        point = "oculy.data_transformer.compute_nodes"
+        point = "oculy.transformers.compute_nodes"
         Node:
             id = "a[i]"
             func = index_array
@@ -108,7 +109,7 @@ enamldef DataTransformerManifest(PluginManifest):
         id = "state"
         point = "glaze.states.state"
         State:
-            id = "oculy.transformations"
+            id = "oculy.transformers"
             description = (
                 "State of the transformations plugin allowing to access ids of "
                 "contributions."

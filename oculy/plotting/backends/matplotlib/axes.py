@@ -157,7 +157,6 @@ class MatplotlibAxesProxy(AxesProxy):
             first_axes = fig.proxy._figure.add_subplot(
                 projection=el.projection if el.projection != "cartesian" else None,
             )
-            first_axes.set_autoscale_on(True)
 
         active_axes = {
             direction: getattr(el, f"{direction}_axis")

@@ -118,6 +118,7 @@ enamldef DataSelection1DPanel(DockItem):
             visible << common_xaxis.checked
             title = "X axis"
             flat = True
+            # XXX use an ObjectCombo
             QtListStrWidget:
                 sort = False
                 items << list(workspace.file_content)

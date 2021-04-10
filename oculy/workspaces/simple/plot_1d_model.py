@@ -1,5 +1,5 @@
 # --------------------------------------------------------------------------------------
-# Copyright 2020 by Oculy Authors, see git history for more details.
+# Copyright 2020-2021 by Oculy Authors, see git history for more details.
 #
 # Distributed under the terms of the BSD license.
 #
@@ -25,7 +25,7 @@ def _workspace():
 
 # FIXME add proper metadata to datastore (need to formalize the format)
 class Plot1DModel(HasPrefAtom):
-    """Model for a 1D plot hadnling data querying, processing and display."""
+    """Model for a 1D plot handling data querying, processing and display."""
 
     #: Selected entry of the data to use as x axis for each plot.
     selected_x_axis = Str()
@@ -54,13 +54,13 @@ class Plot1DModel(HasPrefAtom):
 
     def refresh_plot(self) -> None:
         """Force the refreshing of the plot."""
-        # Do not plot if there is nno selection on some axes
+        # Do not plot if there is no selection on some axes
         # NOTE may not be the cleanest way to do this.
         if not self.selected_x_axis or not self.selected_y_axes:
             return
         data = self._workspace._loader.load_data(
             [self.selected_x_axis] + self.selected_y_axes,
-            {m.mask_id: (m.content_id, m.value) for m in self.filters},
+            {m.content_id: (m.mask_id, (m.value,)) for m in self.filters},
         )
 
         # FIXME handle pipeline
@@ -100,10 +100,11 @@ class Plot1DModel(HasPrefAtom):
                 pp.add_plot(
                     f"SW-1D-{self._index}",
                     Plot1DLine(
+                        id=f"SW-1D-{self._index}-{len(axes.plots)}",
                         data=Plot1DData(
                             x=update[f"sviewer/plot_1d_{self._index}/x"][0],
                             y=update[f"sviewer/plot_1d_{self._index}/y_{i}"][0],
-                        )
+                        ),
                     ),
                     sync_data={
                         "data.x": f"sviewer/plot_1d_{self._index}/x",
@@ -137,8 +138,8 @@ class Plot1DModel(HasPrefAtom):
 
         if new:
             # Connect observers
-            self.observe("selected_x_axis", self._handle_selected_x_axis_changed)
-            self.observe("selected_y_axes", self._handle_selected_x_axes_changed)
+            self.observe("selected_x_axis", self._handle_selected_x_axis_change)
+            self.observe("selected_y_axes", self._handle_selected_y_axes_change)
             self.observe("filters", self._handle_filters_change)
             for f in self.filters:
                 # FIXME redo when exposing all filters
@@ -148,8 +149,8 @@ class Plot1DModel(HasPrefAtom):
             self.refresh_plot()
         else:
             # Disconnect observers
-            self.unobserve("selected_x_axis", self._handle_selected_x_axis_changed)
-            self.unobserve("selected_y_axes", self._handle_selected_x_axes_changed)
+            self.unobserve("selected_x_axis", self._handle_selected_x_axis_change)
+            self.unobserve("selected_y_axes", self._handle_selected_y_axes_change)
             self.unobserve("filters", self._handle_filters_change)
             for f in self.filters:
                 # FIXME redo when exposing all filters
@@ -174,7 +175,7 @@ class Plot1DModel(HasPrefAtom):
         self._datastore.store_data({f"sviewer/plot_1d_{self._index}/x": (new_x, None)})
 
     def _handle_selected_y_axes_change(self, change):
-        """Replot data when the slected y axes change."""
+        """Replot data when the selected y axes change."""
         self.refresh_plot()
 
     def _handle_filters_change(self, change):
@@ -239,11 +240,11 @@ class Plot1DPanelModel(HasPrefAtom):
         """"""
         if new:
             for m in self.models:
-                m.enable_auto_refresh()
+                m.auto_refresh = True
                 m.refresh_plot()
         else:
             for m in self.models:
-                m.disable_auto_refresh()
+                m.auto_refresh = False
 
     def _post_setattr_optimize_for_speed(self, old, new):
         """"""

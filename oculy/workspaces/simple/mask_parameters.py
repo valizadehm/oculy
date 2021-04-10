@@ -20,7 +20,7 @@ class MaskParameter(Atom):
     content_id = Str()
 
     #: ID of the mask to apply
-    mask_id = Str()
+    mask_id = Str("==")
 
     #: Value used to generate the mask
     value = Float()

@@ -54,6 +54,10 @@ class Matplotlib1DLineProxy(Plot1DLineProxy):
 
         # FIXME handle error bars
         self._line.set_data(*d)
+        # XXX FIXME ugly hack, need a better propagation mechanism here !
+        for ax in self.element.axes.proxy._axes.values():
+            ax.relim()
+            ax.autoscale()
         self.element.axes.figure.proxy.request_redraw()
 
     # --- Private API
@@ -87,6 +91,10 @@ class Matplotlib1DBarProxy(Plot1DBarProxy):
     def set_data(self, data):
         self._bar.remove()
         self._draw_bars()
+        # FIXME ugly hack, need a better propagation mechanism here !
+        for ax in self.element.axes.proxy._axes.values():
+            ax.relim()
+            ax.autoscale()
         self.element.axes.figure.proxy.request_redraw()
 
     # --- Private API

@@ -12,10 +12,14 @@ from typing import Mapping
 
 import numpy as np
 from atom.api import List, Typed
-from glaze.utils.atom_util import HasPrefAtom
-from glaze.utils.plugin_tools import ExtensionsCollector, make_extension_validator
+from glaze.utils.plugin_tools import (
+    HasPreferencesPlugin,
+    ExtensionsCollector,
+    make_extension_validator,
+)
 
-from .mask import Mask, MaskSpecification
+from . import MaskSpecification
+from .masks import Mask
 from .node import Node
 
 MASKING_POINT = "oculy.transformers.masking"
@@ -25,7 +29,7 @@ NODES_POINT = "oculy.transformers.compute_nodes"
 
 # FIXME add proper node support (namespaced and with automatic classification
 # based on signature)
-class TransformerPlugin(HasPrefAtom):
+class TransformerPlugin(HasPreferencesPlugin):
     """Plugin responsible for handling data transformation including masking."""
 
     #: Ids of the contributed masks
@@ -56,7 +60,7 @@ class TransformerPlugin(HasPrefAtom):
         self._masks.start()
 
         validator = make_extension_validator(Node, (), ("func",))
-        self._masks = ExtensionsCollector(
+        self.nodes = ExtensionsCollector(
             workbench=self.workbench,
             point=NODES_POINT,
             ext_class=Node,
@@ -103,7 +107,7 @@ class TransformerPlugin(HasPrefAtom):
         """
         mask = None
         for k, v in specifications.items():
-            temp = self._masks[k].func(filter_base[k], *v)
+            temp = self._masks.contributions[v[0]].func(filter_base[k], *v[1])
             mask = mask & temp if mask is not None else temp
         return mask
 
