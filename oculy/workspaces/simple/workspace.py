@@ -31,8 +31,8 @@ from oculy.data import Dataset
 from oculy.io.loader import BaseLoader, BaseLoaderView
 
 from .plot_1d_model import Plot1DPanelModel
+from .plot_2d_model import Plot2DPanelModel
 
-# from .plot_2d_model import Plot2DPanelModel
 with enaml.imports():
     from .content import SimpleViewerContent
 
@@ -109,16 +109,14 @@ class SimpleViewerWorkspace(Workspace):
         )
 
         self._1d_plots = Plot1DPanelModel(self, datastore)
-        # self._2d_plots = Plot2DPanelModel(self, datastore)
+        self._2d_plots = Plot2DPanelModel(self, datastore)
 
         self.content = SimpleViewerContent(workspace=self)
 
-    # FIXME clean up data store
     def stop(self):
         datastore = self.workbench.get_plugin("oculy.data").datastore
         datastore.store_data({"_simple_viewer/1d": (None, None)})
-
-        # FIXME Delete 1D and 2D plots
+        datastore.store_data({"_simple_viewer/2d": (None, None)})
 
     def get_loader_view(self) -> BaseLoaderView:
         """Get a config view for the current loader."""
@@ -151,7 +149,7 @@ class SimpleViewerWorkspace(Workspace):
     #: Handler for watchdog events.
     _watchdog_handler = Typed(FileListUpdater)
 
-    #: Watch of teh watchdog.
+    #: Watch of the watchdog.
     _watchdog_watch = Typed(ObservedWatch)
 
     #: Cache of loader paarmeters used by the user in this session.
@@ -162,7 +160,7 @@ class SimpleViewerWorkspace(Workspace):
     _1d_plots = Typed(Plot1DPanelModel)
 
     #: State of the 2D plot
-    # _2d_plots = Typed(Plot2DPanelModel)
+    _2d_plots = Typed(Plot2DPanelModel)
 
     def _update_available_files(self):
         """Update the list of available files."""

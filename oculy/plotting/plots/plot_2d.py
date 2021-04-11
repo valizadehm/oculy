@@ -62,7 +62,7 @@ class Plot2DData(Atom):
                 f"Got x: {x.shape}, y: {y.shape}, c: {c.shape}."
             )
 
-        # Make the object unmutable.
+        # Make the object immutable.
         self.freeze()
 
 
@@ -75,7 +75,11 @@ class Plot2D(BasePlot):
     #: Colormap to use.
     colormap = Str("viridis")
 
-    # FIXME add connection to proxy
+    # --- Proxy connection
+
+    def _post_setattr_data(self, old, new):
+        if self.proxy:
+            self.proxy.set_data(new)
 
 
 class Plot2DRectangularMesh(Plot2D):

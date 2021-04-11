@@ -191,7 +191,7 @@ def main(cmd_line_args=None):
     workbench.unregister("oculy.data")
     workbench.unregister("oculy.io")
     workbench.unregister("oculy.plotting")
-    workbench.unregister("oculy.data_transformer")
+    workbench.unregister("oculy.transformers")
     workbench.unregister("glaze.packages")
     workbench.unregister("glaze.icons")
     workbench.unregister("glaze.states")

@@ -47,7 +47,11 @@ enamldef DataSelection1DPlot(Page):
             flat = True
             visible << not common_xaxis
             QtListStrWidget:
+                items = []
                 items << list(workspace.file_content)
+                items ::
+                    if items and selected_item not in items:
+                        self.selected_item = items[0]
                 sort = False
                 selected_item := plot_model.selected_x_axis
 
@@ -57,7 +61,11 @@ enamldef DataSelection1DPlot(Page):
             QtListStrWidget:
                 multiselect = True
                 sort = False
+                items = []
                 items << list(workspace.file_content)
+                items ::
+                    if items and selected_item not in items:
+                        self.selected_item = items[-1]
                 selected_items := plot_model.selected_y_axes
 
         GroupBox:
@@ -118,7 +126,6 @@ enamldef DataSelection1DPanel(DockItem):
             visible << common_xaxis.checked
             title = "X axis"
             flat = True
-            # XXX use an ObjectCombo
             QtListStrWidget:
                 sort = False
                 items << list(workspace.file_content)
@@ -157,10 +164,6 @@ enamldef Plot1DDockItem(DockItem):
     Container:
         FigureWidget:
             figure = model._figure
-
-
-def generate_dock_layout(plt_nb: int):
-    """Generate a dock layout based on the number of plots."""
 
 
 # workspace is accessible in the parent scope

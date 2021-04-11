@@ -1,0 +1,150 @@
+# --------------------------------------------------------------------------------------
+# Copyright 2020-2021 by Oculy Authors, see git history for more details.
+#
+# Distributed under the terms of the BSD license.
+#
+# The full license is in the file LICENCE, distributed with this software.
+# --------------------------------------------------------------------------------------
+"""Panel displaying 2D plots.
+
+"""
+from enaml.core.api import Looper
+from enaml.layout.api import HSplitLayout, VSplitLayout, vbox, hbox
+from enaml.widgets.api import (
+    Notebook,
+    DockArea,
+    DockItem,
+    Container,
+    GroupBox,
+    Page,
+    CheckBox,
+    PushButton,
+    ObjectCombo,
+    Label,
+    ToolButton
+)
+
+from glaze.utils.widgets.list_editor import ListEditor
+from glaze.utils.widgets.qt_list_str_widget import QtListStrWidget
+
+from oculy.plotting.plot_widget import FigureWidget
+from .mask_view import MaskView
+
+
+enamldef DataSelection2DPlot(DockItem):
+    """Selection for generating 1D plots."""
+
+    #: Reference to the 1D plot model driving this widget
+    attr plot_model
+
+    #: Are we using a common x-axis across all plot
+    attr common_xaxis : bool
+
+    closable = False
+
+    title = "2D plots data selection"
+
+    Container:
+        GroupBox:
+            title = "X axis"
+            flat = True
+            ObjectCombo:
+                items = []
+                items << list(workspace.file_content)
+                items ::
+                    if items and selected not in items:
+                        self.selected = items[0]
+                selected := plot_model.selected_x_axis
+
+        GroupBox:
+            title = "Y axis"
+            flat = True
+            ObjectCombo:
+                items = []
+                items << list(workspace.file_content)
+                items ::
+                    if items and selected not in items and len(items) > 1:
+                        self.selected = items[1]
+                selected := plot_model.selected_y_axis
+
+        GroupBox:
+            title = "C axis"
+            flat = True
+            QtListStrWidget:
+                multiselect = False
+                sort = False
+                items = []
+                items << list(workspace.file_content)
+                items ::
+                    if items and selected_item not in items:
+                        self.selected_item = items[-1]
+                selected_item := plot_model.selected_c_axis
+
+        GroupBox:
+            title = "Filtering"
+            flat = True
+            ListEditor(MaskView): m_ed:
+                m_ed.model = plot_model
+                m_ed.iterable_name = "filters"
+                m_ed.operations = {
+                    "add": plot_model._add_filter,
+                    "remove": plot_model._remove_filter,
+                }
+        GroupBox:
+            title = "Transformations"
+            flat = True
+            # FIXME Deal with transformation later
+
+        CheckBox: auto_re:
+            text = "Auto-refresh"
+            checked := plot_model.auto_refresh
+        PushButton: re:
+            text = "Refresh"
+            clicked::
+                plot_model.refresh_plot()
+
+
+enamldef Plot2DDockItem(DockItem):
+    """Dock item hosting a single 1D plot."""
+
+    # Plot2DModel driving the UI
+    attr model
+
+    closable = False
+
+    Container:
+        FigureWidget:
+            figure = model._figure
+
+
+# workspace is accessible in the parent scope
+enamldef Plot2DPanel(DockItem): panel:
+    """Panel holding the selection controls and the 1d plot panes."""
+
+    #: Model driving the view
+    attr plot_model
+
+    closable = False
+
+    Container:
+        DockArea: area:
+            layout = HSplitLayout(
+                "selection", "plot_2d",
+                sizes=[1, 5000]
+            )
+
+            style = 'metro'
+
+            attr _layout_cache: dict = {}
+
+            func generate_dock_layout():
+                pass
+
+            DataSelection2DPlot: d_sel:
+                name = "selection"
+                title = "Data selection"
+                plot_model = panel.plot_model
+            Plot2DDockItem:
+                name << f"plot_2d"
+                title << f"Plot 2D     "
+                model << plot_model

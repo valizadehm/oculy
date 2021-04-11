@@ -22,7 +22,11 @@ enamldef MaskView(Container):
     constraints = [vbox(hbox(col, filt), allowed_value)]
 
     ObjectCombo: col:
-        items <<  list(workspace.file_content)
+        items = []
+        items << list(workspace.file_content)
+        items ::
+            if items and selected not in items:
+                self.selected = items[0]
         selected := model.content_id
         selected ::
             if not selected:

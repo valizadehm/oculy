@@ -116,7 +116,7 @@ class MatplotlibFigureProxy(FigureProxy):
     def _redraw_handler(self, clear: bool) -> None:
         c = self._canvas.canvas
         if clear:
-            c.clear()
+            self._figure.clear()
         c.draw_idle()
         c.flush_events()
 

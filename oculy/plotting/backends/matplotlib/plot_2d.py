@@ -11,6 +11,7 @@
 import numpy as np
 from atom.api import Bool, Typed, Value
 from matplotlib.axes import Axes
+from matplotlib.transforms import Bbox
 
 from oculy.plotting.plots import Plot2DContourProxy, Plot2DRectangularMeshProxy
 
@@ -30,7 +31,7 @@ class Matplotlib2DRectangularMeshProxy(Plot2DRectangularMeshProxy):
             self._invert = True
             axes = axes[::-1]
 
-        self._mpl_axes = self.element.axes._proxy._axes[axes]
+        self._mpl_axes = self.element.axes.proxy._axes[axes]
         self._display_data()
 
     def finalize(self):
@@ -38,7 +39,8 @@ class Matplotlib2DRectangularMeshProxy(Plot2DRectangularMeshProxy):
         super().deactivate()
 
     def set_data(self, data):
-        self._mesh.remove()
+        if self._mesh:
+            self._mesh.remove()
         self._display_data()
 
     # --- Private API
@@ -58,32 +60,48 @@ class Matplotlib2DRectangularMeshProxy(Plot2DRectangularMeshProxy):
         x, y, c = data.x, data.y, data.c
         if self._invert:
             x, y = y, x
-        if len(x.shape) == 2:
-            if len(np.unique(data.x[0])) == 1 and len(np.unique(data.y[:, 0])) == 1:
-                # FIXME use imshow
-                pass
-            elif len(np.unique(data.x[:, 0])) == 1 and len(np.unique(data.y[0])) == 1:
-                # FIXME use imshow
-                pass
+        if len(c.shape) == 2:
+            pass  # No reshaping needed
+
+        elif len(x.shape) == 1 and len(y.shape) == 1 and len(x) * len(y) == len(c):
+            c = np.reshape(c, (len(x), len(y)))
+
+        elif len(x) == len(c) and len(y) == len(c):
+            # Ravel to avoid weird issue with N-D array
+            x, y, c = np.ravel(x), np.ravel(y), np.ravel(c)
+            shape = (len(np.unique(x)), len(np.unique(y)))
+            index = np.lexsort((y, x))
+            x, y, c = x[index], y[index], c[index]
+            if len(c) < np.product(shape):
+                to_add = np.ones(np.product(shape) - len(c))
+                x = np.append(x, x[-1] * to_add)
+                y = np.append(y, y[-1] * to_add)
+                c = np.append(c, c[-1] * to_add)
+            elif len(c) > np.product(shape):
+                to_add = np.ones(shape[0] - (len(c) % shape[0]))
+                x = np.append(x, x[-1] * to_add)
+                y = np.append(y, y[-1] * to_add)
+                c = np.append(c, c[-1] * to_add)
+                shape = (shape[0], -1)
+            x, y, c = (np.reshape(x, shape), np.reshape(y, shape), np.reshape(c, shape))
 
         else:
-            # Ravel to avoid weird issue with N-D array
-            x, y, c = np.ravel(data.x), np.ravel(data.y), np.ravel(data.c)
-            if x[0] == x[1]:
-                # FIXME Keep going to find the redundance and check for possibility to use imshow
-                pass
-            elif y[0] == y[1]:
-                # FIXME Keep going to find the redundance and check for possibility to use imshow
-                pass
+            raise RuntimeError(
+                f"Cannot reshape c {c.shape} to plot it (x: {x.shape}, y: {y.shape}"
+            )
 
         if use_imshow:
-            pass
+            self._mesh = self._mpl_axes.imshow(
+                c,
+                origin="lower",
+                aspect="auto",
+            )
         else:
             # Need matplotlib > 3.3
             self._mesh = self._mpl_axes.pcolormesh(
-                c,
                 x,
                 y,
+                c,
                 shading="nearest",
                 cmap=self.element.colormap,
                 zorder=self.element.zorder,
@@ -91,6 +109,12 @@ class Matplotlib2DRectangularMeshProxy(Plot2DRectangularMeshProxy):
 
         if self.element.axes.colorbar:
             self.element.axes.colorbar.proxy.connect_mappable(self._mesh)
+
+        # FIXME ugly but the automatic manner does not work.
+        self._mpl_axes.set_xlim((x.min(), x.max()))
+        self._mpl_axes.set_ylim((y.min(), y.max()))
+
+        self.element.axes.figure.proxy.request_redraw()
 
 
 class Matplotlib2DContourProxy(Plot2DContourProxy):
