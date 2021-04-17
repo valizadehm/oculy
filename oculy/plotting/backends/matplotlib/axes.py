@@ -92,10 +92,11 @@ class MatplotlibColorbarProxy(ColorbarProxy):
     def activate(self):
         """Activate the proxy colorbar."""
         # Create matplotlib axes which will hold the colorbar.
-        axes = tuple(self.element.axes.proxy._axes)[0]
-        self._caxes = make_axes(
+        axes = tuple(self.element.axes.proxy._axes.values())[0]
+        caxes = make_axes(
             axes, location=self.element.location, aspect=self.element.aspect_ratio
-        )
+        )[0]
+        self._caxes = caxes
 
     def deactivate(self):
         """Deactivate the proxy colorbar."""
@@ -133,7 +134,7 @@ class MatplotlibColorbarProxy(ColorbarProxy):
 
     # --- Private API
 
-    _caxis = Typed(Axes)
+    _caxes = Typed(Axes)
 
 
 # FIXME implement later

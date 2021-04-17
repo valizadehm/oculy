@@ -223,7 +223,7 @@ class Colorbar(PlotElement):
     axes = ForwardTyped(lambda: Axes)
 
     #: Position at which the colorbar should be created.
-    location = Enum(("right", "top", "left", "bottom"))
+    location = Enum("right", "top", "left", "bottom")
 
     #: Should that axis be autoscaled
     auto_scaling = Bool()
@@ -412,12 +412,18 @@ class Axes(PlotElement):
         self.proxy.remove_plot(id, self.plots[id])
 
     def add_colorbar(self):
-        """"""
-        pass
+        """Add a colorbar to the axes."""
+        if self.colorbar:
+            return
+
+        self.colorbar = Colorbar(axes=self)
+        if self._resolver:
+            self.colorbar.initialize(self._resolver)
 
     def remove_colorbar(self):
-        """"""
-        pass
+        """Remove the colorbar from the axes."""
+        self.colorbar.finalize()
+        del self.colorbar
 
     def add_line(
         self,

@@ -53,6 +53,7 @@ class Plot2DPanelModel(HasPrefAtom):
         self._datastore = datastore
         plot_plugin = workspace.workbench.get_plugin("oculy.plotting")
         self._figure = plot_plugin.create_figure(f"SW-2D")
+        self._figure.axes_set["default"].add_colorbar()
 
     def refresh_plot(self) -> None:
         """Force the refreshing of the plot."""

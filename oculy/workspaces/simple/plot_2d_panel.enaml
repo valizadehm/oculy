@@ -9,7 +9,8 @@
 
 """
 from enaml.core.api import Looper
-from enaml.layout.api import HSplitLayout, VSplitLayout, vbox, hbox
+from enaml.layout.api import HSplitLayout, VSplitLayout, vbox, hbox, spacer
+from  enaml.stdlib.fields import FloatField
 from enaml.widgets.api import (
     Notebook,
     DockArea,
@@ -113,8 +114,19 @@ enamldef Plot2DDockItem(DockItem):
     closable = False
 
     Container:
-        FigureWidget:
+
+        # constraints = [vbox(fig, hbox(spacer, min_lb, min_val, max_lb, max_val))]
+
+        FigureWidget: fig:
             figure = model._figure
+        #Label: min_lb:
+        #    text = "Color minimum"
+        #FloatField: min_val:
+        #    pass
+        #Label: max_lb:
+        #    text = "maximum"
+        #FloatField: max_val:
+        #    pass
 
 
 # workspace is accessible in the parent scope
