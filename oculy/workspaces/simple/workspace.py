@@ -131,8 +131,11 @@ class SimpleViewerWorkspace(Workspace):
 
     def load_file(self):
         """Create loader for selected file and determine the entries."""
+        # Create a new loader or clear its state
         if self._loader is None:
             self._create_loader()
+        else:
+            self._loader.clear()
         self._loader.determine_content()
         self.file_changing = True
         self.file_content = self._loader.content
