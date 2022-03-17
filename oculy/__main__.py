@@ -119,8 +119,6 @@ def main(cmd_line_args=None):
     try:
         args = parser.parse_args(cmd_line_args)
     except BaseException as e:
-        if self.debug:
-            raise
         if e.args == (0,):
             sys.exit(0)
         text = "Failed to parse cmd line arguments"
@@ -144,7 +142,7 @@ def main(cmd_line_args=None):
     workbench.register(PreferencesManifest(application_name="oculy"))
     workbench.register(IconManagerManifest())
     workbench.register(LogManifest(no_capture=args.debug))
-    workbench.register(PackagesManifest())
+    workbench.register(PackagesManifest(extension_point="oculy_package_extension"))
     workbench.register(OculyManifest())
     workbench.register(DataStorageManifest())
     workbench.register(IOManifest())
@@ -152,7 +150,7 @@ def main(cmd_line_args=None):
     workbench.register(DataTransformerManifest())
     workbench.register(SimpleViewerManifest())
 
-    ui = workbench.get_plugin(u"enaml.workbench.ui")  # Create the application
+    ui = workbench.get_plugin("enaml.workbench.ui")  # Create the application
 
     try:
         app = workbench.get_plugin("glaze.lifecycle")
@@ -179,7 +177,7 @@ def main(cmd_line_args=None):
         "enaml.workbench.ui.select_workspace", {"workspace": args.workspace}, workbench
     )
 
-    ui = workbench.get_plugin(u"enaml.workbench.ui")
+    ui = workbench.get_plugin("enaml.workbench.ui")
     ui.show_window()
     ui.window.maximize()
     ui.start_application()
