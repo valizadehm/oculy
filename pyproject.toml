@@ -1,0 +1,126 @@
+[build-system]
+requires = ["setuptools>=64", "wheel", "setuptools_scm[toml]>=3.4.3"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "oculy"
+dynamic=["version"]
+description = "Visualisation app for Enaml based plugin applications"
+readme = "README.rst"
+requires-python = ">=3.7"
+license = {file = "LICENSE"}
+authors = [
+  {name = "Matthieu C. Dartiailh", email = "m.dartiailh@gmail.com"}
+]
+classifiers = [
+    "Development Status :: 3 - Alpha",
+    "License :: OSI Approved :: BSD License",
+    "Natural Language :: English",
+    "Operating System :: OS Independent",
+    "Programming Language :: Python",
+    "Programming Language :: Python :: 3.7",
+    "Programming Language :: Python :: 3.8",
+    "Programming Language :: Python :: 3.9",
+    "Topic :: Software Development :: Libraries :: Python Modules",
+]
+
+[options]
+packages = "find:"
+zip_safe = false
+long_description = "file: README.rst"
+long_description_content_type = "text/x-rst"
+platforms = "Linux; Windows; Mac"
+
+dependencies = [
+    "glaze",
+    "numpy",
+    "xarray",
+    "matplotlib",
+    "mplcairo",
+    "toml",
+    "typing_extensions; python_version<'3.10'"
+]
+use_2to3 = "False"
+
+
+[project.optional-dependencies]
+qt5-pyqt = ["enaml[qt5-pyqt]"]
+qt5-pyside = ["enaml[qt5-pyside]"]
+qt6-pyqt = ["enaml[qt6-pyqt]"]
+qt6-pyside = ["enaml[qt6-pyside]"]
+hdf5 = ["h5py"]
+csv = ["pandas"]
+
+[project.urls]
+homepage = "https://github.com/MatthieuDartiailh/oculy"
+documentation = "https://oculy.readthedocs.io/en/latest/"
+repository = "https://github.com/MatthieuDartiailh/oculy"
+changelog = "https://github.com/MatthieuDartiailh/oculy/blob/main/doc/changelog.rst"
+
+[tool.setuptools_scm]
+
+[tool.pytest.ini_options]
+minversion = "6.0"
+
+[tool.mypy]
+follow_imports = "ignore"
+strict_optional = true
+
+[[tool.mypy.overrides]]
+module = [
+    "pytest.*",
+]
+ignore_missing_imports = true
+
+[tool.isort]
+profile = "black"
+combine_as_imports = true
+include_trailing_comma = true
+use_parentheses = true
+multi_line_output = 3
+force_grid_wrap = 0
+line_length = 88
+known_third_party = [
+    "atom",
+    "enaml",
+    "glaze",
+    "matplotlib",
+    "numpy",
+    "typing_extensions",
+    "pytest",
+]
+
+[flake8]
+exclude = [
+    ".git",
+    "__pycache__",
+    "docs/source/conf.py",
+    "old",
+    "build",
+    "dist",
+    "pyvisa/thirdparty/*",
+    "visa.py",
+]
+ignore = ["E203", "E266", "E501", "W503", "E731"]
+# line length is intentionally set to 80 here we use Bugbear
+# See https://github.com/psf/black/blob/master/README.md#line-length for more details
+max-line-length = 80
+max-complexity = 18
+select = ["B", "C", "E", "F", "W", "T4", "B9"]
+
+#[options.packages.find]
+#exclude = ["tests", "tests.*"]
+[tool.setuptools.exclude-package-data]
+mypkg = ["tests", "tests.*"]
+
+[tool.setuptools.packages.find]
+where = ["oculy"]
+
+[tool.setuptools.package-data]
+"*" = ["*.enaml"]
+
+[project.gui-scripts]
+main = "oculy:__main__"
+
+[bdist_wheel]
+universal = 1
