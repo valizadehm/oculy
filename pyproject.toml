@@ -1,7 +1,3 @@
-[build-system]
-requires = ["setuptools>=64", "wheel", "setuptools_scm[toml]>=3.4.3"]
-build-backend = "setuptools.build_meta"
-
 [project]
 name = "oculy"
 dynamic=["version"]
@@ -43,7 +39,12 @@ documentation = "https://oculy.readthedocs.io/en/latest/"
 repository = "https://github.com/MatthieuDartiailh/oculy"
 changelog = "https://github.com/MatthieuDartiailh/oculy/blob/main/doc/changelog.rst"
 
-[tool.setuptools_scm]
+[project.gui-scripts]
+main = "oculy:__main__"
+
+[build-system]
+requires = ["setuptools>=64", "wheel", "setuptools_scm[toml]>=3.4.3"]
+build-backend = "setuptools.build_meta"
 
 [tool.pytest.ini_options]
 minversion = "6.0"
@@ -75,6 +76,3 @@ known_third_party = [
     "typing_extensions",
     "pytest",
 ]
-
-[project.gui-scripts]
-main = "oculy:__main__"
