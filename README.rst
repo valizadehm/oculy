@@ -20,23 +20,8 @@ or::
 
 The second option allow you to see the program console output and can be useful to debug issues.
 
-Build
------
-With the above in place, the package **oculy** can now be built by running::
-
-    python -m build --wheel
-from the folder where the ``pyproject.toml`` resides.
-(You may need to install the build package first)::
-
-    pip install build
-
-This should create a ``build/`` folder as well as a ``dist/`` folder in which
-one will find a wheel named something like ``oculy-0.0.0.whl``.
-(don't forget to add these to your ``.gitignore``, if they aren’t in there already!)
-One can install this package anywhere by copying it to the relevant machine and running::
-
-    pip install oculy-0.0.0.whl
-
+Installing a development version
+---------------------------------
 When developing one probably does not want to re-build and re-install the wheel
 every time once they have made a change to the code, and for that one can use
 an editable install::
@@ -45,3 +30,22 @@ an editable install::
 
 This will install your package without packaging it into a file, but by
 referring to the source directory.
+
+
+Generating distribution archives
+---------------------------------
+The next step is to generate distribution packages for the package. These are archives that are uploaded to PyPI and can
+be installed by pip.
+First of all, make sure you have the latest version of PyPA's build installed::
+
+    py -m pip install --upgrade build
+
+Now run this command from the same directory where ``pyproject.toml`` is located::
+
+    python -m build --wheel
+
+where ``--wheel`` flag is optional.
+
+This should create a wheel named something like ``oculy-0.0.0-py3-none-any.whl`` in ``dist/`` folder.
+One can install this install built distribution by forend tool like ``pip``.
+

@@ -111,5 +111,8 @@ venv.bak/
 # VS code
 .vscode/
 
+#JetBrains PyCharm
+.idea/
+
 # Large datafiles
 *.hdf5
