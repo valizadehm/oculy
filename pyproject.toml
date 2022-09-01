@@ -1,0 +1,80 @@
+[build-system]
+requires = ["setuptools>=64", "wheel", "setuptools_scm[toml]>=3.4.3"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "oculy"
+dynamic=["version"]
+description = "Visualisation app for Enaml based plugin applications"
+readme = "README.rst"
+requires-python = ">=3.9"
+license = {file = "LICENSE"}
+authors = [
+  {name = "Matthieu C. Dartiailh", email = "m.dartiailh@gmail.com"}
+]
+classifiers = [
+    "Development Status :: 3 - Alpha",
+    "License :: OSI Approved :: BSD License",
+    "Natural Language :: English",
+    "Operating System :: OS Independent",
+    "Programming Language :: Python",
+    "Programming Language :: Python :: 3.9",
+    "Programming Language :: Python :: 3.10",
+    "Topic :: Software Development :: Libraries :: Python Modules",
+]
+
+dependencies = [
+    "glaze[qt6-pyside]",
+    "numpy",
+    "xarray",
+    "matplotlib",
+    "mplcairo",
+    "toml",
+    "typing_extensions; python_version<'3.10'"
+]
+
+[project.optional-dependencies]
+hdf5 = ["h5py"]
+csv = ["pandas"]
+
+[project.urls]
+homepage = "https://github.com/MatthieuDartiailh/oculy"
+documentation = "https://oculy.readthedocs.io/en/latest/"
+repository = "https://github.com/MatthieuDartiailh/oculy"
+changelog = "https://github.com/MatthieuDartiailh/oculy/blob/main/doc/changelog.rst"
+
+[tool.setuptools_scm]
+
+[tool.pytest.ini_options]
+minversion = "6.0"
+
+[tool.mypy]
+follow_imports = "ignore"
+strict_optional = true
+
+[[tool.mypy.overrides]]
+module = [
+    "pytest.*",
+]
+ignore_missing_imports = true
+
+[tool.isort]
+profile = "black"
+combine_as_imports = true
+include_trailing_comma = true
+use_parentheses = true
+multi_line_output = 3
+force_grid_wrap = 0
+line_length = 88
+known_third_party = [
+    "atom",
+    "enaml",
+    "glaze",
+    "matplotlib",
+    "numpy",
+    "typing_extensions",
+    "pytest",
+]
+
+[project.gui-scripts]
+main = "oculy:__main__"
