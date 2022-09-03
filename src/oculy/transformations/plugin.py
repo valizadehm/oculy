@@ -12,7 +12,7 @@ from typing import Mapping
 
 import numpy as np
 from atom.api import List, Typed
-from glaze.utils.plugin_tools import (
+from gild.utils.plugin_tools import (
     HasPreferencesPlugin,
     ExtensionsCollector,
     make_extension_validator,
@@ -46,7 +46,7 @@ class TransformerPlugin(HasPreferencesPlugin):
 
         """
         core = self.workbench.get_plugin("enaml.workbench.core")
-        core.invoke_command("glaze.errors.enter_error_gathering")
+        core.invoke_command("gild.errors.enter_error_gathering")
 
         validator = make_extension_validator(Mask, (), ("func",))
         self._masks = ExtensionsCollector(
@@ -69,7 +69,7 @@ class TransformerPlugin(HasPreferencesPlugin):
 
         self.nodes.start()
 
-        core.invoke_command("glaze.errors.exit_error_gathering")
+        core.invoke_command("gild.errors.exit_error_gathering")
 
     def stop(self) -> None:
         """Stop the plugin life-cycle.

@@ -22,7 +22,7 @@ from enaml.widgets.api import (
     PushButton,
     ToolButton,
 )
-from glaze.plugins.icons import get_icon
+from gild.plugins.icons import get_icon
 
 
 # workbench and workspace are accessible through the dynamic namespacing
