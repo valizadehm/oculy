@@ -36,7 +36,7 @@ csv = ["pandas"]
 [project.urls]
 homepage = "https://github.com/MatthieuDartiailh/oculy"
 documentation = "https://oculy.readthedocs.io/en/latest/"
-repository = "https://github.com/MatthieuDartiailh/oculy"
+repository = "https://github.com/MatthieuDartiailh/ "
 changelog = "https://github.com/MatthieuDartiailh/oculy/blob/main/doc/changelog.rst"
 
 [project.gui-scripts]
