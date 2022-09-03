@@ -18,7 +18,6 @@ classifiers = [
     "Programming Language :: Python :: 3.10",
     "Topic :: Software Development :: Libraries :: Python Modules",
 ]
-
 dependencies = [
     "glaze[qt6-pyside]",
     "numpy",
@@ -36,7 +35,7 @@ csv = ["pandas"]
 [project.urls]
 homepage = "https://github.com/MatthieuDartiailh/oculy"
 documentation = "https://oculy.readthedocs.io/en/latest/"
-repository = "https://github.com/MatthieuDartiailh/ "
+repository = "https://github.com/MatthieuDartiailh/oculy"
 changelog = "https://github.com/MatthieuDartiailh/oculy/blob/main/doc/changelog.rst"
 
 [project.gui-scripts]
