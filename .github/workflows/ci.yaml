@@ -1,12 +1,104 @@
-name: learn-github-actions
-on: [push]
+name: oculy-CI
+# Specifies the trigger for this workflow
+on:
+  label:
+    types:
+      - created
+  push:
+    branches:
+      - main
+  fork:
+    branches:
+      - main
+  pull_request:
+    branches:
+      - main
+      - 'releases/**'
+    paths:
+      - .github/workflows/ci.yaml
+      - pyproject.toml
+
 jobs:
-  check-bats-version:
+  formatting:
+    name: Check code formatting
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v3
-      - uses: actions/setup-node@v3
+      - uses: actions/checkout@v2
+      - name: Set up Python
+        uses: actions/setup-python@v2
         with:
-          node-version: '14'
-      - run: npm install -g bats
-      - run: bats -v
+          python-version: 3.9
+      - name: Install tools
+        run: |
+          python -m pip install --upgrade pip
+          pip install flake8 black isort mypy pytest numpy
+      - name: Isort
+        run: |
+          isort oculy -c;
+      - name: Black
+        if: always()
+        run: |
+          black oculy --check;
+      - name: Flake8
+        if: always()
+        run: |
+          flake8 oculy;
+      - name: Mypy
+        if: always()
+        run: |
+          mypy oculy;
+  tests:
+    name: Unit tests
+    runs-on: ${{ matrix.os }}
+    needs:
+      - formatting
+    if: needs.formatting.result == 'success'
+    strategy:
+      matrix:
+        os: [windows-latest]
+        python-version: ['3.9', '3.10']
+      fail-fast: false
+
+    steps:
+      - name: Checkout branch
+        uses: actions/checkout@v2
+      - name: Set up Python ${{ matrix.python-version }}
+        uses: actions/setup-python@v2
+        with:
+          python-version: ${{ matrix.python-version }}
+      - name: Install dependencies
+        run: |
+          python -m pip install --upgrade pip
+          python -m pip install wheel pyqt5
+          pip install numpy
+      - name: Install project
+        run: |
+          pip install -e .
+      - name: Install pytest
+        run: |
+          python -m pip install pytest pytest-cov pytest-qt pytest-timeout enaml_coverage_plugin
+      - name: Run tests (Windows)
+        if: matrix.os != 'ubuntu-latest'
+        run: python -X dev -m pytest tests --cov enaml --cov-report xml
+      - name: Upload coverage to Codecov
+        uses: codecov/codecov-action@v1
+        if: matrix.os != 'windows-latest'
+        with:
+          token: ${{ secrets.CODECOV_TOKEN }}
+          flags: unittests
+          name: codecov-umbrella
+          fail_ci_if_error: true
+
+  tests-result:
+    name: Tests result
+    if: always()
+    needs:
+      - tests
+    runs-on: ubuntu-latest
+    steps:
+      - name: Mark the job as a success
+        if: needs.tests.result == 'success'
+        run: exit 0
+      - name: Mark the job as a failure
+        if: needs.tests.result != 'success'
+        run: exit 1
