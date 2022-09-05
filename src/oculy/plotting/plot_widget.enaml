@@ -22,7 +22,7 @@ class FigureWidget(RawWidget):
 
     """
 
-    __slots__ = ('__weakref__',)
+    __slots__ = ("__weakref__",)
 
     #: Reference to the figure displayed by the widget.
     figure = d_(Typed(Figure))

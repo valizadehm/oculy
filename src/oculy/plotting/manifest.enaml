@@ -107,20 +107,20 @@ enamldef PlottingManifest(PluginManifest):
                         Plot2DContour: Matplotlib2DContourProxy}
             colormaps => ():
                 return {
-                    'Perceptually Uniform ': [
-                        'viridis', 'plasma', 'inferno', 'magma', 'cividis'
+                    "Perceptually Uniform ": [
+                        "viridis", "plasma", "inferno", "magma", "cividis"
                     ],
-                    'Sequential': [
-                        'Greys', 'Purples', 'Blues', 'Greens', 'Oranges', 'Reds',
-                        'YlOrBr', 'YlOrRd', 'OrRd', 'PuRd', 'RdPu', 'BuPu',
-                        'GnBu', 'PuBu', 'YlGnBu', 'PuBuGn', 'BuGn', 'YlGn',
-                        'binary', 'gist_yarg', 'gist_gray', 'gray', 'bone', 'pink',
-                        'spring', 'summer', 'autumn', 'winter', 'cool', 'Wistia',
-                        'hot', 'afmhot', 'gist_heat', 'copper'
+                    "Sequential": [
+                        "Greys", "Purples", "Blues", "Greens", "Oranges", "Reds",
+                        "YlOrBr", "YlOrRd", "OrRd", "PuRd", "RdP", "BuP",
+                        "GnB", "PuB", "YlGnB", "PuBuGn", "BuGn", "YlGn",
+                        "binary", "gist_yarg", "gist_gray", "gray", "bone", "pink",
+                        "spring", "summer", "autumn", "winter", "cool", "Wistia",
+                        "hot", "afmhot", "gist_heat", "copper"
                     ],
-                    'Diverging': [
-                        'PiYG', 'PRGn', 'BrBG', 'PuOr', 'RdGy', 'RdBu',
-                        'RdYlBu', 'RdYlGn', 'Spectral', 'coolwarm', 'bwr', 'seismic'
+                    "Diverging": [
+                        "PiYG", "PRGn", "BrBG", "PuOr", "RdGy", "RdB",
+                        "RdYlB", "RdYlGn", "Spectral", "coolwarm", "bwr", "seismic"
                     ]
                 }
 

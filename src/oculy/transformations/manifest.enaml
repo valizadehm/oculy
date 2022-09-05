@@ -11,7 +11,7 @@
 from typing import TYPE_CHECKING
 
 from enaml.workbench.api import PluginManifest, Extension, ExtensionPoint
-from glaze.plugins.states import State
+from gild.plugins.states import State
 
 from .masks import(
     Mask,
@@ -107,7 +107,7 @@ enamldef DataTransformerManifest(PluginManifest):
 
     Extension:
         id = "state"
-        point = "glaze.states.state"
+        point = "gild.states.state"
         State:
             id = "oculy.transformers"
             description = (

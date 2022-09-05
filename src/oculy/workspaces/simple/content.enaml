@@ -28,7 +28,7 @@ enamldef SimpleViewerContent(Container):
             sizes=[1, 5000]
         )
 
-        style = 'metro'
+        style = "metro"
 
         FileSelector:
             title = "File selection"
