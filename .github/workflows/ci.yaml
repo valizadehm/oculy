@@ -7,6 +7,8 @@ on:
   push:
     branches:
       - main
+    paths:
+      - '**.py'
   fork:
     branches:
       - main
@@ -34,19 +36,19 @@ jobs:
           pip install flake8 black isort mypy pytest numpy
       - name: Isort
         run: |
-          isort oculy -c;
+          isort src/oculy -c;
       - name: Black
         if: always()
         run: |
-          black oculy --check;
+          black src/oculy --check;
       - name: Flake8
         if: always()
         run: |
-          flake8 oculy;
+          flake8 src/oculy;
       - name: Mypy
         if: always()
         run: |
-          mypy oculy;
+          mypy src/oculy;
   tests:
     name: Unit tests
     runs-on: ${{ matrix.os }}
