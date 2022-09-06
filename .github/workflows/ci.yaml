@@ -21,28 +21,27 @@ on:
       - pyproject.toml
 
 jobs:
-  autoyapf:
+  test:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@master
+      - uses: actions/checkout@v2
+
+      - name: Setup Python
+        uses: actions/setup-python@v1
         with:
-          ref: ${{ github.head_ref }}
-      - name: autoyapf
-        id: autoyapf
-        uses: mritunjaysharma394/autoyapf@v2
-        with:
-          args: --style pep8 --recursive --in-place .
-      - name: Check for modified files
-        id: git-check
-        run: echo ::set-output name=modified::$(if git diff-index --quiet HEAD --; then echo "false"; else echo "true"; fi)
-      - name: Push changes
-        if: steps.git-check.outputs.modified == 'true'
+          python-version: 3.9
+
+      - name: Install dependencies with pipenv
         run: |
-          git config --global user.name 'github-actions' 
-          git config --global user.email 'github-actions@github.com' 
-          git remote set-url origin https://x-access-token:${{ secrets.GITHUB_TOKEN }}@github.com/${{ github.repository }}
-          git commit -am "Automated autoyapf fixes"
-          git push
+          pip install pipenv
+          pipenv install --deploy --dev
+
+      - run: pipenv run isort --recursive --diff
+      - run: pipenv run black --check .
+      - run: pipenv run flake8
+      - run: pipenv run mypy
+      - run: pipenv run pytest --cov --cov-fail-under=100
+
   tests:
     name: Unit tests
     runs-on: ${{ matrix.os }}
