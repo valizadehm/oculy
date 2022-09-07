@@ -27,15 +27,15 @@ jobs:
           pip install -r lint_requirements.txt
       - name: Isort
         run: |
-          isort src\oculy -c;
+          isort oculy -c;
       - name: Black
         if: always()
         run: |
-          black src\oculy --check;
+          black oculy --check;
       - name: Flake8
         if: always()
         run: |
-          flake8 src\oculy;
+          flake8 oculy;
   tests:
     name: Unit tests
     runs-on: ${{ matrix.os }}
