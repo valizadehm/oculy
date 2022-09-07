@@ -111,7 +111,8 @@ def main(cmd_line_args=None):
     extend_parser(
         parser,
         "oculy_cmdline_args",
-        lambda title, content, details, exception: display_startup_error_dialog(
+        lambda title, content, details,
+            exception: display_startup_error_dialog(
             title, content, details
         ),
     )
@@ -174,7 +175,9 @@ def main(cmd_line_args=None):
 
     # Select workspace
     core.invoke_command(
-        "enaml.workbench.ui.select_workspace", {"workspace": args.workspace}, workbench
+        "enaml.workbench.ui.select_workspace",
+        {"workspace": args.workspace},
+        workbench
     )
 
     ui = workbench.get_plugin("enaml.workbench.ui")
