@@ -1,0 +1,6 @@
+coverage>=4.0.3
+pytest
+pytest-cov
+pytest-qt 
+pytest-timeout 
+enaml_coverage_plugin
