@@ -58,7 +58,7 @@ jobs:
           pip install -r test_requirements.txt
       - name: Install project
         run: |
-          pip install -e .
+          pip install .
       - name: Test with pytest
         run: |
           pip install pytest-cov
@@ -70,19 +70,3 @@ jobs:
           flags: unittests
           name: codecov-umbrella
           fail_ci_if_error: true
-
-  # Added to summarize the matrix (otherwise we would need to list every single
-  # job in bors.toml)
-  tests-result:
-    name: Tests result
-    if: always()
-    needs:
-      - tests
-    runs-on: windows-latest
-    steps:
-      - name: Mark the job as a success
-        if: needs.tests.result == 'success'
-        run: exit 0
-      - name: Mark the job as a failure
-        if: needs.tests.result != 'success'
-        run: exit 1
