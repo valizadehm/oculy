@@ -21,27 +21,30 @@ on:
       - pyproject.toml
 
 jobs:
-  test:
+  formatting:
+    name: Check code formatting
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v2
-
-      - name: Setup Python
-        uses: actions/setup-python@v1
+      - name: Set up Python
+        uses: actions/setup-python@v2
         with:
           python-version: 3.9
-
-      - name: Install dependencies with pipenv
+      - name: Install tools
         run: |
-          pip install pipenv
-          pipenv install --deploy --dev
-
-      - run: pipenv run isort --recursive --diff
-      - run: pipenv run black --check .
-      - run: pipenv run flake8
-      - run: pipenv run mypy
-      - run: pipenv run pytest --cov --cov-fail-under=100
-
+          python -m pip install --upgrade pip
+          pip install flake8 black isort pytest numpy
+      - name: Isort
+        run: |
+          isort oculy -c;
+      - name: Black
+        if: always()
+        run: |
+          black oculy --check;
+      - name: Flake8
+        if: always()
+        run: |
+          flake8 oculy;
   tests:
     name: Unit tests
     runs-on: ${{ matrix.os }}
