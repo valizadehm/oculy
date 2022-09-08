@@ -1,10 +1,10 @@
-# --------------------------------------------------------------------------------------
+# ----------------------------------------------------------------------------------
 # Copyright 2020 by Oculy Authors, see git history for more details.
 #
 # Distributed under the terms of the BSD license.
 #
 # The full license is in the file LICENCE, distributed with this software.
-# --------------------------------------------------------------------------------------
+# ----------------------------------------------------------------------------
 """
 
 """
@@ -26,8 +26,8 @@ class Node(Declarative):
     id = d_(Str())
 
     #:
-    # Do signature analysis to determine if the workbench is necessary to the node
-    # working.
+    # Do signature analysis to determine if the workbench is necessary to the
+    # node working.
     func = d_(Callable())
 
     #:
@@ -41,8 +41,8 @@ class Node(Declarative):
 
 
 # --- Trivial nodes that could all be inlined
-
-T = TypeVar("T", bound=np.ndarray)  # FIXME once numpy 1.21 is out can use numpy.typing
+# FIXME once numpy 1.21 is out can use numpy.typing
+T = TypeVar("T", bound=np.ndarray)
 Index = TypeVar("Index", bound=np.ndarray)
 
 

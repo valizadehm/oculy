@@ -5,7 +5,8 @@
 #
 # The full license is in the file LICENCE, distributed with this software.
 # --------------------------------------------------------------------------------------
-"""Base class for plot resolver in charge of handling plotting for each class of plot.
+"""Base class for plot resolver in charge of handling plotting for each
+ class of plot.
 
 """
 from atom.api import Atom, Dict, Str, Subclass, Typed
@@ -35,8 +36,9 @@ class BackendResolver(Atom):
 
         if el_type not in self.proxies:
             raise RuntimeError(
-                f"Plot type {el_type} is not supported by {self.backend_name}, "
-                f"proxies are implemented for {list(self.proxies)}"
+                f"Plot type {el_type} is not supported by "
+                f"{self.backend_name}, proxies are implemented for "
+                f"{list(self.proxies)}"
             )
 
         proxy = self.proxies[el_type](element=element)
@@ -47,4 +49,5 @@ class BackendResolver(Atom):
 
     def _default_colormaps(self):
         """Provide the standard colormap categories."""
-        return {"Perceptually uniform": set(), "Sequential": set(), "Diverging": set()}
+        return {"Perceptually uniform": set(), "Sequential": set(),
+                "Diverging": set()}

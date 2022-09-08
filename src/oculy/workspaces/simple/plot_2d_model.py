@@ -4,7 +4,7 @@
 # Distributed under the terms of the BSD license.
 #
 # The full license is in the file LICENCE, distributed with this software.
-# --------------------------------------------------------------------------------------
+# ----------------------------------------------------------------------------
 """Model driving the 2D plot panel.
 
 """
@@ -43,9 +43,9 @@ class Plot2DPanelModel(HasPrefAtom):
     # Allow one pipeline per graph (use a notebook on the UI side)
     pipeline = Value()  # FIXME need a dedicated container
 
-    #: Is auto refresh currently enabled. This attribute reflects the user selection
-    #: but not necessarily the presence of event handler that can be disabled
-    #: temporarily when updating.
+    #: Is auto refresh currently enabled. This attribute reflects the user
+    # selection but not necessarily the presence of event handler that can
+    # be disabled temporarily when updating.
     auto_refresh = Bool()
 
     def __init__(self, workspace, datastore):
@@ -74,7 +74,7 @@ class Plot2DPanelModel(HasPrefAtom):
         axes = self._figure.axes_set["default"]
 
         # Update the X axis data
-        update = {"sviewer/plot_2d/x": (data[self.selected_x_axis].values, None)}
+        update = {"sviewer/plot_2d/x":(data[self.selected_x_axis].values,None)}
 
         # Update the Y axes data
         update["sviewer/plot_2d/y"] = (data[self.selected_y_axis].values, None)
@@ -122,14 +122,18 @@ class Plot2DPanelModel(HasPrefAtom):
     # --- Event handling
 
     def _post_setattr_auto_refresh(self, old, new) -> None:
-        """Connect observers to auto refresh when a plot input parameter change."""
+        """Connect observers to auto refresh when a plot input parameter
+        change."""
         self._auto_refresh = new
 
         if new:
             # Connect observers
-            self.observe("selected_x_axis", self._handle_selected_x_axis_change)
-            self.observe("selected_y_axis", self._handle_selected_y_axis_change)
-            self.observe("selected_c_axis", self._handle_selected_c_axis_change)
+            self.observe("selected_x_axis",
+                         self._handle_selected_x_axis_change)
+            self.observe("selected_y_axis",
+                         self._handle_selected_y_axis_change)
+            self.observe("selected_c_axis",
+                         self._handle_selected_c_axis_change)
             self.observe("filters", self._handle_filters_change)
             for f in self.filters:
                 # FIXME redo when exposing all filters
@@ -139,9 +143,12 @@ class Plot2DPanelModel(HasPrefAtom):
             self.refresh_plot()
         else:
             # Disconnect observers
-            self.unobserve("selected_x_axis", self._handle_selected_x_axis_change)
-            self.unobserve("selected_y_axis", self._handle_selected_y_axis_change)
-            self.unobserve("selected_c_axis", self._handle_selected_c_axis_change)
+            self.unobserve("selected_x_axis",
+                           self._handle_selected_x_axis_change)
+            self.unobserve("selected_y_axis",
+                           self._handle_selected_y_axis_change)
+            self.unobserve("selected_c_axis",
+                           self._handle_selected_c_axis_change)
             self.unobserve("filters", self._handle_filters_change)
             for f in self.filters:
                 # FIXME redo when exposing all filters
@@ -166,17 +173,19 @@ class Plot2DPanelModel(HasPrefAtom):
         self.refresh_plot()
 
     def _handle_file_change(self, change):
-        """Event handler ensuring that we are in a consistent after a file change.
+        """Event handler ensuring that we are in a consistent after a
+        file change.
 
-        Used to observe the workspace itself, signaling the begining of the change
-        with a True and the end with a False.
+        Used to observe the workspace itself, signaling the begining
+        of the change with a True and the end with a False.
 
         """
         # In the absence of auto refreshing there is nothing to do.
         if not self.auto_refresh:
             return
 
-        self._post_setattr_auto_refresh(change.get("oldvalue"), change["value"])
+        self._post_setattr_auto_refresh(change.get("oldvalue"),
+                                        change["value"])
 
     # Filter manipulations
 
@@ -192,7 +201,8 @@ class Plot2DPanelModel(HasPrefAtom):
                 filters.insert(index + 1, MaskParameter())
         else:
             raise ValueError(
-                f"Got invalid position: {position}, expected 'before' or 'after'"
+                f"Got invalid position: {position}, "
+                f"expected 'before' or 'after'"
             )
         self.filters = filters
 

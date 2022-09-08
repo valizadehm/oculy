@@ -10,7 +10,7 @@
 """
 from collections import defaultdict
 from operator import attrgetter
-from typing import Mapping, Optional, Tuple
+from typing import Mapping, Optional
 
 from atom.api import Dict, Str, Typed
 from glaze.utils.plugin_tools import (
@@ -33,7 +33,8 @@ class PlottingPlugin(HasPreferencesPlugin):
     #: Mapping of figures managed by the plugin. Should not be edited in place.
     figures = Dict(str, Figure)
 
-    #: Manager responsible to handle refreshing the plots linked to the data plugin.
+    #: Manager responsible to handle refreshing the plots linked to the data
+    # plugin.
     sync_managers = Dict(BasePlot, SyncManager)
 
     def start(self):
@@ -42,8 +43,8 @@ class PlottingPlugin(HasPreferencesPlugin):
             workbench=self.workbench,
             point="oculy.plotting.plots",
             ext_class=Plot,
-            validate_ext=make_extension_validator(base_cls=Plot, fn_names=("get_cls",)),
-        )
+            validate_ext=make_extension_validator(base_cls=Plot,
+                                                  fn_names=("get_cls",)),)
         self._plots.start()
 
         self._backends = ExtensionsCollector(
@@ -114,7 +115,8 @@ class PlottingPlugin(HasPreferencesPlugin):
         figure = Figure(backend_name=backend)
         for axes_id in axes_positions:
             figure.add_axes(
-                axes_id, axes_positions[axes_id], axes_specifications.get(axes_id)
+                axes_id, axes_positions[axes_id],
+                axes_specifications.get(axes_id)
             )
         self.figures[id] = figure
 
@@ -149,8 +151,8 @@ class PlottingPlugin(HasPreferencesPlugin):
         axes : Optional[Tuple[str, str]], optional
             Pair of axes to use (ex: "bottom", "left" which the default).
         sync_data : Optional[Mapping[str, str]], optional
-            Mapping between attributes of the plot and entries of the data handling
-            plugin.
+            Mapping between attributes of the plot and entries of the data
+            handling plugin.
 
         """
         if fig_id not in self.figures:
@@ -167,7 +169,8 @@ class PlottingPlugin(HasPreferencesPlugin):
         ax = figure.axes_set[axes_id]
         if plot.id in ax.plots:
             raise KeyError(
-                f"Plot id {plot.id} already exist for axes {axes_id} of figure {fig_id}"
+                f"Plot id {plot.id} already exist for axes {axes_id} "
+                f"of figure {fig_id}"
             )
 
         if sync_data:
@@ -192,7 +195,8 @@ class PlottingPlugin(HasPreferencesPlugin):
     _resolvers = Dict(str, BackendResolver)
 
     def _populate_resolvers(self):
-        """Aggregate contributions made to a single backend name respecting priotities."""
+        """Aggregate contributions made to a single backend name respecting
+        priotities."""
         backends = defaultdict(list)
         for v in self._backends.contributions.values():
             backends[v.id].append(v)
