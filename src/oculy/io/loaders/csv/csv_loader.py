@@ -26,18 +26,22 @@ from ...loader import BaseLoader, DataKeyError
 class CSVLoader(BaseLoader):
     """Load data stored in a csv file.
 
-    The system can automatically strip comment and determine the proper delimiter.
+    The system can automatically strip comment and determine
+    the proper delimiter.
 
     """
 
-    #: Should data file be loaded all at once or should only the relevant columns
+    #: Should data file be loaded all at once or should only
+    # the relevant columns
     #: be loaded.
     eager_load = Bool(True).tag(pref=True)
 
-    #: Column delimiter, an empty string means that the separator should be inferred
+    #: Column delimiter, an empty string means that the separator
+    # should be inferred
     delimiter = Str("").tag(pref=True)
 
-    #: Character marking a comment, fully commented lines are ignored
+    #: Character marking a comment, fully commented lines are
+    # ignored
     comment = Str("#").tag(pref=True)
 
     def load_data(
@@ -52,12 +56,13 @@ class CSVLoader(BaseLoader):
         names : Sequence[str]
             Names-like string referring to the content of the file.
         masks : Mapping[str, MaskSpecification]
-            Mapping of mapping operation to perform on the specified named data, the
-            resulting mask are applied to the requested data (see `names`)
-        apply_mask : Callable[ [Dataset, Dataset, Mapping[str, MaskSpecification]], Dataset ]
-            Callable taking care of applying any in-memory masking required and taking
-            the data to be masked, the data to generate the mask and the mask
-            specification for each mask source data.
+            Mapping of mapping operation to perform on the specified
+            named data, the resulting mask are applied to the requested
+            data (see `names`) apply_mask : Callable[ [Dataset, Dataset,
+            Mapping[str, MaskSpecification]], Dataset ]
+            allable taking care of applying any in-memory masking required
+            and taking the data to be masked, the data to generate the mask
+            and the mask specification for each mask source data.
 
         Returns
         -------
@@ -67,7 +72,8 @@ class CSVLoader(BaseLoader):
         Raises
         ------
         DataKeyError
-            Raised if the name of some data or mask is not found in the on disk store.
+            Raised if the name of some data or mask is not found in the
+            on disk store.
 
         """
         required = list(columns) + list(masks)
@@ -127,7 +133,7 @@ class CSVLoader(BaseLoader):
         del self.content
         del self._data
 
-    # --- Private API ---------------------------------------------------------
+    # --- Private API --------------------------------------------------------
 
     #: Cached content of the file. Will be preserved only if its size does not
     #: exceed the maximum allowed cache size.

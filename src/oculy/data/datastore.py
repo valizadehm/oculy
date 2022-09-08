@@ -35,7 +35,9 @@ def _plugin():
 
 
 class DataArray(Atom):
-    """Leaf in the datastore, storing a read-only numpy array and custom metadata."""
+    """
+    Leaf in the datastore, storing a read-only numpy array and custom metadata.
+    """
 
     #: Values being stored, this is not meant to be a record array.
     values = Typed(np.ndarray)
@@ -87,9 +89,11 @@ def _lookup_in_store(node: Dataset, split_path: Sequence[str]):
 
 
 class DataStore(Atom):
-    """Central data storage object ensuring proper updates are provided.
+    """
+    Central data storage object ensuring proper updates are provided.
 
-    Data are stored in a hierarchical manner. Ids take the form of / separated str.
+    Data are stored in a hierarchical manner. Ids take the form of /
+     separated str.
 
     """
 
@@ -101,11 +105,15 @@ class DataStore(Atom):
     #: - "added": list of new entries.
     #: - "removed": list of entries that disappeared from the store.
     #: - "moved": dict of entries that moved from key to value.
-    #: - "updated": dict of entries whose values where updated and their new value.
-    #: - "metadata_updated": list of entries whose metadata values were updated.
+    #: - "updated": dict of entries whose values where updated and their new \
+    # value.
+    #: - "metadata_updated": list of entries whose metadata values were \
+    # updated.
     update = Event()
 
-    def get_data(self, paths: Sequence[str]) -> TDict[str, Union[Dataset, DataArray]]:
+    def get_data(self, paths: Sequence[str]) -> TDict[
+        str, Union[Dataset, DataArray]
+    ]:
         """Retrieve data as Dataset and DataArray."""
         split_paths = [path.split("/") for path in paths]
         s1 = min(split_paths)
@@ -124,16 +132,19 @@ class DataStore(Atom):
         return data
 
     def store_data(
-        self, data: Mapping[str, Tuple[Optional[Any], Optional[Mapping[str, Any]]]]
+        self, data: Mapping[str, Tuple[
+                Optional[Any], Optional[Mapping[str, Any]]
+            ]]
     ) -> None:
         """Store data in the store.
 
-        All intermediate node are create automatically, and metadata are updated based
-        on the provided values. Metadata with None as value are deleted, and entry with
-        None for both values and metadat are removed.
+        All intermediate node are create automatically, and metadata are
+        updated based on the provided values. Metadata with None as value
+        are deleted, and entry with None for both values and metadat are
+        removed.
 
-        The converters declared in the plugin are used to turn the provided values into
-        admissible values for the data member of a DataArray.
+        The converters declared in the plugin are used to turn the provided
+        values into admissible values for the data member of a DataArray.
 
         Parameters
         ----------
@@ -145,7 +156,8 @@ class DataStore(Atom):
         updated = []
         meta_updated = []
         removed = []
-        # Sort the path to ensure we always create a parent node before its children
+        # Sort the path to ensure we always create a parent node
+        # before its children
         for path in sorted(data):
             val, mval = data[path]
             current = self._data
@@ -221,17 +233,21 @@ class DataStore(Atom):
         Similar to os.walk yield: root, datasets, dataarrays
 
         """
-        sets = deque([(k, v) for k, v in self._data.items() if isinstance(v, Dataset)])
+        sets = deque([(k, v) for k, v in self._data.items() if
+                      isinstance(v, Dataset)])
         arrays = tuple(
-            (k, v) for k, v in self._data._values() if isinstance(v, DataArray)
+            (k, v) for k, v in self._data._values() if
+            isinstance(v, DataArray)
         )
         yield self, tuple(sets), arrays
 
         while sets:
             for _, s in tuple(sets):
                 sets.popleft()
-                sets.extend([(k, v) for k, v in s.items() if isinstance(v, Dataset)])
-                arrays = tuple((k, v) for k, v in s.items() if isinstance(v, DataArray))
+                sets.extend([(k, v) for k, v in s.items() if
+                             isinstance(v, Dataset)])
+                arrays = tuple((k, v) for k, v in s.items() if
+                               isinstance(v, DataArray))
                 yield s, sets[-1], arrays
 
     # --- Private API
