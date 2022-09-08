@@ -4,7 +4,7 @@
 # Distributed under the terms of the BSD license.
 #
 # The full license is in the file LICENCE, distributed with this software.
-# --------------------------------------------------------------------------------------
+# ---------------------------------------------------------------------------
 """
 """
 from atom.api import Bool, Typed
@@ -21,7 +21,8 @@ class Matplotlib1DLineProxy(Plot1DLineProxy):
     def activate(self):
         super().activate()
         axes_mapping = (
-            self.element.axes_mapping or self.element.axes.get_default_axes_mapping()
+            self.element.axes_mapping or
+            self.element.axes.get_default_axes_mapping()
         )
         axes = (axes_mapping["x"], axes_mapping["y"])
         data = (self.element.data.x, self.element.data.y)

@@ -9,5 +9,6 @@
 
 """
 
-# XXX figure out how I want to propegate events in teh plotting systems to handle
+# XXX figure out how I want to propegate events in teh plotting systems
+# to handle
 # things such as auto-scaling

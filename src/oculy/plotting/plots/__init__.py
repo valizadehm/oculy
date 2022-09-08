@@ -4,7 +4,7 @@
 # Distributed under the terms of the BSD license.
 #
 # The full license is in the file LICENCE, distributed with this software.
-# --------------------------------------------------------------------------------------
+# ----------------------------------------------------------------------------
 """ Objects used to represent plots in a backend independent manner.
 
 """

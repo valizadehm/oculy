@@ -127,7 +127,7 @@ class DataStore(Atom):
         data = {}
         root = _lookup_in_store(self._data, common)
         for p, sp in zip(paths, split_paths):
-            data[p] = _lookup_in_store(root, sp[len(common) :])
+            data[p] = _lookup_in_store(root, sp[len(common):])
 
         return data
 

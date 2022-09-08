@@ -4,7 +4,7 @@
 # Distributed under the terms of the BSD license.
 #
 # The full license is in the file LICENCE, distributed with this software.
-# --------------------------------------------------------------------------------------
+# --------------------------------------------------------------------------
 """Matplotlib proxy for 2D plots (images, contours).
 
 """
@@ -19,7 +19,8 @@ from oculy.plotting.plots import Plot2DContourProxy, Plot2DRectangularMeshProxy
 class Matplotlib2DRectangularMeshProxy(Plot2DRectangularMeshProxy):
     """Matplotlib proxy for a mesh plot.
 
-    If the grid can be identified as regular we use imshow, otherwise we use pcolormesh.
+    If the grid can be identified as regular we use imshow, otherwise we use
+     pcolormesh.
 
     """
 
@@ -63,7 +64,8 @@ class Matplotlib2DRectangularMeshProxy(Plot2DRectangularMeshProxy):
         if len(c.shape) == 2:
             pass  # No reshaping needed
 
-        elif len(x.shape) == 1 and len(y.shape) == 1 and len(x) * len(y) == len(c):
+        elif len(x.shape) == 1 and len(y.shape) == 1 and \
+                len(x) * len(y) == len(c):
             c = np.reshape(c, (len(x), len(y)))
 
         elif len(x) == len(c) and len(y) == len(c):
@@ -83,11 +85,13 @@ class Matplotlib2DRectangularMeshProxy(Plot2DRectangularMeshProxy):
                 y = np.append(y, y[-1] * to_add)
                 c = np.append(c, c[-1] * to_add)
                 shape = (shape[0], -1)
-            x, y, c = (np.reshape(x, shape), np.reshape(y, shape), np.reshape(c, shape))
+            x, y, c = (np.reshape(x, shape), np.reshape(y, shape),
+                       np.reshape(c, shape))
 
         else:
             raise RuntimeError(
-                f"Cannot reshape c {c.shape} to plot it (x: {x.shape}, y: {y.shape}"
+                f"Cannot reshape c {c.shape} to plot it (x: {x.shape}, "
+                f"y: {y.shape}"
             )
 
         if use_imshow:

@@ -17,7 +17,10 @@ from ..plots.base import BasePlot, BasePlotProxy, PlotElement, PlotElementProxy
 
 
 class Backend(Declarative):
-    """Declaration of a backend contributed to "oculy.plotting.rendering-backend"."""
+    """
+    Declaration of a backend contributed to
+    "oculy.plotting.rendering-backend".
+    """
 
     #: Name of the backend
     id = d_(Str())
@@ -26,7 +29,8 @@ class Backend(Declarative):
     description = d_(Str())
 
     #: Priority of the backend contributions.
-    #: Used if multiple declaration refer to the same backend, higher number have
+    #: Used if multiple declaration refer to the same backend, higher number
+    # have
     #: higher priority.
     priority = Int(50)
 

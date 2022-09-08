@@ -4,7 +4,7 @@
 # Distributed under the terms of the BSD license.
 #
 # The full license is in the file LICENCE, distributed with this software.
-# --------------------------------------------------------------------------------------
+# ----------------------------------------------------------------------------
 """Base classes for 1D plots.
 
 """
@@ -89,8 +89,8 @@ class Plot1DData(Atom):
 
         if dx and not dx.shape[0] == x.shape[0]:
             raise InvalidPlotData(
-                "Both x and dx data of a 1D plot must have the same number of "
-                "points (ie first dimension). "
+                "Both x and dx data of a 1D plot must have the same number "
+                "of points (ie first dimension). "
                 f"Got x: {x.shape}, dx: {dx.shape}."
             )
 

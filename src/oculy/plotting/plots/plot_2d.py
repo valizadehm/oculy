@@ -4,7 +4,7 @@
 # Distributed under the terms of the BSD license.
 #
 # The full license is in the file LICENCE, distributed with this software.
-# --------------------------------------------------------------------------------------
+# ---------------------------------------------------------------------------
 """Base classes for 2D plots.
 
 """
@@ -91,6 +91,7 @@ class Plot2DRectangularMesh(Plot2D):
 class Plot2DContour(Plot2D):
     """"""
 
-    #: Data vault name referring to the values for which to display the contour values.
+    #: Data vault name referring to the values for which to display the
+    # contour values.
     contour_values = Typed(np.ndarray).tag(sync=True)
     # FIXME add connection to proxy
