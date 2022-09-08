@@ -112,9 +112,8 @@ def main(cmd_line_args=None):
     extend_parser(
         parser,
         "oculy_cmdline_args",
-        (lambda title, content, details,
-            exception: display_startup_error_dialog(
-            title, content, details),
+        (lambda title, content, details, exception:
+         display_startup_error_dialog(title, content, details),
         )
     )
 
