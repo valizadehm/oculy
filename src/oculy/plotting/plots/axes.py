@@ -15,7 +15,8 @@ from atom.api import Tuple as ATuple
 from atom.api import Typed
 
 from ..backends.resolver import BackendResolver
-from .base import BasePlot, PlotElement, PlotElementProxy, mark_backend_unsupported
+from .base import BasePlot, PlotElement, PlotElementProxy, \
+    mark_backend_unsupported
 
 
 class AxisProxy(PlotElementProxy):
