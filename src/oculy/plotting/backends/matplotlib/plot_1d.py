@@ -14,6 +14,8 @@ from matplotlib.lines import Line2D
 
 from oculy.plotting.plots import Plot1DBarProxy, Plot1DLineProxy
 
+from src.oculy.plotting.backends import resolver
+
 
 class Matplotlib1DLineProxy(Plot1DLineProxy):
     """Matplotlib proxy handling line plot."""
