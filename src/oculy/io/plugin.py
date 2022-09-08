@@ -41,7 +41,8 @@ class IOPlugin(HasPreferencesPlugin):
     preferred_loader = Dict(str, str).tag(pref=True)
 
     #: Custom association between loaders and file extensions.
-    custom_loader_extensions = Dict(str, list, default={"csv": [".dat"]}).tag(pref=True)
+    custom_loader_extensions = Dict(str, list, \
+                                    default={"csv": [".dat"]}).tag(pref=True)
 
     #: Collect all contributed Loader extensions.
     loaders = Typed(ExtensionsCollector)  # FIXME make private
@@ -71,8 +72,10 @@ class IOPlugin(HasPreferencesPlugin):
         # Ensure the list of supported extensions is up to date
         self._update_supported_extensions(None)
 
-        self.observe("custom_loader_extensions", self._update_supported_extensions)
-        self.loaders.observe("contributions", self._update_supported_extensions)
+        self.observe("custom_loader_extensions", \
+                     self._update_supported_extensions)
+        self.loaders.observe("contributions", \
+                             self._update_supported_extensions)
 
         core.invoke_command("glaze.errors.exit_error_gathering")
 
@@ -133,18 +136,18 @@ class IOPlugin(HasPreferencesPlugin):
         decl = self.loaders.contributions[id]
 
         def mask_data(
-            to_filter: Dataset,
-            filter_base: Dataset,
-            specifications: Mapping[str, MaskSpecification],
+                to_filter: Dataset,
+                filter_base: Dataset,
+                specifications: Mapping[str, MaskSpecification],
         ) -> Dataset:
             # FIXME should we be invoking a command here ?
-            mask = self.workbench.get_plugin("oculy.transformers").create_mask(
-                filter_base, specifications
-            )
+            mask = self.workbench.get_plugin("oculy.transformers"). \
+                create_mask(filter_base, specifications)
             return to_filter.where(mask)
 
         loader = decl.get_cls()(
-            path=path, mask_data=mask_data, **self._loader_preferences.get(id, {})
+            path=path, mask_data=mask_data, **self._loader_preferences. \
+                get(id, {})
         )
 
         return loader
@@ -153,7 +156,7 @@ class IOPlugin(HasPreferencesPlugin):
         """Create a loader config view."""
         return self.loaders.contributions[id].get_config_view(loader)
 
-    # --- Private API ---------------------------------------------------------
+    # --- Private API --------------------------------------------------------
 
     def _update_supported_extensions(self, change):
         """Update the list of supported extensions."""
