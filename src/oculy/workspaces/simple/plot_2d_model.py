@@ -8,7 +8,7 @@
 """Model driving the 2D plot panel.
 
 """
-from atom.api import Bool, ForwardTyped, Int, List, Str, Typed, Value
+from atom.api import Bool, ForwardTyped, List, Str, Typed, Value
 from gild.utils.atom_util import HasPrefAtom
 
 from oculy.data.datastore import DataStore
@@ -74,7 +74,8 @@ class Plot2DPanelModel(HasPrefAtom):
         axes = self._figure.axes_set["default"]
 
         # Update the X axis data
-        update = {"sviewer/plot_2d/x":(data[self.selected_x_axis].values,None)}
+        update = {"sviewer/plot_2d/x":
+                      (data[self.selected_x_axis].values, None)}
 
         # Update the Y axes data
         update["sviewer/plot_2d/y"] = (data[self.selected_y_axis].values, None)
