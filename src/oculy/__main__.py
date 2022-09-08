@@ -114,7 +114,7 @@ def main(cmd_line_args=None):
         "oculy_cmdline_args",
         (lambda title, content, details, exception:
          display_startup_error_dialog(title, content, details),
-        )
+         )
     )
 
     try:
@@ -206,5 +206,4 @@ def main(cmd_line_args=None):
 
 
 if __name__ == "__main__":
-
     main()  # pragma: no cover
