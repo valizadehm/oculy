@@ -11,7 +11,7 @@
 import numpy as np
 from atom.api import Bool, Typed, Value
 from matplotlib.axes import Axes
-from matplotlib.transforms import Bbox
+# from matplotlib.transforms import Bbox
 
 from oculy.plotting.plots import Plot2DContourProxy, Plot2DRectangularMeshProxy
 

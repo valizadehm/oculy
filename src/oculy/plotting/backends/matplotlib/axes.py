@@ -13,7 +13,8 @@ from matplotlib.axes import Axes
 from matplotlib.axis import Axis
 from matplotlib.colorbar import make_axes
 
-from oculy.plotting.plots import AxesProxy, AxisProxy, ColorbarProxy, CursorProxy
+from oculy.plotting.plots import AxesProxy, AxisProxy, ColorbarProxy, \
+    CursorProxy
 
 
 class MatplotlibAxisProxy(AxisProxy):
@@ -79,7 +80,7 @@ class MatplotlibAxisProxy(AxisProxy):
     #     pass
 
     # @mark_backend_unsupported
-    # def set_tick_labels(self, labels: Sequence[str], font: Mapping[str, Any]):
+    # def set_tick_labels(self, labels: Sequence[str], font: Mapping[str,Any]):
     #     pass
 
     # --- Private API
@@ -131,7 +132,7 @@ class MatplotlibColorbarProxy(ColorbarProxy):
     #     pass
 
     # @mark_backend_unsupported
-    # def set_tick_labels(self, labels: Sequence[str], font: Mapping[str, Any]):
+    # def set_tick_labels(self, labels: Sequence[str], font: Mapping[str,Any]):
     #     pass
 
     # --- Private API
@@ -158,7 +159,9 @@ class MatplotlibAxesProxy(AxesProxy):
             raise RuntimeError()  # Add support for more than one axis.
         else:
             first_axes = fig.proxy._figure.add_subplot(
-                projection=el.projection if el.projection != "cartesian" else None,
+                projection=el.projection
+                if el.projection != "cartesian"
+                else None,
             )
 
         active_axes = {

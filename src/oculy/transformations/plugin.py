@@ -4,7 +4,7 @@
 # Distributed under the terms of the BSD license.
 #
 # The full license is in the file LICENCE, distributed with this software.
-# --------------------------------------------------------------------------------------
+# ----------------------------------------------------------------------------
 """Logic for the data transformation plugin.
 
 """
@@ -30,7 +30,9 @@ NODES_POINT = "oculy.transformers.compute_nodes"
 # FIXME add proper node support (namespaced and with automatic classification
 # based on signature)
 class TransformerPlugin(HasPreferencesPlugin):
-    """Plugin responsible for handling data transformation including masking."""
+    """
+    Plugin responsible for handling data transformation including masking.
+    """
 
     #: Ids of the contributed masks
     masks = List(str)
@@ -111,7 +113,7 @@ class TransformerPlugin(HasPreferencesPlugin):
             mask = mask & temp if mask is not None else temp
         return mask
 
-    # --- Private API ---------------------------------------------------------
+    # --- Private API --------------------------------------------------------
 
     #: Collect all contributed Mask extensions.
     _masks = Typed(ExtensionsCollector)
