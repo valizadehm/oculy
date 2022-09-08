@@ -24,8 +24,8 @@ from enaml.widgets.api import (
     ToolButton
 )
 
-from glaze.utils.widgets.list_editor import ListEditor
-from glaze.utils.widgets.qt_list_str_widget import QtListStrWidget
+from gild.utils.widgets.list_editor import ListEditor
+from gild.utils.widgets.qt_list_str_widget import QtListStrWidget
 
 from oculy.plotting.plot_widget import FigureWidget
 from .mask_view import MaskView
@@ -182,7 +182,7 @@ enamldef Plot1DPanel(DockItem):
                 sizes=[1, 5000]
             )
 
-            style = 'metro'
+            style = "metro"
 
             attr _layout_cache: dict = {}
 
