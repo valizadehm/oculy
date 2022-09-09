@@ -12,10 +12,10 @@ from atom.api import Bool, Typed
 from enaml.application import ScheduledTask, schedule
 from enaml.qt.QtCore import Qt
 from enaml.qt.QtWidgets import QVBoxLayout, QWidget
-from matplotlib.backends.backend_qt5agg import FigureCanvas
 
 # FIXME used temporarily till we implement a nice tool bar
 from matplotlib.backends.backend_qt5agg import (
+    FigureCanvas,
     NavigationToolbar2QT as NavigationToolbar,
 )
 from matplotlib.figure import Figure, GridSpec

@@ -13,8 +13,8 @@ from typing import Mapping
 import numpy as np
 from atom.api import List, Typed
 from glaze.utils.plugin_tools import (
-    HasPreferencesPlugin,
     ExtensionsCollector,
+    HasPreferencesPlugin,
     make_extension_validator,
 )
 

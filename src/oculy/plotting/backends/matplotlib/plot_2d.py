@@ -12,9 +12,10 @@ import numpy as np
 from atom.api import Bool, Typed, Value
 from matplotlib.axes import Axes
 
+from oculy.plotting.plots import Plot2DContourProxy, Plot2DRectangularMeshProxy
+
 # from matplotlib.transforms import Bbox
 
-from oculy.plotting.plots import Plot2DContourProxy, Plot2DRectangularMeshProxy
 
 
 class Matplotlib2DRectangularMeshProxy(Plot2DRectangularMeshProxy):

@@ -12,7 +12,7 @@ from atom.api import Bool, ForwardTyped, Int, List, Str, Typed, Value
 from glaze.utils.atom_util import HasPrefAtom
 
 from oculy.data.datastore import DataStore
-from oculy.plotting.plots import Figure, Plot1DLine, Plot1DData
+from oculy.plotting.plots import Figure, Plot1DData, Plot1DLine
 
 from .mask_parameters import MaskParameter
 
