@@ -367,7 +367,9 @@ class Axes(PlotElement):
     def add_plot(self, plot) -> None:
         """Add a plot to the axes."""
         if plot.id in self.plots:
-            raise RuntimeError(f"A plot with {id} " f"already exist in axes {self}")
+            raise RuntimeError(
+                f"A plot with {id} " f"already exist in axes {self}"
+            )
 
         axes = plot.axes_mapping
         if not axes:
@@ -401,7 +403,9 @@ class Axes(PlotElement):
                 )
             else:
                 list_axes = [
-                    ax for ax in axes.axes._fields if (axes.axes[ax] is not None)
+                    ax
+                    for ax in axes.axes._fields
+                    if (axes.axes[ax] is not None)
                 ]
                 raise RuntimeError(
                     f"The axes used for {[lab for lab, _ in missing]} do not "

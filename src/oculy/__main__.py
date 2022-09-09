@@ -91,7 +91,8 @@ def main(cmd_line_args=None):
     parser.add_argument(
         "-d",
         "--debug",
-        help="Don't capture stdout/stderr, and do not catch top level /" "exceptions",
+        help="Don't capture stdout/stderr, and do not catch top level /"
+        "exceptions",
         action="store_true",
     )
     parser.add_argument(
@@ -176,7 +177,9 @@ def main(cmd_line_args=None):
 
     # Select workspace
     core.invoke_command(
-        "enaml.workbench.ui.select_workspace", {"workspace": args.workspace}, workbench
+        "enaml.workbench.ui.select_workspace",
+        {"workspace": args.workspace},
+        workbench,
     )
 
     ui = workbench.get_plugin("enaml.workbench.ui")
