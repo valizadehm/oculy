@@ -182,7 +182,7 @@ class Plot1DModel(HasPrefAtom):
         # FIXME handle pipeline
 
         self._datastore.store_data(
-            {f"sviewer/plot_1d_{self._index}/x" : (new_x, None)}
+            {f"sviewer/plot_1d_{self._index}/x": (new_x, None)}
         )
 
     def _handle_selected_y_axes_change(self, change):
