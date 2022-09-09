@@ -52,5 +52,7 @@ def mask_equal(array: np.ndarray, value: float) -> np.ndarray:
     return np.equal(array, value)
 
 
-def mask_simequal(array: np.ndarray, value: float, tolerance: float) -> np.ndarray:
+def mask_simequal(
+    array: np.ndarray, value: float, tolerance: float
+) -> np.ndarray:
     return np.less(np.abs(array - value), tolerance)

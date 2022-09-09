@@ -56,7 +56,9 @@ class SyncManager(Atom):
         plot: BasePlot,
         synced_members: Mapping[str, str],
     ):
-        super().__init__(datastore=datastore, plot=plot, synced_members=synced_members)
+        super().__init__(
+            datastore=datastore, plot=plot, synced_members=synced_members
+        )
         # Ensure that all the members that are supposed to be synced
         # can be synced
         plt_sync_tag = tagged_members(plot, "sync")
@@ -84,12 +86,17 @@ class SyncManager(Atom):
 
     def update_plot(self, change: Mapping[str, Any]):
         """Update the plot based on the modification to the data store."""
-        if any(v in change["value"]["removed"] for v in self.synced_members.values()):
+        if any(
+            v in change["value"]["removed"]
+            for v in self.synced_members.values()
+        ):
             self.plot.axes.remove_plot(self.plot.id)
 
         # Build mapping of updated values
         all_updates = change["value"]["updated"]
-        updates = {k: v for k, v in self.synced_members.items() if v in all_updates}
+        updates = {
+            k: v for k, v in self.synced_members.items() if v in all_updates
+        }
         if not updates:
             return
 
@@ -100,7 +107,9 @@ class SyncManager(Atom):
             if k in self._sync_markers:
                 raise RuntimeError("Custom sync marker are not supported.")
 
-        batched: MutableMapping[str, MutableMapping[str, Any]] = defaultdict(dict)
+        batched: MutableMapping[str, MutableMapping[str, Any]] = defaultdict(
+            dict
+        )
         for k, v in updates.items():
             if "." in k:
                 obj, m = k.split(".")
