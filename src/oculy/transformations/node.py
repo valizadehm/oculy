@@ -11,8 +11,8 @@
 from typing import TypeVar, Union
 
 # Declare if the node operate in place or copy the data
-# Units ? Do not need a separate declaration if we appply the pipeline on pint quantity
-# but could be useful though
+# Units ? Do not need a separate declaration if we appply the pipeline on pint
+# quantity but could be useful though
 import numpy as np
 from atom.api import Bool, Callable, Str
 from enaml.core.api import Declarative, d_

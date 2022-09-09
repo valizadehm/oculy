@@ -74,8 +74,8 @@ class Plot2DPanelModel(HasPrefAtom):
         axes = self._figure.axes_set["default"]
 
         # Update the X axis data
-        update = {"sviewer/plot_2d/x":
-                      (data[self.selected_x_axis].values, None)}
+        update = {"sviewer/plot_2d/x": (
+            data[self.selected_x_axis].values, None)}
 
         # Update the Y axes data
         update["sviewer/plot_2d/y"] = (data[self.selected_y_axis].values, None)

@@ -15,8 +15,12 @@ from atom.api import Tuple as ATuple
 from atom.api import Typed
 
 from ..backends.resolver import BackendResolver
-from .base import BasePlot, PlotElement, PlotElementProxy, \
-    mark_backend_unsupported
+from .base import (
+    BasePlot,
+    PlotElement,
+    PlotElementProxy,
+    mark_backend_unsupported,
+)
 
 
 class AxisProxy(PlotElementProxy):
@@ -313,8 +317,12 @@ class Axes(PlotElement):
     def initialize(self, resolver):
         """Initialize the proxy of the object and the axes."""
         super().initialize(resolver)
-        for axis in (self.left_axis, self.bottom_axis,
-                     self.right_axis, self.top_axis):
+        for axis in (
+            self.left_axis,
+            self.bottom_axis,
+            self.right_axis,
+            self.top_axis,
+        ):
             if not axis:
                 continue
             axis.backend_name = self.backend_name
@@ -341,8 +349,12 @@ class Axes(PlotElement):
             c.finalize()
         if self.colorbar:
             self.colorbar.finalize()
-        for axis in (self.top_axis, self.right_axis,
-                     self.bottom_axis, self.left_axis):
+        for axis in (
+            self.top_axis,
+            self.right_axis,
+            self.bottom_axis,
+            self.left_axis,
+        ):
             axis.finalize()
         super().finalize()
 
@@ -355,8 +367,9 @@ class Axes(PlotElement):
     def add_plot(self, plot) -> None:
         """Add a plot to the axes."""
         if plot.id in self.plots:
-            raise RuntimeError(f"A plot with {id} "
-                               f"already exist in axes {self}")
+            raise RuntimeError(
+                f"A plot with {id} " f"already exist in axes {self}"
+            )
 
         axes = plot.axes_mapping
         if not axes:
