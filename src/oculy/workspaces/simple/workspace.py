@@ -218,8 +218,7 @@ class SimpleViewerWorkspace(Workspace):
 
         self._update_available_files()
 
-        self._watchdog_watch = self._watchdog.schedule(self._watchdog_handler,
-                                                       new)
+        self._watchdog_watch = self._watchdog.schedule(self._watchdog_handler, new)
         if not self._watchdog.is_alive():
             self._watchdog.start()
 
@@ -231,8 +230,7 @@ class SimpleViewerWorkspace(Workspace):
         """Ensure the loader list matches the selected file."""
         self._update_matching_loaders()
         if self._loader is not None:
-            self._loader.path = os.path.join(self.selected_folder,
-                                             self.selected_file)
+            self._loader.path = os.path.join(self.selected_folder, self.selected_file)
         if self.auto_load:
             self.load_file()
 
@@ -243,17 +241,13 @@ class SimpleViewerWorkspace(Workspace):
     def _post_setattr_selected_loader(self, old, new):
         """Discard the previously created loader."""
         if self._loader:
-            self._loader_state_cache[old] = \
-                self.loader.preferences_from_members()
+            self._loader_state_cache[old] = self.loader.preferences_from_members()
         self._loader = None
 
     def _post_set_auto_load(self, old, new):
         """Ensure we auto-load the relevant file."""
         assert isinstance(self.selected_loader, object)
-        if (new
-                and self.selected_folder
-                and self.selected_file
-                and self.selected_loader):
+        if new and self.selected_folder and self.selected_file and self.selected_loader:
             self.load_file()
 
     def _default__watchdog_handler(self):

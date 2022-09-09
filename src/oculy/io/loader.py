@@ -65,9 +65,9 @@ class BaseLoader(HasPrefAtom):
     mask_data = Callable()
 
     def load_data(
-            self,
-            names: Sequence[str],
-            masks: Mapping[str, MaskSpecification],
+        self,
+        names: Sequence[str],
+        masks: Mapping[str, MaskSpecification],
     ) -> Dataset:
         """Load data from the on-disk resource.
 

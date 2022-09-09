@@ -49,5 +49,4 @@ class BackendResolver(Atom):
 
     def _default_colormaps(self):
         """Provide the standard colormap categories."""
-        return {"Perceptually uniform": set(), "Sequential": set(),
-                "Diverging": set()}
+        return {"Perceptually uniform": set(), "Sequential": set(), "Diverging": set()}

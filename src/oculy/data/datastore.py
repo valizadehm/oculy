@@ -111,9 +111,7 @@ class DataStore(Atom):
     # updated.
     update = Event()
 
-    def get_data(self, paths: Sequence[str]) -> TDict[
-        str, Union[Dataset, DataArray]
-    ]:
+    def get_data(self, paths: Sequence[str]) -> TDict[str, Union[Dataset, DataArray]]:
         """Retrieve data as Dataset and DataArray."""
         split_paths = [path.split("/") for path in paths]
         s1 = min(split_paths)
@@ -127,14 +125,12 @@ class DataStore(Atom):
         data = {}
         root = _lookup_in_store(self._data, common)
         for p, sp in zip(paths, split_paths):
-            data[p] = _lookup_in_store(root, sp[len(common):])
+            data[p] = _lookup_in_store(root, sp[len(common) :])
 
         return data
 
     def store_data(
-        self, data: Mapping[str, Tuple[
-                Optional[Any], Optional[Mapping[str, Any]]
-            ]]
+        self, data: Mapping[str, Tuple[Optional[Any], Optional[Mapping[str, Any]]]]
     ) -> None:
         """Store data in the store.
 
@@ -233,21 +229,17 @@ class DataStore(Atom):
         Similar to os.walk yield: root, datasets, dataarrays
 
         """
-        sets = deque([(k, v) for k, v in self._data.items() if
-                      isinstance(v, Dataset)])
+        sets = deque([(k, v) for k, v in self._data.items() if isinstance(v, Dataset)])
         arrays = tuple(
-            (k, v) for k, v in self._data._values() if
-            isinstance(v, DataArray)
+            (k, v) for k, v in self._data._values() if isinstance(v, DataArray)
         )
         yield self, tuple(sets), arrays
 
         while sets:
             for _, s in tuple(sets):
                 sets.popleft()
-                sets.extend([(k, v) for k, v in s.items() if
-                             isinstance(v, Dataset)])
-                arrays = tuple((k, v) for k, v in s.items() if
-                               isinstance(v, DataArray))
+                sets.extend([(k, v) for k, v in s.items() if isinstance(v, Dataset)])
+                arrays = tuple((k, v) for k, v in s.items() if isinstance(v, DataArray))
                 yield s, sets[-1], arrays
 
     # --- Private API
