@@ -91,8 +91,7 @@ def main(cmd_line_args=None):
     parser.add_argument(
         "-d",
         "--debug",
-        help="Don't capture stdout/stderr, and do not catch top level /"
-        "exceptions",
+        help="Don't capture stdout/stderr, and do not catch top level /" "exceptions",
         action="store_true",
     )
     parser.add_argument(
@@ -113,8 +112,9 @@ def main(cmd_line_args=None):
         parser,
         "oculy_cmdline_args",
         (
-            lambda title, content, details, exception:
-                display_startup_error_dialog(title, content, details),
+            lambda title, content, details, exception: display_startup_error_dialog(
+                title, content, details
+            ),
         ),
     )
 
@@ -144,9 +144,7 @@ def main(cmd_line_args=None):
     workbench.register(PreferencesManifest(application_name="oculy"))
     workbench.register(IconManagerManifest())
     workbench.register(LogManifest(no_capture=args.debug))
-    workbench.register(
-        PackagesManifest(extension_point="oculy_package_extension")
-    )
+    workbench.register(PackagesManifest(extension_point="oculy_package_extension"))
     workbench.register(OculyManifest())
     workbench.register(DataStorageManifest())
     workbench.register(IOManifest())

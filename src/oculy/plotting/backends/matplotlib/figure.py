@@ -59,9 +59,7 @@ class MatplotlibFigureProxy(FigureProxy):
 
         grid = self.element.grid
         if len(grid) > 1:
-            raise RuntimeError(
-                "Multiple axes per figure are not supported " "yet"
-            )
+            raise RuntimeError("Multiple axes per figure are not supported " "yet")
         self.request_redraw()
 
     def deactivate(self):
@@ -90,8 +88,7 @@ class MatplotlibFigureProxy(FigureProxy):
 
         """
         if not self._canvas or (
-            self._redraw_task is not None
-            and (not clear or self._redraw_and_clear)
+            self._redraw_task is not None and (not clear or self._redraw_and_clear)
         ):
             return
 

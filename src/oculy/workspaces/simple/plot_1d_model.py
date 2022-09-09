@@ -106,9 +106,7 @@ class Plot1DModel(HasPrefAtom):
                         id=f"SW-1D-{self._index}-{len(axes.plots)}",
                         data=Plot1DData(
                             x=update[f"sviewer/plot_1d_{self._index}/x"][0],
-                            y=update[
-                                f"sviewer/plot_1d_{self._index}/" f"y_{i}"
-                            ][0],
+                            y=update[f"sviewer/plot_1d_{self._index}/" f"y_{i}"][0],
                         ),
                     ),
                     sync_data={
@@ -144,12 +142,8 @@ class Plot1DModel(HasPrefAtom):
 
         if new:
             # Connect observers
-            self.observe(
-                "selected_x_axis", self._handle_selected_x_axis_change
-            )
-            self.observe(
-                "selected_y_axes", self._handle_selected_y_axes_change
-            )
+            self.observe("selected_x_axis", self._handle_selected_x_axis_change)
+            self.observe("selected_y_axes", self._handle_selected_y_axes_change)
             self.observe("filters", self._handle_filters_change)
             for f in self.filters:
                 # FIXME redo when exposing all filters
@@ -159,12 +153,8 @@ class Plot1DModel(HasPrefAtom):
             self.refresh_plot()
         else:
             # Disconnect observers
-            self.unobserve(
-                "selected_x_axis", self._handle_selected_x_axis_change
-            )
-            self.unobserve(
-                "selected_y_axes", self._handle_selected_y_axes_change
-            )
+            self.unobserve("selected_x_axis", self._handle_selected_x_axis_change)
+            self.unobserve("selected_y_axes", self._handle_selected_y_axes_change)
             self.unobserve("filters", self._handle_filters_change)
             for f in self.filters:
                 # FIXME redo when exposing all filters
@@ -186,9 +176,7 @@ class Plot1DModel(HasPrefAtom):
 
         # FIXME handle pipeline
 
-        self._datastore.store_data(
-            {f"sviewer/plot_1d_{self._index}/x": (new_x, None)}
-        )
+        self._datastore.store_data({f"sviewer/plot_1d_{self._index}/x": (new_x, None)})
 
     def _handle_selected_y_axes_change(self, change):
         """Replot data when the selected y axes change."""
@@ -210,9 +198,7 @@ class Plot1DModel(HasPrefAtom):
         if not self.auto_refresh:
             return
 
-        self._post_setattr_auto_refresh(
-            change.get("oldvalue"), change["value"]
-        )
+        self._post_setattr_auto_refresh(change.get("oldvalue"), change["value"])
 
     # Filter manipulations
 
@@ -228,8 +214,7 @@ class Plot1DModel(HasPrefAtom):
                 filters.insert(index + 1, MaskParameter())
         else:
             raise ValueError(
-                f"Got invalid position: {position}, "
-                f"expected 'before' or 'after'"
+                f"Got invalid position: {position}, " f"expected 'before' or 'after'"
             )
         self.filters = filters
 
