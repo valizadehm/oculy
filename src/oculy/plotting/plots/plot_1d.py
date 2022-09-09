@@ -14,8 +14,7 @@ import numpy as np
 from atom.api import Atom, Bool, Enum, Float, Str, Typed
 from enaml.colors import Color, ColorMember
 
-from .base import BasePlot, InvalidPlotData, PlotElementProxy, \
-    mark_backend_unsupported
+from .base import BasePlot, InvalidPlotData, PlotElementProxy, mark_backend_unsupported
 
 
 class Plot1DProxy(PlotElementProxy):

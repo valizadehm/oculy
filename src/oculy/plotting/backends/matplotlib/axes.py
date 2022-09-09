@@ -13,8 +13,7 @@ from matplotlib.axes import Axes
 from matplotlib.axis import Axis
 from matplotlib.colorbar import make_axes
 
-from oculy.plotting.plots import AxesProxy, AxisProxy, ColorbarProxy, \
-    CursorProxy
+from oculy.plotting.plots import AxesProxy, AxisProxy, ColorbarProxy, CursorProxy
 
 
 class MatplotlibAxisProxy(AxisProxy):
@@ -26,8 +25,7 @@ class MatplotlibAxisProxy(AxisProxy):
         axes = self.element.axes
 
         if axes is None:
-            raise RuntimeError("Cannot activate the proxy for an Axis with no "
-                               "axes")
+            raise RuntimeError("Cannot activate the proxy for an Axis with no " "axes")
 
         # Identify direction
         ax_dir = ""
@@ -96,8 +94,7 @@ class MatplotlibColorbarProxy(ColorbarProxy):
         # Create matplotlib axes which will hold the colorbar.
         axes = tuple(self.element.axes.proxy._axes.values())[0]
         caxes = make_axes(
-            axes, location=self.element.location,
-            aspect=self.element.aspect_ratio
+            axes, location=self.element.location, aspect=self.element.aspect_ratio
         )[0]
         self._caxes = caxes
 
@@ -159,9 +156,7 @@ class MatplotlibAxesProxy(AxesProxy):
             raise RuntimeError()  # Add support for more than one axis.
         else:
             first_axes = fig.proxy._figure.add_subplot(
-                projection=el.projection
-                if el.projection != "cartesian"
-                else None,
+                projection=el.projection if el.projection != "cartesian" else None,
             )
 
         active_axes = {

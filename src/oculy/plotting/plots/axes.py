@@ -137,7 +137,7 @@ class AxesProxy(PlotElementProxy):
 
     @mark_backend_unsupported
     def add_cursor(
-            self, axes=None
+        self, axes=None
     ):  # Need to specify to which axes the cursor is bound
         pass
 
@@ -171,11 +171,11 @@ class AxesProxy(PlotElementProxy):
 
     @mark_backend_unsupported
     def add_line(
-            self,
-            id: str,
-            orientation: str,
-            position: float,
-            bounds: Optional[Tuple[float, float]] = None,
+        self,
+        id: str,
+        orientation: str,
+        position: float,
+        bounds: Optional[Tuple[float, float]] = None,
     ):
         pass
 
@@ -318,10 +318,10 @@ class Axes(PlotElement):
         """Initialize the proxy of the object and the axes."""
         super().initialize(resolver)
         for axis in (
-                self.left_axis,
-                self.bottom_axis,
-                self.right_axis,
-                self.top_axis,
+            self.left_axis,
+            self.bottom_axis,
+            self.right_axis,
+            self.top_axis,
         ):
             if not axis:
                 continue
@@ -350,10 +350,10 @@ class Axes(PlotElement):
         if self.colorbar:
             self.colorbar.finalize()
         for axis in (
-                self.top_axis,
-                self.right_axis,
-                self.bottom_axis,
-                self.left_axis,
+            self.top_axis,
+            self.right_axis,
+            self.bottom_axis,
+            self.left_axis,
         ):
             axis.finalize()
         super().finalize()
@@ -367,9 +367,7 @@ class Axes(PlotElement):
     def add_plot(self, plot) -> None:
         """Add a plot to the axes."""
         if plot.id in self.plots:
-            raise RuntimeError(
-                f"A plot with {id} " f"already exist in axes {self}"
-            )
+            raise RuntimeError(f"A plot with {id} " f"already exist in axes {self}")
 
         axes = plot.axes_mapping
         if not axes:
@@ -381,11 +379,11 @@ class Axes(PlotElement):
 
         # Validate the axes supposed to be used.
         if any(
-                (
-                        pa not in ("left", "bottom", "right", "top")
-                        or getattr(self, f"{pa}_axis") is None
-                )
-                for pa in axes.values()
+            (
+                pa not in ("left", "bottom", "right", "top")
+                or getattr(self, f"{pa}_axis") is None
+            )
+            for pa in axes.values()
         ):
             unknown = []
             missing = []
@@ -402,8 +400,9 @@ class Axes(PlotElement):
                     f"{[pa for _, pa in unknown]})."
                 )
             else:
-                list_axes = [ax for ax in axes.axes._fields
-                             if (axes.axes[ax] is not None)]
+                list_axes = [
+                    ax for ax in axes.axes._fields if (axes.axes[ax] is not None)
+                ]
                 raise RuntimeError(
                     f"The axes used for {[lab for lab, _ in missing]} do not "
                     "exist. Existing axes are "
@@ -445,11 +444,11 @@ class Axes(PlotElement):
         del self.colorbar
 
     def add_line(
-            self,
-            id: str,
-            orientation: str,
-            position: float,
-            bounds: Optional[Tuple[float, float]] = None,
+        self,
+        id: str,
+        orientation: str,
+        position: float,
+        bounds: Optional[Tuple[float, float]] = None,
     ):
         pass
 

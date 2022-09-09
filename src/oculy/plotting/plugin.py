@@ -43,8 +43,8 @@ class PlottingPlugin(HasPreferencesPlugin):
             workbench=self.workbench,
             point="oculy.plotting.plots",
             ext_class=Plot,
-            validate_ext=make_extension_validator(base_cls=Plot,
-                                                  fn_names=("get_cls",)),)
+            validate_ext=make_extension_validator(base_cls=Plot, fn_names=("get_cls",)),
+        )
         self._plots.start()
 
         self._backends = ExtensionsCollector(
@@ -115,8 +115,7 @@ class PlottingPlugin(HasPreferencesPlugin):
         figure = Figure(backend_name=backend)
         for axes_id in axes_positions:
             figure.add_axes(
-                axes_id, axes_positions[axes_id],
-                axes_specifications.get(axes_id)
+                axes_id, axes_positions[axes_id], axes_specifications.get(axes_id)
             )
         self.figures[id] = figure
 

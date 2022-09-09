@@ -11,6 +11,7 @@
 import numpy as np
 from atom.api import Bool, Typed, Value
 from matplotlib.axes import Axes
+
 # from matplotlib.transforms import Bbox
 
 from oculy.plotting.plots import Plot2DContourProxy, Plot2DRectangularMeshProxy
@@ -64,8 +65,7 @@ class Matplotlib2DRectangularMeshProxy(Plot2DRectangularMeshProxy):
         if len(c.shape) == 2:
             pass  # No reshaping needed
 
-        elif len(x.shape) == 1 and len(y.shape) == 1 and \
-                len(x) * len(y) == len(c):
+        elif len(x.shape) == 1 and len(y.shape) == 1 and len(x) * len(y) == len(c):
             c = np.reshape(c, (len(x), len(y)))
 
         elif len(x) == len(c) and len(y) == len(c):
@@ -85,13 +85,11 @@ class Matplotlib2DRectangularMeshProxy(Plot2DRectangularMeshProxy):
                 y = np.append(y, y[-1] * to_add)
                 c = np.append(c, c[-1] * to_add)
                 shape = (shape[0], -1)
-            x, y, c = (np.reshape(x, shape), np.reshape(y, shape),
-                       np.reshape(c, shape))
+            x, y, c = (np.reshape(x, shape), np.reshape(y, shape), np.reshape(c, shape))
 
         else:
             raise RuntimeError(
-                f"Cannot reshape c {c.shape} to plot it (x: {x.shape}, "
-                f"y: {y.shape}"
+                f"Cannot reshape c {c.shape} to plot it (x: {x.shape}, " f"y: {y.shape}"
             )
 
         if use_imshow:
