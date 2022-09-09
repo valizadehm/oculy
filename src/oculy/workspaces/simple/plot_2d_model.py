@@ -74,9 +74,7 @@ class Plot2DPanelModel(HasPrefAtom):
         axes = self._figure.axes_set["default"]
 
         # Update the X axis data
-        update = {
-            "sviewer/plot_2d/x": (data[self.selected_x_axis].values, None)
-        }
+        update = {"sviewer/plot_2d/x": (data[self.selected_x_axis].values, None)}
 
         # Update the Y axes data
         update["sviewer/plot_2d/y"] = (data[self.selected_y_axis].values, None)
@@ -130,15 +128,9 @@ class Plot2DPanelModel(HasPrefAtom):
 
         if new:
             # Connect observers
-            self.observe(
-                "selected_x_axis", self._handle_selected_x_axis_change
-            )
-            self.observe(
-                "selected_y_axis", self._handle_selected_y_axis_change
-            )
-            self.observe(
-                "selected_c_axis", self._handle_selected_c_axis_change
-            )
+            self.observe("selected_x_axis", self._handle_selected_x_axis_change)
+            self.observe("selected_y_axis", self._handle_selected_y_axis_change)
+            self.observe("selected_c_axis", self._handle_selected_c_axis_change)
             self.observe("filters", self._handle_filters_change)
             for f in self.filters:
                 # FIXME redo when exposing all filters
@@ -148,15 +140,9 @@ class Plot2DPanelModel(HasPrefAtom):
             self.refresh_plot()
         else:
             # Disconnect observers
-            self.unobserve(
-                "selected_x_axis", self._handle_selected_x_axis_change
-            )
-            self.unobserve(
-                "selected_y_axis", self._handle_selected_y_axis_change
-            )
-            self.unobserve(
-                "selected_c_axis", self._handle_selected_c_axis_change
-            )
+            self.unobserve("selected_x_axis", self._handle_selected_x_axis_change)
+            self.unobserve("selected_y_axis", self._handle_selected_y_axis_change)
+            self.unobserve("selected_c_axis", self._handle_selected_c_axis_change)
             self.unobserve("filters", self._handle_filters_change)
             for f in self.filters:
                 # FIXME redo when exposing all filters
@@ -192,9 +178,7 @@ class Plot2DPanelModel(HasPrefAtom):
         if not self.auto_refresh:
             return
 
-        self._post_setattr_auto_refresh(
-            change.get("oldvalue"), change["value"]
-        )
+        self._post_setattr_auto_refresh(change.get("oldvalue"), change["value"])
 
     # Filter manipulations
 
@@ -210,8 +194,7 @@ class Plot2DPanelModel(HasPrefAtom):
                 filters.insert(index + 1, MaskParameter())
         else:
             raise ValueError(
-                f"Got invalid position: {position}, "
-                f"expected 'before' or 'after'"
+                f"Got invalid position: {position}, " f"expected 'before' or 'after'"
             )
         self.filters = filters
 

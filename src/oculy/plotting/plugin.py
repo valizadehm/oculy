@@ -43,9 +43,7 @@ class PlottingPlugin(HasPreferencesPlugin):
             workbench=self.workbench,
             point="oculy.plotting.plots",
             ext_class=Plot,
-            validate_ext=make_extension_validator(
-                base_cls=Plot, fn_names=("get_cls",)
-            ),
+            validate_ext=make_extension_validator(base_cls=Plot, fn_names=("get_cls",)),
         )
         self._plots.start()
 
