@@ -10,17 +10,21 @@
 """
 from typing import Any, Mapping, Optional, Sequence, Tuple
 
-from atom.api import Bool, Dict, Enum, Float, ForwardTyped, Int, List, Str
-from atom.api import Tuple as ATuple
-from atom.api import Typed
+from atom.api import (
+    Bool,
+    Dict,
+    Enum,
+    Float,
+    ForwardTyped,
+    Int,
+    List,
+    Str,
+    Tuple as ATuple,
+    Typed,
+)
 
 from ..backends.resolver import BackendResolver
-from .base import (
-    BasePlot,
-    PlotElement,
-    PlotElementProxy,
-    mark_backend_unsupported,
-)
+from .base import BasePlot, PlotElement, PlotElementProxy, mark_backend_unsupported
 
 
 class AxisProxy(PlotElementProxy):

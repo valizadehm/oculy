@@ -9,9 +9,16 @@
 
 """
 from collections import deque
-from typing import Any
-from typing import Dict as TDict
-from typing import Iterator, Mapping, Optional, Sequence, Tuple, Union
+from typing import (
+    Any,
+    Dict as TDict,
+    Iterator,
+    Mapping,
+    Optional,
+    Sequence,
+    Tuple,
+    Union,
+)
 
 import numpy as np
 from atom.api import (
