@@ -250,11 +250,11 @@ class SimpleViewerWorkspace(Workspace):
     def _post_set_auto_load(self, old, new):
         """Ensure we auto-load the relevant file."""
         assert isinstance(self.selected_loader, object)
-        if new \
-                and self.selected_folder \
-                and self.selected_file \
-                and self.selected_loader:
-                self.load_file()
+        if (new and
+            self.selected_folder and
+            self.selected_file and
+            self.selected_loader):
+            self.load_file()
 
     def _default__watchdog_handler(self):
         return FileListUpdater(workspace=self)
