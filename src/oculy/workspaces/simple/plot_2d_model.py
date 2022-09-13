@@ -52,7 +52,7 @@ class Plot2DPanelModel(HasPrefAtom):
         self._workspace = workspace
         self._datastore = datastore
         plot_plugin = workspace.workbench.get_plugin("oculy.plotting")
-        self._figure = plot_plugin.create_figure(f"SW-2D")
+        self._figure = plot_plugin.create_figure("SW-2D")
         self._figure.axes_set["default"].add_colorbar()
 
     def refresh_plot(self) -> None:
@@ -89,7 +89,7 @@ class Plot2DPanelModel(HasPrefAtom):
         if len(axes.plots) == 0:
             pp = self._workspace.workbench.get_plugin("oculy.plotting")
             pp.add_plot(
-                f"SW-2D",
+                "SW-2D",
                 Plot2DRectangularMesh(
                     id=f"SW-2D-{len(axes.plots)}",
                     data=Plot2DData(

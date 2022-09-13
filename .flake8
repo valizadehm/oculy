@@ -1,23 +1,15 @@
 [flake8]
-exclude = .git, __pycache__, docs/source/conf.py, old, build, dist, pyvisa/thirdparty/*, visa.py,
-]
-
-# E203: Whitespace before ':'
-# E266 too many leading '#' for block comment
-# E501: Line too long (82 &gt; 79 characters)
-# E731: Do not assign a lambda expression, use a def
-
-# H101: Use TODO(NAME)
-# H401: docstring should not start with a space
-# H403: multi line docstrings should end on a new line
-# H404: multi line docstring should start without a leading new line
-# H405: multi line docstring summary not separated with an empty line
-
-# W503: Line break occurred before a binary operator
-
-ignore = H101, E203, E266, H401, H403, H404, H405, E501, W503, E731
-# line length is intentionally set to 80 here we use Bugbear
+exclude =
+    .git,
+    __pycache__,
+    docs/source/conf.py,
+    old,
+    build,
+    dist,
+    *.pyi,
+ignore = E203, E266, E501, W503, E731
+# line length is intentionally set to 80 here because qfox_server uses Bugbear
 # See https://github.com/psf/black/blob/master/README.md#line-length for more details
 max-line-length = 80
-max-complexity = 18
-select = ["B", "C", "E", "F", "W", "T4", "B9"]
+max-complexity = 20
+select = B,C,E,F,W,T4,B9
