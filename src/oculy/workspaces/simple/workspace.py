@@ -4,7 +4,7 @@
 # Distributed under the terms of the BSD license.
 #
 # The full license is in the file LICENCE, distributed with this software.
-# --------------------------------------------------------------------------------------
+# ---------------------------------------------------------------------------
 """Simple workspace manifest.
 
 """
@@ -68,7 +68,8 @@ class SimpleViewerWorkspace(Workspace):
     #: List of files in the selected folder.
     available_files = List(str).tag(pref=True)
 
-    #: Are the files filtered so as to display only files for which a loader exist.
+    #: Are the files filtered so as to display only files for which a loader
+    # exist.
     should_filter_files = Bool(True).tag(pref=True)
 
     #: Currently selected file.
@@ -174,8 +175,8 @@ class SimpleViewerWorkspace(Workspace):
             files.extend(
                 sorted(
                     [
-                        # Ensure we always get a full path by joining filename and
-                        # selected dir
+                        # Ensure we always get a full path by joining filename
+                        # and selected dir
                         os.path.join(dirpath, f)[trim:]
                         for f in filenames
                         # Skip next branch if filtering is not required
@@ -245,6 +246,7 @@ class SimpleViewerWorkspace(Workspace):
 
     def _post_set_auto_load(self, old, new):
         """Ensure we auto-load the relevant file."""
+        assert isinstance(self.selected_loader, object)
         if new and self.selected_folder and self.selected_file and self.selected_loader:
             self.load_file()
 

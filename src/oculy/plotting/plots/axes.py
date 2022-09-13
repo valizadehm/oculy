@@ -4,15 +4,24 @@
 # Distributed under the terms of the BSD license.
 #
 # The full license is in the file LICENCE, distributed with this software.
-# --------------------------------------------------------------------------------------
+# ----------------------------------------------------------------------------
 """Axis, axes, colorbar and their associated proxy.
 
 """
 from typing import Any, Mapping, Optional, Sequence, Tuple
 
-from atom.api import Bool, Dict, Enum, Float, ForwardTyped, Int, List, Str
-from atom.api import Tuple as ATuple
-from atom.api import Typed
+from atom.api import (
+    Bool,
+    Dict,
+    Enum,
+    Float,
+    ForwardTyped,
+    Int,
+    List,
+    Str,
+    Tuple as ATuple,
+    Typed,
+)
 
 from ..backends.resolver import BackendResolver
 from .base import BasePlot, PlotElement, PlotElementProxy, mark_backend_unsupported
@@ -312,7 +321,12 @@ class Axes(PlotElement):
     def initialize(self, resolver):
         """Initialize the proxy of the object and the axes."""
         super().initialize(resolver)
-        for axis in (self.left_axis, self.bottom_axis, self.right_axis, self.top_axis):
+        for axis in (
+            self.left_axis,
+            self.bottom_axis,
+            self.right_axis,
+            self.top_axis,
+        ):
             if not axis:
                 continue
             axis.backend_name = self.backend_name
@@ -327,8 +341,8 @@ class Axes(PlotElement):
             p.backend_name = self.backend_name
             p.initialize(resolver)
 
-        #: Conserve a reference to the resolver to be able to add more elements
-        #: later on.
+        #: Conserve a reference to the resolver to be able to
+        # add more elements later on.
         self._resolver = resolver
 
     def finalize(self):
@@ -339,7 +353,12 @@ class Axes(PlotElement):
             c.finalize()
         if self.colorbar:
             self.colorbar.finalize()
-        for axis in (self.top_axis, self.right_axis, self.bottom_axis, self.left_axis):
+        for axis in (
+            self.top_axis,
+            self.right_axis,
+            self.bottom_axis,
+            self.left_axis,
+        ):
             axis.finalize()
         super().finalize()
 
@@ -352,7 +371,7 @@ class Axes(PlotElement):
     def add_plot(self, plot) -> None:
         """Add a plot to the axes."""
         if plot.id in self.plots:
-            raise RuntimeError(f"A plot with {id} already exist in axes {self}")
+            raise RuntimeError(f"A plot with {id} " f"already exist in axes {self}")
 
         axes = plot.axes_mapping
         if not axes:
@@ -385,10 +404,13 @@ class Axes(PlotElement):
                     f"{[pa for _, pa in unknown]})."
                 )
             else:
+                list_axes = [
+                    ax for ax in axes.axes._fields if (axes.axes[ax] is not None)
+                ]
                 raise RuntimeError(
                     f"The axes used for {[lab for lab, _ in missing]} do not "
                     "exist. Existing axes are "
-                    f"{[ax for ax in axes.axes._fields if axes.axes[ax] is not None]}, "
+                    f"{list_axes}, "
                     f"specified axes are {[pa for _, pa in missing]}."
                 )
 
@@ -437,7 +459,8 @@ class Axes(PlotElement):
     def remove_line(self, id: str) -> None:
         pass
 
-    # FIXME Need to define the proper API to enable zooming/panning and modifiers
+    # FIXME Need to define the proper API to enable zooming/panning and
+    #  modifiers
 
     # TODO Add the ability to link axes (accross different figures ie beyond
     # matplotlib default)

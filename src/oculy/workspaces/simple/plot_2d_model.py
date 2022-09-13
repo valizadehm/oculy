@@ -4,15 +4,15 @@
 # Distributed under the terms of the BSD license.
 #
 # The full license is in the file LICENCE, distributed with this software.
-# --------------------------------------------------------------------------------------
+# ----------------------------------------------------------------------------
 """Model driving the 2D plot panel.
 
 """
-from atom.api import Bool, ForwardTyped, Int, List, Str, Typed, Value
+from atom.api import Bool, ForwardTyped, List, Str, Typed, Value
 from gild.utils.atom_util import HasPrefAtom
 
 from oculy.data.datastore import DataStore
-from oculy.plotting.plots import Figure, Plot2DRectangularMesh, Plot2DData
+from oculy.plotting.plots import Figure, Plot2DData, Plot2DRectangularMesh
 
 from .mask_parameters import MaskParameter
 
@@ -43,16 +43,16 @@ class Plot2DPanelModel(HasPrefAtom):
     # Allow one pipeline per graph (use a notebook on the UI side)
     pipeline = Value()  # FIXME need a dedicated container
 
-    #: Is auto refresh currently enabled. This attribute reflects the user selection
-    #: but not necessarily the presence of event handler that can be disabled
-    #: temporarily when updating.
+    #: Is auto refresh currently enabled. This attribute reflects the user
+    # selection but not necessarily the presence of event handler that can
+    # be disabled temporarily when updating.
     auto_refresh = Bool()
 
     def __init__(self, workspace, datastore):
         self._workspace = workspace
         self._datastore = datastore
         plot_plugin = workspace.workbench.get_plugin("oculy.plotting")
-        self._figure = plot_plugin.create_figure(f"SW-2D")
+        self._figure = plot_plugin.create_figure("SW-2D")
         self._figure.axes_set["default"].add_colorbar()
 
     def refresh_plot(self) -> None:
@@ -89,7 +89,7 @@ class Plot2DPanelModel(HasPrefAtom):
         if len(axes.plots) == 0:
             pp = self._workspace.workbench.get_plugin("oculy.plotting")
             pp.add_plot(
-                f"SW-2D",
+                "SW-2D",
                 Plot2DRectangularMesh(
                     id=f"SW-2D-{len(axes.plots)}",
                     data=Plot2DData(
@@ -122,7 +122,8 @@ class Plot2DPanelModel(HasPrefAtom):
     # --- Event handling
 
     def _post_setattr_auto_refresh(self, old, new) -> None:
-        """Connect observers to auto refresh when a plot input parameter change."""
+        """Connect observers to auto refresh when a plot input parameter
+        change."""
         self._auto_refresh = new
 
         if new:
@@ -166,10 +167,11 @@ class Plot2DPanelModel(HasPrefAtom):
         self.refresh_plot()
 
     def _handle_file_change(self, change):
-        """Event handler ensuring that we are in a consistent after a file change.
+        """Event handler ensuring that we are in a consistent after a
+        file change.
 
-        Used to observe the workspace itself, signaling the begining of the change
-        with a True and the end with a False.
+        Used to observe the workspace itself, signaling the begining
+        of the change with a True and the end with a False.
 
         """
         # In the absence of auto refreshing there is nothing to do.
@@ -192,7 +194,7 @@ class Plot2DPanelModel(HasPrefAtom):
                 filters.insert(index + 1, MaskParameter())
         else:
             raise ValueError(
-                f"Got invalid position: {position}, expected 'before' or 'after'"
+                f"Got invalid position: {position}, " f"expected 'before' or 'after'"
             )
         self.filters = filters
 

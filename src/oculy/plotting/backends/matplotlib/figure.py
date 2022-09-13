@@ -12,10 +12,10 @@ from atom.api import Bool, Typed
 from enaml.application import ScheduledTask, schedule
 from enaml.qt.QtCore import Qt
 from enaml.qt.QtWidgets import QVBoxLayout, QWidget
-from matplotlib.backends.backend_qt5agg import FigureCanvas
 
 # FIXME used temporarily till we implement a nice tool bar
 from matplotlib.backends.backend_qt5agg import (
+    FigureCanvas,
     NavigationToolbar2QT as NavigationToolbar,
 )
 from matplotlib.figure import Figure, GridSpec
@@ -59,7 +59,7 @@ class MatplotlibFigureProxy(FigureProxy):
 
         grid = self.element.grid
         if len(grid) > 1:
-            raise RuntimeError("Multiple axes per figure are not supported yet")
+            raise RuntimeError("Multiple axes per figure are not supported " "yet")
         self.request_redraw()
 
     def deactivate(self):

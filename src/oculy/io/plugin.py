@@ -146,14 +146,13 @@ class IOPlugin(HasPreferencesPlugin):
         loader = decl.get_cls()(
             path=path, mask_data=mask_data, **self._loader_preferences.get(id, {})
         )
-
         return loader
 
     def create_loader_config(self, id, loader):
         """Create a loader config view."""
         return self.loaders.contributions[id].get_config_view(loader)
 
-    # --- Private API ---------------------------------------------------------
+    # --- Private API --------------------------------------------------------
 
     def _update_supported_extensions(self, change):
         """Update the list of supported extensions."""

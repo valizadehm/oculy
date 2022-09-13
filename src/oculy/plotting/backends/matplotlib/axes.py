@@ -4,7 +4,7 @@
 # Distributed under the terms of the BSD license.
 #
 # The full license is in the file LICENCE, distributed with this software.
-# --------------------------------------------------------------------------------------
+# ---------------------------------------------------------------------------
 """Matplotlib proxy for axis, axes, colorbar and cursor.
 
 """
@@ -25,7 +25,7 @@ class MatplotlibAxisProxy(AxisProxy):
         axes = self.element.axes
 
         if axes is None:
-            raise RuntimeError("Cannot activate the proxy for an Axis with no axes")
+            raise RuntimeError("Cannot activate the proxy for an Axis with no " "axes")
 
         # Identify direction
         ax_dir = ""
@@ -78,7 +78,7 @@ class MatplotlibAxisProxy(AxisProxy):
     #     pass
 
     # @mark_backend_unsupported
-    # def set_tick_labels(self, labels: Sequence[str], font: Mapping[str, Any]):
+    # def set_tick_labels(self, labels: Sequence[str], font: Mapping[str,Any]):
     #     pass
 
     # --- Private API
@@ -94,7 +94,9 @@ class MatplotlibColorbarProxy(ColorbarProxy):
         # Create matplotlib axes which will hold the colorbar.
         axes = tuple(self.element.axes.proxy._axes.values())[0]
         caxes = make_axes(
-            axes, location=self.element.location, aspect=self.element.aspect_ratio
+            axes,
+            location=self.element.location,
+            aspect=self.element.aspect_ratio,
         )[0]
         self._caxes = caxes
 
@@ -129,7 +131,7 @@ class MatplotlibColorbarProxy(ColorbarProxy):
     #     pass
 
     # @mark_backend_unsupported
-    # def set_tick_labels(self, labels: Sequence[str], font: Mapping[str, Any]):
+    # def set_tick_labels(self, labels: Sequence[str], font: Mapping[str,Any]):
     #     pass
 
     # --- Private API

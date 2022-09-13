@@ -23,7 +23,10 @@ with enaml.imports():
 
 
 class DataKeyError(KeyError):
-    """Custom KeyError raised when one required data does not exist in the dataset."""
+    """
+    Custom KeyError raised when one required data does not exist
+    in the dataset.
+    """
 
     def __init__(self, missing, existing):
         self.missing = missing
@@ -36,7 +39,8 @@ class DataKeyError(KeyError):
         )
 
 
-# NOTE use an actual instance as a base to store preferences (Dict per id on plugin)
+# NOTE use an actual instance as a base to store preferences
+# (Dict per id on plugin)
 class BaseLoader(HasPrefAtom):
     """"""
 
@@ -44,17 +48,20 @@ class BaseLoader(HasPrefAtom):
     path = Str()
 
     #: Content of the file (i.e. names, data shape etc)
-    # TODO formalize the format of this as possible usage are more clearly identified
+    # TODO formalize the format of this as possible usage are
+    #  more clearly identified
     content = Dict()
 
     #: Maximal size in (MB) a loader is allowed to keep in cache.
-    #: Keeping data in cache will improve performance but degrade memory usage.
+    #: Keeping data in cache will improve performance but degrade memory
+    # usage.
     caching_limit = Int(100).tag(pref=True)
 
-    #: Callable taking care of applying any in-memory masking required and taking
+    #: Callable taking care of applying any in-memory masking required and
+    # taking
     #: the data to be masked, the data to generate the mask and the mask
     #: specification for each mask source data.
-    #: Callable[ [Dataset, Dataset, Mapping[str, MaskSpecification]], Dataset ]
+    #: Callable[[Dataset, Dataset, Mapping[str, MaskSpecification]],Dataset ]
     mask_data = Callable()
 
     def load_data(
@@ -69,8 +76,9 @@ class BaseLoader(HasPrefAtom):
         names : Sequence[str]
             Names-like string referring to the content of the file.
         masks : Mapping[str, MaskSpecification]
-            Mapping of mapping operation to perform on the specified named data, the
-            resulting mask are applied to the requested data (see `names`)
+            Mapping of mapping operation to perform on the specified named
+            data, the resulting mask are applied to the requested data
+             (see `names`)
 
         Returns
         -------
@@ -80,7 +88,8 @@ class BaseLoader(HasPrefAtom):
         Raises
         ------
         DataKeyError
-            Raised if the name of some data or mask is not found in the on disk store.
+            Raised if the name of some data or mask is not found
+             in the on disk store.
 
         """
         raise NotImplementedError

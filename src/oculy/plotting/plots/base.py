@@ -1,10 +1,10 @@
-# --------------------------------------------------------------------------------------
+# -----------------------------------------------------------------------------------
 # Copyright 2021 by Oculy Authors, see git history for more details.
 #
 # Distributed under the terms of the BSD license.
 #
 # The full license is in the file LICENCE, distributed with this software.
-# --------------------------------------------------------------------------------------
+# -------------------------------------------------------------------------
 """Base classes for plotting element using a proxy.
 
 """
@@ -27,7 +27,9 @@ def update_proxy(self, change):
 
 
 class PlotElementProxy(Atom):
-    """Proxy for a plot element providing a uniform interface accross backends."""
+    """
+    Proxy for a plot element providing a uniform interface accross backends.
+    """
 
     #: Reference to the element holding this proxy
     element = ForwardTyped(lambda: PlotElement)
@@ -104,7 +106,9 @@ class BasePlot(PlotElement):
 
 
 class InvalidPlotData(Exception):
-    """Signal that data provided to drive a plot do not match the expectations."""
+    """
+    Signal that data provided to drive a plot do not match the expectations.
+    """
 
     pass
 

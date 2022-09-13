@@ -1,10 +1,10 @@
-# --------------------------------------------------------------------------------------
+# ------------------------------------------------------------------------------------
 # Copyright 2020 by Oculy Authors, see git history for more details.
 #
 # Distributed under the terms of the BSD license.
 #
 # The full license is in the file LICENCE, distributed with this software.
-# --------------------------------------------------------------------------------------
+# ----------------------------------------------------------------------------
 """Routines for computing masks on data.
 
 Note that those are expected to work on numpy arrays and xarray.DataArray.
@@ -28,8 +28,8 @@ class Mask(Node):
 
 # --- Conventional filters
 
-# FIXME once numpy 1.21 is out can use numpy.typing for better typing (ArrayLike
-# will cover xarray types)
+# FIXME once numpy 1.21 is out can use numpy.typing for better typing
+#  (ArrayLike will cover xarray types)
 
 
 def mask_greater(array: np.ndarray, value: float) -> np.ndarray:

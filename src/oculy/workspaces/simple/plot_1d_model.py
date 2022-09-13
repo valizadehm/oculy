@@ -4,7 +4,7 @@
 # Distributed under the terms of the BSD license.
 #
 # The full license is in the file LICENCE, distributed with this software.
-# --------------------------------------------------------------------------------------
+# ----------------------------------------------------------------------------
 """Model driving the 1D plot panel.
 
 """
@@ -12,7 +12,7 @@ from atom.api import Bool, ForwardTyped, Int, List, Str, Typed, Value
 from gild.utils.atom_util import HasPrefAtom
 
 from oculy.data.datastore import DataStore
-from oculy.plotting.plots import Figure, Plot1DLine, Plot1DData
+from oculy.plotting.plots import Figure, Plot1DData, Plot1DLine
 
 from .mask_parameters import MaskParameter
 
@@ -40,9 +40,9 @@ class Plot1DModel(HasPrefAtom):
     # Allow one pipeline per graph (use a notebook on the UI side)
     pipeline = Value()  # FIXME need a dedicated container
 
-    #: Is auto refresh currently enabled. This attribute reflects the user selection
-    #: but not necessarily the presence of event handler that can be disabled
-    #: temporarily when updating.
+    #: Is auto refresh currently enabled. This attribute reflects the user
+    # selection but not necessarily the presence of event handler that can
+    # be disabled temporarily when updating.
     auto_refresh = Bool()
 
     def __init__(self, index, workspace, datastore):
@@ -76,7 +76,10 @@ class Plot1DModel(HasPrefAtom):
         update.update(
             {
                 # FIXME set metadata to indicate data origin
-                f"sviewer/plot_1d_{self._index}/y_{i}": (data[y_name].values, None)
+                f"sviewer/plot_1d_{self._index}/y_{i}": (
+                    data[y_name].values,
+                    None,
+                )
                 for i, y_name in enumerate(self.selected_y_axes)
             }
         )
@@ -103,7 +106,7 @@ class Plot1DModel(HasPrefAtom):
                         id=f"SW-1D-{self._index}-{len(axes.plots)}",
                         data=Plot1DData(
                             x=update[f"sviewer/plot_1d_{self._index}/x"][0],
-                            y=update[f"sviewer/plot_1d_{self._index}/y_{i}"][0],
+                            y=update[f"sviewer/plot_1d_{self._index}/" f"y_{i}"][0],
                         ),
                     ),
                     sync_data={
@@ -133,7 +136,8 @@ class Plot1DModel(HasPrefAtom):
     # --- Event handling
 
     def _post_setattr_auto_refresh(self, old, new) -> None:
-        """Connect observers to auto refresh when a plot input parameter change."""
+        """Connect observers to auto refresh when a plot input parameter
+        change."""
         self._auto_refresh = new
 
         if new:
@@ -183,10 +187,11 @@ class Plot1DModel(HasPrefAtom):
         self.refresh_plot()
 
     def _handle_file_change(self, change):
-        """Event handler ensuring that we are in a consistent after a file change.
+        """Event handler ensuring that we are in a consistent after a file
+        change.
 
-        Used to observe the workspace itself, signaling the begining of the change
-        with a True and the end with a False.
+        Used to observe the workspace itself, signaling the begining of
+        the change with a True and the end with a False.
 
         """
         # In the absence of auto refreshing there is nothing to do.
@@ -209,7 +214,7 @@ class Plot1DModel(HasPrefAtom):
                 filters.insert(index + 1, MaskParameter())
         else:
             raise ValueError(
-                f"Got invalid position: {position}, expected 'before' or 'after'"
+                f"Got invalid position: {position}, " f"expected 'before' or 'after'"
             )
         self.filters = filters
 
@@ -248,5 +253,6 @@ class Plot1DPanelModel(HasPrefAtom):
 
     def _post_setattr_optimize_for_speed(self, old, new):
         """"""
-        # FIXME clean any existing cache when disabling (currently there is no cache)
+        # FIXME clean any existing cache when disabling
+        #  (currently there is no cache)
         pass
