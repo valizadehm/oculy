@@ -18,6 +18,6 @@ exclude = .git, __pycache__, docs/source/conf.py, old, build, dist, pyvisa/third
 ignore = H101, E203, E266, H401, H403, H404, H405, E501, W503, E731
 # line length is intentionally set to 80 here we use Bugbear
 # See https://github.com/psf/black/blob/master/README.md#line-length for more details
-max-line-length = 80
+max-line-length = 89
 max-complexity = 18
 select = ["B", "C", "E", "F", "W", "T4", "B9"]
