@@ -19,7 +19,7 @@ classifiers = [
     "Topic :: Software Development :: Libraries :: Python Modules",
 ]
 dependencies = [
-    "glaze[qt6-pyside]",
+    "gild[qt6-pyside]",
     "numpy",
     "xarray",
     "matplotlib",
@@ -69,7 +69,7 @@ line_length = 88
 known_third_party = [
     "atom",
     "enaml",
-    "glaze",
+    "gild",
     "matplotlib",
     "numpy",
     "typing_extensions",
