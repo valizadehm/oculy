@@ -13,7 +13,7 @@ from typing import TYPE_CHECKING
 from enaml.workbench.api import PluginManifest, Extension, ExtensionPoint
 from enaml.workbench.core.api import Command
 
-from glaze.utils.plugin_tools import make_handler
+from gild.utils.plugin_tools import make_handler
 from .loader import Loader
 
 PLUGIN_ID = "oculy.io"
@@ -57,7 +57,7 @@ enamldef IOManifest(PluginManifest):
     # =========================================================================
 
     ExtensionPoint:
-        id = 'loaders'
+        id = "loaders"
         description = LOADERS_DESC
 
     # =========================================================================
@@ -65,8 +65,8 @@ enamldef IOManifest(PluginManifest):
     # =========================================================================
 
     Extension:
-        id = 'loaders'
-        point = 'oculy.io.loaders'
+        id = "loaders"
+        point = "oculy.io.loaders"
         Loader:
             id = "csv"
             file_extensions = [".csv"]
@@ -78,17 +78,17 @@ enamldef IOManifest(PluginManifest):
                 return CSVLoaderConfig(loader=loader)
 
     Extension:
-        id = 'commands'
-        point = 'enaml.workbench.core.commands'
+        id = "commands"
+        point = "enaml.workbench.core.commands"
         Command:
-            id = 'oculy.io.list_matching_loaders'
+            id = "oculy.io.list_matching_loaders"
             # FIXME add description
-            handler = make_handler(PLUGIN_ID, 'list_matching_loaders')
+            handler = make_handler(PLUGIN_ID, "list_matching_loaders")
         Command:
-            id = 'oculy.io.create_loader'
+            id = "oculy.io.create_loader"
             # FIXME add description
-            handler = make_handler(PLUGIN_ID, 'create_loader')
+            handler = make_handler(PLUGIN_ID, "create_loader")
         Command:
-            id = 'oculy.io.create_loader_config'
+            id = "oculy.io.create_loader_config"
             # FIXME add description
-            handler = make_handler(PLUGIN_ID, 'create_loader_config')
+            handler = make_handler(PLUGIN_ID, "create_loader_config")

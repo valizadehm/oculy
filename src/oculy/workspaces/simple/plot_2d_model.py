@@ -9,7 +9,11 @@
 
 """
 from atom.api import Bool, ForwardTyped, List, Str, Typed, Value
+<<<<<<< HEAD
 from glaze.utils.atom_util import HasPrefAtom
+=======
+from gild.utils.atom_util import HasPrefAtom
+>>>>>>> 3424926e48aff6ac586ecc9f118c1b9e11fd9484
 
 from oculy.data.datastore import DataStore
 from oculy.plotting.plots import Figure, Plot2DData, Plot2DRectangularMesh
@@ -52,7 +56,7 @@ class Plot2DPanelModel(HasPrefAtom):
         self._workspace = workspace
         self._datastore = datastore
         plot_plugin = workspace.workbench.get_plugin("oculy.plotting")
-        self._figure = plot_plugin.create_figure(f"SW-2D")
+        self._figure = plot_plugin.create_figure("SW-2D")
         self._figure.axes_set["default"].add_colorbar()
 
     def refresh_plot(self) -> None:
@@ -89,7 +93,7 @@ class Plot2DPanelModel(HasPrefAtom):
         if len(axes.plots) == 0:
             pp = self._workspace.workbench.get_plugin("oculy.plotting")
             pp.add_plot(
-                f"SW-2D",
+                "SW-2D",
                 Plot2DRectangularMesh(
                     id=f"SW-2D-{len(axes.plots)}",
                     data=Plot2DData(

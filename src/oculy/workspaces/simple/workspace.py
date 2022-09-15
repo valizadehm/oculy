@@ -13,8 +13,8 @@ import os
 import enaml
 from atom.api import Bool, Dict, List, Str, Typed
 from enaml.workbench.ui.api import Workspace
-from glaze.utils import invoke_command
-from glaze.utils.atom_util import (
+from gild.utils import invoke_command
+from gild.utils.atom_util import (
     preferences_from_members,
     update_members_from_preferences,
 )

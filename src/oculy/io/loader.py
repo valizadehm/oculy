@@ -13,7 +13,7 @@ from typing import Mapping, Sequence, Type
 import enaml
 from atom.api import Callable, Dict, Int, List, Str
 from enaml.core.api import Declarative, d_, d_func
-from glaze.utils.atom_util import HasPrefAtom
+from gild.utils.atom_util import HasPrefAtom
 from xarray import Dataset
 
 from oculy.transformations import MaskSpecification

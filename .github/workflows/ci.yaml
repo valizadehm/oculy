@@ -61,7 +61,10 @@ jobs:
           pip install .
       - name: Test with pytest
         run: |
+<<<<<<< HEAD
           pip install pytest-cov
+=======
+>>>>>>> 3424926e48aff6ac586ecc9f118c1b9e11fd9484
           python -X dev -m pytest --pyargs oculy --cov oculy --cov-report xml -v
       - name: Upload coverage to Codecov
         uses: codecov/codecov-action@v1

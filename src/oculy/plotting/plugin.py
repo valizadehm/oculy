@@ -13,7 +13,7 @@ from operator import attrgetter
 from typing import Mapping, Optional
 
 from atom.api import Dict, Str, Typed
-from glaze.utils.plugin_tools import (
+from gild.utils.plugin_tools import (
     ExtensionsCollector,
     HasPreferencesPlugin,
     make_extension_validator,

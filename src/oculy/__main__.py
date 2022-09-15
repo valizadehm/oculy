@@ -15,19 +15,19 @@ from traceback import format_exc
 import enaml
 from enaml.qt.qt_application import QtApplication
 from enaml.workbench.api import Workbench
-from glaze.utils.argparse import ArgParser, extend_parser
+from gild.utils.argparse import ArgParser, extend_parser
 
 with enaml.imports():
     from enaml.stdlib.message_box import DialogButton, MessageBox
     from enaml.workbench.core.core_manifest import CoreManifest
     from enaml.workbench.ui.ui_manifest import UIManifest
-    from glaze.plugins.errors.manifest import ErrorsManifest
-    from glaze.plugins.icons.manifest import IconManagerManifest
-    from glaze.plugins.lifecycle.manifest import LifecycleManifest
-    from glaze.plugins.log.manifest import LogManifest
-    from glaze.plugins.packages.manifest import PackagesManifest
-    from glaze.plugins.preferences.manifest import PreferencesManifest
-    from glaze.plugins.states.manifest import StateManifest
+    from gild.plugins.errors.manifest import ErrorsManifest
+    from gild.plugins.icons.manifest import IconManagerManifest
+    from gild.plugins.lifecycle.manifest import LifecycleManifest
+    from gild.plugins.log.manifest import LogManifest
+    from gild.plugins.packages.manifest import PackagesManifest
+    from gild.plugins.preferences.manifest import PreferencesManifest
+    from gild.plugins.states.manifest import StateManifest
 
     from oculy.data.manifest import DataStorageManifest
     from oculy.io.manifest import IOManifest
@@ -143,7 +143,7 @@ def main(cmd_line_args=None):
     workbench.register(ErrorsManifest())
     workbench.register(PreferencesManifest(application_name="oculy"))
     workbench.register(IconManagerManifest())
-    workbench.register(LogManifest(no_capture=args.debug))
+    workbench.register(LogManifest(no_capture_varname="debug"))
     workbench.register(PackagesManifest(extension_point="oculy_package_extension"))
     workbench.register(OculyManifest())
     workbench.register(DataStorageManifest())
@@ -155,7 +155,7 @@ def main(cmd_line_args=None):
     ui = workbench.get_plugin("enaml.workbench.ui")  # Create the application
 
     try:
-        app = workbench.get_plugin("glaze.lifecycle")
+        app = workbench.get_plugin("gild.lifecycle")
         app.run_app_startup(args)
     except Exception as e:
         if args.debug:
@@ -172,7 +172,7 @@ def main(cmd_line_args=None):
 
     # Install global except hook.
     if not args.debug:
-        core.invoke_command("glaze.errors.install_excepthook", {})
+        core.invoke_command("gild.errors.install_excepthook", {})
 
     # Select workspace
     core.invoke_command(
@@ -194,14 +194,14 @@ def main(cmd_line_args=None):
     workbench.unregister("oculy.io")
     workbench.unregister("oculy.plotting")
     workbench.unregister("oculy.transformers")
-    workbench.unregister("glaze.packages")
-    workbench.unregister("glaze.icons")
-    workbench.unregister("glaze.states")
-    workbench.unregister("glaze.errors")
-    workbench.unregister("glaze.logging")
+    workbench.unregister("gild.packages")
+    workbench.unregister("gild.icons")
+    workbench.unregister("gild.states")
+    workbench.unregister("gild.errors")
+    workbench.unregister("gild.logging")
     workbench.unregister("oculy")
-    workbench.unregister("glaze.preferences")
-    workbench.unregister("glaze.lifecycle")
+    workbench.unregister("gild.preferences")
+    workbench.unregister("gild.lifecycle")
     workbench.unregister("enaml.workbench.ui")
     workbench.unregister("enaml.workbench.core")
 

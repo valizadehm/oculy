@@ -12,7 +12,7 @@ import os
 from typing import List, Mapping
 
 from atom.api import Dict, Set, Typed
-from glaze.utils.plugin_tools import (
+from gild.utils.plugin_tools import (
     ExtensionsCollector,
     HasPreferencesPlugin,
     make_extension_validator,
@@ -54,7 +54,7 @@ class IOPlugin(HasPreferencesPlugin):
 
         """
         core = self.workbench.get_plugin("enaml.workbench.core")
-        core.invoke_command("glaze.errors.enter_error_gathering")
+        core.invoke_command("gild.errors.enter_error_gathering")
 
         validator = make_extension_validator(
             Loader, ("get_cls", "get_config_view"), ("file_extensions",)
@@ -74,7 +74,7 @@ class IOPlugin(HasPreferencesPlugin):
         self.observe("custom_loader_extensions", self._update_supported_extensions)
         self.loaders.observe("contributions", self._update_supported_extensions)
 
-        core.invoke_command("glaze.errors.exit_error_gathering")
+        core.invoke_command("gild.errors.exit_error_gathering")
 
     def stop(self) -> None:
         """Stop the plugin life-cycle.
