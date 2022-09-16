@@ -7,7 +7,7 @@ on:
     branches:
       - main
     paths:
-      - .github/workflows/ci.yml
+      - .github/workflows/ci.yaml
       - "oculy/**"
       - pyproject.toml
 
@@ -18,9 +18,13 @@ jobs:
     steps:
       - uses: actions/checkout@v2
       - name: Set up Python
-        uses: actions/setup-python@v2
+        uses: actions/setup-python@v4
         with:
           python-version: 3.9
+      - uses: actions/cache@v2
+        with:
+          path: ${{ env.pythonLocation }}
+          key: ${{ env.pythonLocation }}-${{ hashFiles('pyproject.toml') }}-${{ hashFiles('lint_requirements.txt') }}
       - name: Install tools
         run: |
           python -m pip install --upgrade pip
@@ -49,9 +53,13 @@ jobs:
     steps:
       - uses: actions/checkout@v2
       - name: Set up Python ${{ matrix.python-version }}
-        uses: actions/setup-python@v2
+        uses: actions/setup-python@v4
         with:
           python-version: ${{ matrix.python-version }}
+      - uses: actions/cache@v2
+        with:
+          path: ${{ env.pythonLocation }}
+          key: ${{ env.pythonLocation }}-${{ hashFiles('pyproject.toml') }}-${{ hashFiles('test_requirements.txt') }}
       - name: Install dependencies
         run: |
           python -m pip install --upgrade pip
@@ -62,10 +70,14 @@ jobs:
       - name: Test with pytest
         run: |
 <<<<<<< HEAD
+<<<<<<< HEAD
           pip install pytest-cov
 =======
 >>>>>>> 3424926e48aff6ac586ecc9f118c1b9e11fd9484
           python -X dev -m pytest --pyargs oculy --cov oculy --cov-report xml -v
+=======
+          python -X dev -m pytest tests --cov oculy --cov-report xml -v
+>>>>>>> 7f54ee08931bdff8f3c919244defdcdfcf3ac540
       - name: Upload coverage to Codecov
         uses: codecov/codecov-action@v1
         with:
