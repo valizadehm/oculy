@@ -18,7 +18,7 @@ class TestPlottingPlugin(TestCase):
 
 
     def test_destroy_figure(self):
-        self.
+        self.fail()
 
     def test_add_plot(self):
         self.fail()

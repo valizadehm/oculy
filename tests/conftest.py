@@ -24,7 +24,7 @@ pytest_plugins = ("gild.testing.fixtures",)
 def app_dir_storage(monkeypatch, tmpdir) -> pathlib.Path:
     """Path at which the file storing the app dir location is stored."""
     monkeypatch.setattr(pathlib.Path, "home", lambda: pathlib.Path(str(tmpdir)))
-
+    print(pathlib.Path(str(tmpdir), ".oculy"))
     yield pathlib.Path(str(tmpdir), ".oculy")
 
 
@@ -37,3 +37,5 @@ def app_dir(tmpdir, app_dir_storage):
         toml.dump(dict(app_path=str(app_dir)), f)
 
     yield app_dir
+
+app_dir_storage

@@ -69,19 +69,3 @@ jobs:
           pip install .
       - name: Test with pytest
         run: |
-<<<<<<< HEAD
-<<<<<<< HEAD
-          pip install pytest-cov
-=======
->>>>>>> 3424926e48aff6ac586ecc9f118c1b9e11fd9484
-          python -X dev -m pytest --pyargs oculy --cov oculy --cov-report xml -v
-=======
-          python -X dev -m pytest tests --cov oculy --cov-report xml -v
->>>>>>> 7f54ee08931bdff8f3c919244defdcdfcf3ac540
-      - name: Upload coverage to Codecov
-        uses: codecov/codecov-action@v1
-        with:
-          token: ${{ secrets.CODECOV_TOKEN }}
-          flags: unittests
-          name: codecov-umbrella
-          fail_ci_if_error: true

@@ -38,7 +38,7 @@ class CSVLoader(BaseLoader):
 
     #: Column delimiter, an empty string means that the separator
     # should be inferred
-    delimiter = Str("").tag(pref=True)
+    delimiter = Str(",").tag(pref=True)
 
     #: Character marking a comment, fully commented lines are
     # ignored

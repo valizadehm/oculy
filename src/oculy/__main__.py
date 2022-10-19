@@ -21,6 +21,7 @@ with enaml.imports():
     from enaml.stdlib.message_box import DialogButton, MessageBox
     from enaml.workbench.core.core_manifest import CoreManifest
     from enaml.workbench.ui.ui_manifest import UIManifest
+    
     from gild.plugins.errors.manifest import ErrorsManifest
     from gild.plugins.icons.manifest import IconManagerManifest
     from gild.plugins.lifecycle.manifest import LifecycleManifest
