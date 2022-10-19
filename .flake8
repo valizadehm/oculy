@@ -10,12 +10,7 @@ exclude =
 ignore = E203, E266, E501, W503, E731
 # line length is intentionally set to 80 here because qfox_server uses Bugbear
 # See https://github.com/psf/black/blob/master/README.md#line-length for more details
-<<<<<<< HEAD
 max-line-length = 89
 max-complexity = 18
 select = ["B", "C", "E", "F", "W", "T4", "B9"]
-=======
-max-line-length = 80
-max-complexity = 20
-select = B,C,E,F,W,T4,B9
->>>>>>> 3424926e48aff6ac586ecc9f118c1b9e11fd9484
+
