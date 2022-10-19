@@ -12,11 +12,8 @@ from typing import Mapping
 
 import numpy as np
 from atom.api import List, Typed
-<<<<<<< HEAD
-from glaze.utils.plugin_tools import (
-=======
+
 from gild.utils.plugin_tools import (
->>>>>>> 3424926e48aff6ac586ecc9f118c1b9e11fd9484
     ExtensionsCollector,
     HasPreferencesPlugin,
     make_extension_validator,

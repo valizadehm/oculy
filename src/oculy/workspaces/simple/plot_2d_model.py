@@ -9,11 +9,7 @@
 
 """
 from atom.api import Bool, ForwardTyped, List, Str, Typed, Value
-<<<<<<< HEAD
-from glaze.utils.atom_util import HasPrefAtom
-=======
 from gild.utils.atom_util import HasPrefAtom
->>>>>>> 3424926e48aff6ac586ecc9f118c1b9e11fd9484
 
 from oculy.data.datastore import DataStore
 from oculy.plotting.plots import Figure, Plot2DData, Plot2DRectangularMesh
