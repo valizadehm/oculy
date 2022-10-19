@@ -1,12 +1,4 @@
-<<<<<<< HEAD
+black>=22.8.0
+flake8>=5.0.0
+isort>=5.10.0
 
-black>=22.8.0
-flake8>=5.0.0
-isort>=5.10.0
-pytest>=7.0.0
-numpy==1.23.2
-=======
-black>=22.8.0
-flake8>=5.0.0
-isort>=5.10.0
->>>>>>> 3424926e48aff6ac586ecc9f118c1b9e11fd9484
