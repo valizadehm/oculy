@@ -6,7 +6,6 @@
 # The full license is in the file LICENCE, distributed with this software.
 # --------------------------------------------------------------------------------------
 """Application startup script.
-
 """
 import sys
 import threading
@@ -21,7 +20,6 @@ with enaml.imports():
     from enaml.stdlib.message_box import DialogButton, MessageBox
     from enaml.workbench.core.core_manifest import CoreManifest
     from enaml.workbench.ui.ui_manifest import UIManifest
-    
     from gild.plugins.errors.manifest import ErrorsManifest
     from gild.plugins.icons.manifest import IconManagerManifest
     from gild.plugins.lifecycle.manifest import LifecycleManifest
@@ -42,7 +40,6 @@ def setup_thread_excepthook():
     """
     Workaround for `sys.excepthook` thread bug from:
     http://bugs.python.org/issue1230540
-
     Call once from the main thread before creating any threads.
     """
 
@@ -68,7 +65,6 @@ def setup_thread_excepthook():
 def display_startup_error_dialog(text, content, details=""):
     """Show a nice dialog showing to the user what went wrong during
     start up.
-
     """
     if not QtApplication.instance():
         QtApplication()  # pragma: no cover

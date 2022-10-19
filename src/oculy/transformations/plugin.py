@@ -6,13 +6,11 @@
 # The full license is in the file LICENCE, distributed with this software.
 # ----------------------------------------------------------------------------
 """Logic for the data transformation plugin.
-
 """
 from typing import Mapping
 
 import numpy as np
 from atom.api import List, Typed
-
 from gild.utils.plugin_tools import (
     ExtensionsCollector,
     HasPreferencesPlugin,
@@ -43,10 +41,8 @@ class TransformerPlugin(HasPreferencesPlugin):
 
     def start(self) -> None:
         """Start the plugin life-cycle.
-
         This method is called by the framework at the appropriate time. It
         should never be called by user code.
-
         """
         core = self.workbench.get_plugin("enaml.workbench.core")
         core.invoke_command("gild.errors.enter_error_gathering")
@@ -76,10 +72,8 @@ class TransformerPlugin(HasPreferencesPlugin):
 
     def stop(self) -> None:
         """Stop the plugin life-cycle.
-
         This method is called by the framework at the appropriate time.
         It should never be called by user code.
-
         """
         self._masks.stop()
         del self._masks
@@ -95,14 +89,12 @@ class TransformerPlugin(HasPreferencesPlugin):
         specifications: Mapping[str, MaskSpecification],
     ) -> np.ndarray:
         """[summary]
-
         Parameters
         ----------
         filter_base : Mapping[str, np.ndarray]
             [description]
         specifications : Mapping[str, MaskSpecification]
             [description]
-
         Returns
         -------
         np.ndarray
